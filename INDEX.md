@@ -161,6 +161,11 @@ Patterns that arrange multiple sheets within a single score.
 - Signals: fan-out produces wildly varying output quality; synthesis stage is expensive and shouldn't process garbage; some outputs need rework, others are ready
 - Key compositions: Immune Cascade, Fan-out + Synthesis, Relay Zone
 
+**Live Relay**
+- Problem: Sequential creative agents must maintain artistic continuity and shared identity while preserving individual creative authority, with zero-gap handoffs between agents.
+- Signals: work is a sustained creative performance over time; different sections benefit from different creative voices; continuity of identity matters more than continuity of substrate; gaps between agents are detectable by an audience
+- Key compositions: Mission Command, Stigmergic Workspace, Succession Pipeline, The Tool Chain
+
 ---
 
 ## Concert-Level
