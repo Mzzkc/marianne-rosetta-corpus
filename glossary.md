@@ -7,7 +7,7 @@
 | **Concert** | Multiple scores chained via `on_success` |
 | **Conductor** | The daemon that manages job execution |
 | **Workspace** | Directory where all outputs live — the shared filesystem |
-| **Instrument** | An AI backend (Claude, Gemini, Ollama, CLI tools) with specific capabilities and cost profiles |
+| **Instrument** | Any CLI tool or API endpoint wrapped as a plugin profile (Claude Code, Gemini CLI, Ollama, ...) with specific capabilities and cost profiles |
 | **Prelude** | Markdown injected into every sheet's prompt — shared context |
 | **Cadenza** | Per-sheet or per-instance markdown injected into that sheet's prompt. In fan-out, a list of cadenza files maps 1:1 to instances |
 | **Fan-out** | Running multiple sheet instances in parallel (`instances: N`) |
