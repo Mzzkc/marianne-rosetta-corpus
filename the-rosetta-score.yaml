@@ -199,10 +199,14 @@ prompt:
       context before the work)
 
       **Quality:** validations (file_exists, content_contains, content_regex,
-      file_modified, command_succeeds), quality gates (verification-only
+      file_modified, command_succeeds, path_in_scope, field_match,
+      file_sha256, csv_unique_key), quality gates (verification-only
       stages), adversarial review stages, staged fail-fast (coarse before
-      fine), conditional validations (per-sheet or per-stage conditions),
-      grounding hooks (verify agent output against source material)
+      fine), conditional validations (per-sheet or per-stage conditions).
+      Grounding: guidance surfaces in validation feedback
+      (grounding_guidance in the baton state) but full source-verification
+      hooks are NOT a complete primitive — never advertise grounding as
+      one; patterns needing it go to Awaiting Primitives
 
       **Lifecycle:** on_success chains (score→score), self-chaining (score
       loops to itself with fresh state), workspace archival (history
@@ -221,8 +225,11 @@ prompt:
       per-sheet filter which specs are relevant. Agents receive structured
       domain knowledge, not just prompts.
 
-      **Agent tools:** Read, Write, Edit, Grep, Glob, Bash, WebSearch,
-      Agent (subagent dispatch). These are the hands and eyes.
+      **Agent tools:** vary by instrument profile — harness instruments
+      (claude-code, codex-cli, goose) carry their own tool suites
+      (Read/Write/Edit/Grep/Bash/WebSearch/subagents); custom CLI
+      instruments carry exactly the tool they wrap. Check the profile,
+      never assume a specific toolset.
 
       **Prompting patterns:** outcome-focused (describe destination, not
       route), data-driven lenses (lookup dicts drive per-instance behavior),
@@ -236,18 +243,17 @@ prompt:
       loop (iterative improvement), complex investigation (dual-phase,
       double fan-out, adversarial review)
 
-      **Instruments — not just LLMs:**
-      - claude-code: strong reasoning, tool use, code generation (200K context)
-      - gemini-cli: massive context (1M tokens) — holds entire codebases
-      - ollama: local, fast, cheap, private, no API limits
-      - codex-cli: OpenAI code focus, different training data
-      - Custom CLI instruments: wrap ANY tool as an instrument —
-        pandoc (document conversion), ffmpeg (media), curl (APIs),
-        pytest (verification), git (version control), scrapers,
-        database query tools, statistical analysis scripts
-      - Mixed-instrument scores: Gemini for research (big context),
-        Claude for implementation (strong reasoning), Ollama for
-        formatting (cheap), custom instruments for non-AI tasks
+      **Instruments — plugin profiles, any CLI (verified 2026-09-03):**
+      - claude-code (Anthropic; strong reasoning, tool use)
+      - codex-cli (OpenAI; gpt-5.5 class), opencode (Z.AI coding plan;
+        GLM 5.x), goose (Z.AI), antigravity (Google's Gemini successor —
+        gemini-cli is DEAD, sunset to Antigravity; never assign it)
+      - ollama (local models), aider, cline-cli, crush
+      - Custom CLI instruments: wrap ANY tool as a profile —
+        pandoc, ffmpeg, curl, pytest, git, scrapers, DB query tools
+      - Mixed-instrument scores: big-context instruments for research,
+        strong reasoners for implementation, local/cheap for bulk work,
+        custom instruments for non-AI tasks
       - A score isn't just AI agents talking. It's AI + scripts +
         tools + verification + deployment, all wired by the conductor.
 

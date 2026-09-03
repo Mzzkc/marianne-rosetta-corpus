@@ -1,0 +1,247 @@
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║  Rosetta Backlog Curation — decompose an iteration's monolith growth        ║
+# ║                                                                              ║
+# ║  One-shot maintenance score for the 2026-09-03 discover iteration:          ║
+# ║  the monolith (archive/rosetta-corpus.md) grew +5k lines but the            ║
+# ║  decomposed view (INDEX.md, patterns/, selection-guide, awaiting, dag)      ║
+# ║  was not updated. Future iterations decompose in-line (Stage 6 fix);        ║
+# ║  this score clears the backlog and is kept as the template for manual       ║
+# ║  curation whenever the decomposed view drifts from the monolith.            ║
+# ║                                                                              ║
+# ║  Consumers whose formats are LOAD-BEARING (do not break):                   ║
+# ║    - composing skill: reads INDEX.md + forces.md first, then pattern files  ║
+# ║    - rosetta-prove: selects from INDEX/selection-guide, reads patterns/    ║
+# ║    - marianne-compiler: parses patterns/*.md frontmatter (name + stages:   ║
+# ║      name/sheets/purpose/instrument_guidance/fallback_friendly/artifacts,  ║
+# ║      composes_with, signals, scale, status)                                 ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+name: rosetta-curate-backlog
+description: "Decompose the uncommitted monolith iteration into the curated corpus view with verified primitive attribution"
+
+# Workspace auto-derives to ~/workspaces/rosetta-curate-backlog (#58).
+
+instrument: claude-code
+instrument_config:
+  timeout_seconds: 2400
+instrument_fallbacks: [codex-cli]
+
+sheet:
+  size: 1
+  total_items: 4
+  dependencies:
+    2: [1]
+    3: [2]
+    4: [3]
+  prelude:
+    - file: "{{ score_dir }}/forces.md"
+      as: context
+      required: true
+    - file: "{{ score_dir }}/INDEX.md"
+      as: context
+      required: true
+
+cross_sheet:
+  auto_capture_stdout: true
+  max_output_chars: 6000
+  lookback_sheets: 3
+  capture_files:
+    - "{{ workspace }}/01-inventory.md"
+
+retry:
+  max_retries: 1
+  base_delay_seconds: 30
+
+stale_detection:
+  enabled: true
+  idle_timeout_seconds: 1200
+
+prompt:
+  variables:
+    corpus_monolith: "{{ score_dir }}/archive/rosetta-corpus.md"
+    corpus_patterns_dir: "{{ score_dir }}/patterns"
+    corpus_index: "{{ score_dir }}/INDEX.md"
+    corpus_selection_guide: "{{ score_dir }}/selection-guide.md"
+    corpus_awaiting: "{{ score_dir }}/awaiting.md"
+    corpus_dag: "{{ score_dir }}/composition-dag.yaml"
+
+    frontmatter_contract: |
+      Every pattern file MUST carry this frontmatter (the marianne-compiler
+      parses it — breaking the shape breaks compilation):
+      ```yaml
+      ---
+      name: "Pattern Name"
+      scale: foundational | within-stage | score-level | concert-level | communication | adaptation | instrument-strategy | iteration
+      type: orchestration-pattern
+      status: working | aspirational | approximation
+      forces: [names from forces.md]
+      generators: [names from forces.md]
+      problem: "one sentence"
+      signals:
+        - "when you'd reach for this"
+      stages:                      # required for compiler stage expansion
+        - name: stage-slug
+          sheets: 1 | "fan_out(N)"
+          instrument_guidance: "REAL profile names + why (see primitives)"
+          fallback_friendly: true | false
+          purpose: "what this stage accomplishes"
+          artifacts: ["file.md"]
+      dependencies:
+        stage-b: [stage-a]
+      composes_with:
+        - pattern: "Other Pattern"
+          how: "one line"
+      ---
+      ```
+
+    primitives: |
+      VERIFIED Marianne primitives (2026-09-03, source-checked). Every
+      instrument_guidance and primitive attribution must use ONLY these:
+
+      score_dir anchors ({{ score_dir }}/{{ score_dir }}), relative run_job
+      chains, schedule (cron/interval/timezone/overlap/misfire/jitter — NO
+      offset-from-artifact), on_failure durable hooks, max_wall_seconds,
+      circuit_breaker (SHEET-FAILURE COUNTS only — never spend; spend =
+      cost_limits which PAUSES the job), cost_limits, per_sheet_fallbacks
+      (empty chain = deterministic gate, never AI-fallback), isolation
+      (git worktree), techniques ECS (skill/mcp/protocol), directory
+      cadenzas, required:true cadenzas, auto-workspaces (#58), skip_when,
+      stagger_delay_ms, cross_sheet control, named movements, fan_out,
+      spec_dir/spec_tags per-sheet filtering, learning store + budgets.
+
+      Instruments (profiles): claude-code, codex-cli (gpt-5.5), opencode
+      (Z.AI GLM 5.x), goose, antigravity (Google; gemini-cli is DEAD),
+      ollama (local), aider, cline-cli, crush, any-wrapped CLI.
+
+      NOT primitives (never attribute to them): grounding as full
+      source-verification hooks (guidance-only in validation feedback),
+      per-SHEET resource budgets (cost_limits is per-JOB), OS-level
+      capability confinement, offset-from-artifact scheduling.
+
+  template: |
+    {% if stage == 1 %}
+    # Inventory the Iteration
+
+    The monolith `{{ corpus_monolith }}` has UNCOMMITTED growth from the
+    2026-09-03 discover iteration. Get the exact delta:
+
+    ```bash
+    git -C {{ score_dir }} diff archive/rosetta-corpus.md
+    ```
+
+    Read the full diff. Classify EVERY change:
+    - NEW patterns introduced this iteration (with names)
+    - CHANGED/STRENGTHENED patterns (what changed, which review forced it)
+    - CUT patterns (moved to Awaiting Primitives — collapsed real-primitive
+      form?) or demoted to prompt guidance
+    - RECLASSIFIED scale changes
+    - Systemic/structural changes (convergences, generators, contracts)
+
+    Cross-check each affected pattern name against existing files in
+    `{{ corpus_patterns_dir }}/` and entries in `{{ corpus_index }}`.
+
+    Write `{{ workspace }}/01-inventory.md`: one section per class, with
+    for each pattern: name, current file (or NONE), current INDEX entry
+    (or NONE), and the curation action required (create/merge/rewrite/
+    delete-file+drop-index/resolve-awaiting).
+
+    {% elif stage == 2 %}
+    # Curate Pattern Files
+
+    Read `{{ workspace }}/01-inventory.md` (injected/captured above).
+
+    For every CREATE/MERGE/REWRITE action: write the pattern file at
+    `{{ corpus_patterns_dir }}/<name-slug>.md` using the frontmatter
+    contract. Content below the frontmatter: problem depth, failure modes,
+    worked structure, review-integration notes — match the depth and voice
+    of the best existing pattern files (read 2-3 exemplars first).
+
+    Rules:
+    - instrument_guidance MUST name real profiles from the primitives list
+      with a reason — never model names that no profile serves, never
+      gemini-cli.
+    - Primitive attributions must match the VERIFIED primitives list
+      exactly. If the monolith attributes a pattern to something not on
+      the list, fix the attribution to the nearest real primitive and note
+      the correction in the pattern's Review Integration section.
+    - For DELETE actions (demoted/cut patterns): remove the file with
+      `git -C {{ score_dir }} rm` ONLY if the monolith truly cut it; a cut
+      that landed in Awaiting Primitives gets NO pattern file (awaiting.md
+      is its home — stage 3 handles that entry).
+    - Do NOT touch unchanged pattern files.
+
+    {% elif stage == 3 %}
+    # Reconcile the Indexes
+
+    With the pattern files now curated, bring every index to 1:1 truth:
+
+    - `{{ corpus_index }}`: entries for exactly the patterns that exist in
+      `{{ corpus_patterns_dir }}/` — same entry format as now (Problem /
+      Signals / Key compositions, grouped by scale). Add new, rewrite
+      changed, REMOVE entries for deleted patterns. When in doubt about
+      the format, re-read the file's own header — it is good.
+    - `{{ corpus_selection_guide }}`: problem→pattern rows for new
+      patterns in the existing table format.
+    - `{{ corpus_dag }}`: nodes for new patterns (name/scale/problem/
+      signals), edges for their composes_with relationships.
+    - `{{ corpus_awaiting }}`: re-check EVERY blocked entry against the
+      verified primitives list. If its blocking primitive now EXISTS,
+      move the pattern OUT of awaiting (its pattern file + INDEX entry
+      must exist — if the monolith contains it, curate was stage 2's job;
+      if it doesn't, note it as re-proposable next iteration). If still
+      blocked, keep it with the blocking primitive restated in current
+      terms (e.g. "per-sheet resource budgets" stays — cost_limits is
+      per-JOB).
+
+    {% elif stage == 4 %}
+    # Verify
+
+    Run a full self-audit and write `{{ workspace }}/04-verification.md`:
+
+    1. 1:1 coverage — every INDEX entry has a pattern file; every pattern
+       file has an INDEX entry. List any mismatch (there must be none).
+    2. Frontmatter parse — every pattern file parses; staged patterns
+       carry the full compiler contract fields.
+    3. Attribution — grep every pattern file for forbidden attributions
+       (gemini-cli, grounding-as-hooks, per-sheet budgets). List hits
+       (must be none).
+    4. Awaiting reconciliation — every resolution/retention justified
+       against the primitives list.
+    5. Redundancy — flag any pair of patterns whose problems overlap
+       >70%; recommend merge candidates for the next review (do not
+       merge unilaterally).
+
+    End the report with `CURATION: PASS` only if 1-4 are clean (5 may
+    carry recommendations).
+
+    {% endif %}
+
+validations:
+  - type: file_exists
+    path: "{workspace}/01-inventory.md"
+    condition: "stage == 1"
+    stage: 1
+  - type: content_regex
+    path: "{workspace}/01-inventory.md"
+    pattern: "(?i)(NEW|CHANGED|CUT|RECLASSIFIED)"
+    condition: "stage == 1"
+    stage: 1
+  - type: command_succeeds
+    command: 'test $(find {score_dir}/patterns -name "*.md" -newer "{workspace}/01-inventory.md" | wc -l) -ge 1'
+    condition: "stage == 2"
+    stage: 1
+    description: "At least one pattern file curated this stage"
+  - type: file_modified
+    path: "{score_dir}/INDEX.md"
+    condition: "stage == 3"
+    stage: 1
+  - type: file_exists
+    path: "{workspace}/04-verification.md"
+    condition: "stage == 4"
+    stage: 1
+  - type: content_regex
+    path: "{workspace}/04-verification.md"
+    pattern: "CURATION: PASS"
+    condition: "stage == 4"
+    stage: 2
+    description: "Self-audit passed all four gates"
