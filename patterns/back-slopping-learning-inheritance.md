@@ -17,10 +17,11 @@ config_features:
 stages:
   - name: work
     sheets: 1
-    instrument_guidance: "score-author's choice — instrument must be capable enough for the primary task and able to read and update structured culture artifacts"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — instrument must be capable enough for the primary task and able to read and update structured culture artifacts"
     fallback_friendly: true
     purpose: "Execute the primary task informed by accumulated culture, then update the culture artifact with new learning."
     artifacts: ["culture.yaml"]
+dependencies: {}
 composes_with:
   - pattern: "Cathedral Construction"
     how: "Cathedral Construction's incremental building uses Back-Slopping's culture artifact to carry integration lessons and architectural decisions across iterations."

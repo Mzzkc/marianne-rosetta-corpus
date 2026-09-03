@@ -15,16 +15,17 @@ signals:
 stages:
   - name: check-conditions
     sheets: 1
-    instrument_guidance: "cli — lightweight condition testing via command execution; no LLM reasoning required"
+    instrument_guidance: "any-wrapped CLI profile — lightweight condition testing via command execution; no LLM reasoning required"
     fallback_friendly: true
     purpose: "Verify that external conditions are satisfied by testing workspace state or running verification commands."
     artifacts: []
   - name: proceed
     sheets: 1
-    instrument_guidance: "score-author's choice — instrument selection depends on the task being performed"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — instrument selection depends on the task being performed"
     fallback_friendly: true
     purpose: "Proceed with the actual work once external conditions are confirmed ready."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Read-and-React"
     how: "Dormancy Gate pauses until conditions warrant re-evaluation, enabling Read-and-React to dynamically re-run the score."

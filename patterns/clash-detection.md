@@ -21,22 +21,23 @@ fan_out:
 stages:
   - name: track-work
     sheets: "fan_out(4)"
-    instrument_guidance: "score-author's choice — instrument must match the component-building task complexity; pattern is instrument-agnostic for this stage"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — instrument must match the component-building task complexity; pattern is instrument-agnostic for this stage"
     fallback_friendly: true
     purpose: "Build one component in parallel with other tracks"
     artifacts: []
   - name: clash-scan
     sheets: 1
-    instrument_guidance: "sonnet or better — needs analytical capability to compare outputs across all tracks, detect naming collisions, interface mismatches, and resource conflicts; missing conflicts defeats the pattern's purpose"
+    instrument_guidance: "codex-cli (gpt-5.5) or better — needs analytical capability to compare outputs across all tracks, detect naming collisions, interface mismatches, and resource conflicts; missing conflicts defeats the pattern's purpose"
     fallback_friendly: false
     purpose: "Compare all parallel track outputs to detect conflicts without attempting merge"
     artifacts: ["clash-report.yaml"]
   - name: integrate
     sheets: 1
-    instrument_guidance: "score-author's choice — depends on integration complexity; pattern focuses on pre-integration detection, not integration method"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — depends on integration complexity; pattern focuses on pre-integration detection, not integration method"
     fallback_friendly: true
     purpose: "Assemble all track outputs after clash detection passes"
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Prefabrication"
     how: "Prefabrication defines interface contracts for parallel tracks; Clash Detection verifies those contracts weren't violated and catches unanticipated conflicts."

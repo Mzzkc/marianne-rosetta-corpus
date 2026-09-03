@@ -22,13 +22,13 @@ config_features:
 stages:
   - name: conventions
     sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to anticipate integration needs and write comprehensive but not overly rigid conventions; sonnet or opus recommended"
+    instrument_guidance: "score-author's choice — needs strong reasoning to anticipate integration needs and write comprehensive but not overly rigid conventions; codex-cli (gpt-5.5) or claude-code recommended"
     fallback_friendly: true
     purpose: "Write a conventions document defining naming, structure, and stylistic standards for parallel work streams."
     artifacts: ["conventions.md"]
   - name: build
     sheets: "fan_out(6)"
-    instrument_guidance: "score-author's choice — depends on task complexity; instrument must be capable of the actual work being coordinated"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — depends on task complexity; instrument must be capable of the actual work being coordinated"
     fallback_friendly: true
     purpose: "Build assigned component following the shared conventions."
     artifacts: []

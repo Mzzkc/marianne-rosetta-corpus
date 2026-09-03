@@ -16,16 +16,17 @@ signals:
 stages:
   - name: check-cache
     sheets: 1
-    instrument_guidance: "cli — simple Python script execution; no language model required"
+    instrument_guidance: "any-wrapped CLI profile — simple Python script execution; no language model required"
     fallback_friendly: true
     purpose: "Validate the memoization cache is intact and contains entries for the current stage."
     artifacts: []
   - name: analyze
     sheets: 1
-    instrument_guidance: "score-author's choice — capability depends on the analysis task, but memoization is load-bearing for avoiding re-execution"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — capability depends on the analysis task, but memoization is load-bearing for avoiding re-execution"
     fallback_friendly: false
     purpose: "Analyze only files not in the cache or with changed fingerprints; update memo-cache.yaml with new entries."
     artifacts: ["memo-cache.yaml"]
+dependencies: {}
 composes_with:
   - pattern: "CEGAR Loop"
     how: "CEGAR Loop refines abstractions; Memoization Cache prevents re-analyzing unchanged regions of the refined model."

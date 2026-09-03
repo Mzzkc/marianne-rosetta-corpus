@@ -1,7 +1,7 @@
 ---
 name: "Commander's Intent Envelope"
 scale: within-stage
-type: prompt-technique
+type: orchestration-pattern
 status: working
 forces:
   - "Information Asymmetry"
@@ -15,10 +15,11 @@ signals:
 stages:
   - name: execute
     sheets: 1
-    instrument_guidance: "score-author's choice — instrument must be capable enough to exercise autonomous judgment within the envelope; stronger instruments benefit more from the freedoms"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — instrument must be capable enough to exercise autonomous judgment within the envelope; stronger instruments benefit more from the freedoms"
     fallback_friendly: true
     purpose: "Execute within an intent envelope structured as PURPOSE (why), END STATE (measurable success), CONSTRAINTS (hard boundaries), FREEDOMS (autonomous decisions). The agent finds its own path."
     artifacts: ["decision-log.md"]
+dependencies: {}
 composes_with:
   - pattern: "Mission Command"
     how: "Commander's Intent Envelope IS Mission Command at the individual sheet scale — the same intent structure applied within one agent rather than across a team."

@@ -21,16 +21,17 @@ config_features:
 stages:
   - name: attempt
     sheets: 1
-    instrument_guidance: "score-author's choice — instrument capability must match the task being attempted; learned clauses guide behavior but don't reduce the task's inherent capability requirements"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — instrument capability must match the task being attempted; learned clauses guide behavior but don't reduce the task's inherent capability requirements"
     fallback_friendly: false
     purpose: "Attempt the task while avoiding failure patterns documented in learned-clauses.yaml from previous iterations."
     artifacts: []
   - name: analyze-failure
     sheets: 1
-    instrument_guidance: "sonnet or opus recommended — requires strong reasoning to extract generalizable failure patterns; weak instruments produce clauses that are too specific (don't generalize) or too broad (over-constrain)"
+    instrument_guidance: "codex-cli (gpt-5.5) or claude-code recommended — requires strong reasoning to extract generalizable failure patterns; weak instruments produce clauses that are too specific (don't generalize) or too broad (over-constrain)"
     fallback_friendly: false
     purpose: "Extract the root cause of failure and append it as a constraint to learned-clauses.yaml to guide future attempts."
     artifacts: ["learned-clauses.yaml"]
+dependencies: {}
 composes_with:
   - pattern: "Back-Slopping (Learning Inheritance)"
     how: "Back-Slopping (Learning Inheritance) provides the learning inheritance mechanism; CDCL Search uses it to accumulate and forward learned failure clauses across self-chaining iterations."

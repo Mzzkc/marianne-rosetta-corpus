@@ -1,7 +1,7 @@
 ---
 name: "Read-and-React"
 scale: adaptation
-type: prompt-technique
+type: orchestration-pattern
 status: working
 forces:
   - "Partial Failure"
@@ -19,10 +19,11 @@ config_features:
 stages:
   - name: work
     sheets: 1
-    instrument_guidance: "score-author's choice — any instrument capable of reading workspace files and adapting its approach; instrument depends on the actual task being adapted"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — any instrument capable of reading workspace files and adapting its approach; instrument depends on the actual task being adapted"
     fallback_friendly: true
     purpose: "Read workspace state from previous stages and adapt behavior based on what exists — conditionally varying approach within the prompt based on workspace artifacts."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Triage Gate"
     how: "Triage Gate classifies fan-out outputs into quality categories that Read-and-React sheets then detect and adapt their processing strategy around."

@@ -17,28 +17,29 @@ signals:
 stages:
   - name: broad-sweep
     sheets: "fan_out(8)"
-    instrument_guidance: "haiku — fast, cheap scanning across partitions; capability sufficient for breadth-first issue discovery"
+    instrument_guidance: "opencode — fast, cheap scanning across partitions; capability sufficient for breadth-first issue discovery"
     fallback_friendly: true
     purpose: "Parallelize broad scanning to identify findings efficiently at low cost."
     artifacts: ["sweep-{{ instance_id }}.md"]
   - name: triage-handoff
     sheets: 1
-    instrument_guidance: "score-author's choice — requires judgment to triage findings and prioritize targets; stronger instruments produce better targeting"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — requires judgment to triage findings and prioritize targets; stronger instruments produce better targeting"
     fallback_friendly: false
     purpose: "Deduplicate broad findings and create prioritized targeting brief for expensive investigation."
     artifacts: ["targeting-brief.md"]
   - name: deep-investigation
     sheets: 1
-    instrument_guidance: "opus — deep code analysis and remediation requiring full reasoning capability; critical for thorough investigation"
+    instrument_guidance: "claude-code — deep code analysis and remediation requiring full reasoning capability; critical for thorough investigation"
     fallback_friendly: false
     purpose: "Deep-dive on prioritized targets with thorough analysis and remediation design."
     artifacts: []
   - name: learning
     sheets: 1
-    instrument_guidance: "score-author's choice — documents methodology and learnings; can use cheaper instrument"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — documents methodology and learnings; can use cheaper instrument"
     fallback_friendly: true
     purpose: "Document methodology and learnings for future audit iterations."
     artifacts: ["doctrine.md"]
+dependencies: {}
 composes_with:
   - pattern: "Triage Gate"
     how: "The triage-handoff stage implements Triage Gate logic, filtering broad findings to identify investigation targets."

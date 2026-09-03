@@ -18,22 +18,23 @@ fan_out:
 stages:
   - name: central-text
     sheets: 1
-    instrument_guidance: "score-author's choice — needs reasoning capability to produce substantive core analysis that anchors all commentary"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — needs reasoning capability to produce substantive core analysis that anchors all commentary"
     fallback_friendly: false
     purpose: "Write the core analysis that serves as the central reference text."
     artifacts: ["core-analysis.md"]
   - name: commentary
     sheets: "fan_out(3)"
-    instrument_guidance: "score-author's choice — each instance provides a perspective on the central text; cheaper instruments acceptable if commentary task is straightforward"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — each instance provides a perspective on the central text; cheaper instruments acceptable if commentary task is straightforward"
     fallback_friendly: true
     purpose: "Read the core analysis and write commentary from a specific perspective."
     artifacts: ["commentary-1.md", "commentary-2.md", "commentary-3.md"]
   - name: interlink
     sheets: 1
-    instrument_guidance: "score-author's choice — must track and cross-reference multiple sources (core + all commentaries); sonnet or opus recommended for synthesis work"
+    instrument_guidance: "score-author's choice — must track and cross-reference multiple sources (core + all commentaries); codex-cli (gpt-5.5) or claude-code recommended for synthesis work"
     fallback_friendly: false
     purpose: "Synthesize the core analysis and all commentaries, highlighting cross-references and inter-commentary connections."
     artifacts: ["synthesis.md"]
+dependencies: {}
 composes_with:
   - pattern: "Sugya Weave (Editorial Synthesis)"
     how: "Sugya Weave extends Talmudic Page's multi-layer commentary structure with editorial synthesis that extracts themes across all layers."

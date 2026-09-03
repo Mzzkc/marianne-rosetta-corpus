@@ -15,16 +15,17 @@ signals:
 stages:
   - name: assess
     sheets: 1
-    instrument_guidance: "score-author's choice — needs enough reasoning to compare actual outputs against the plan and identify meaningful deviations; instrument depends on domain complexity"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — needs enough reasoning to compare actual outputs against the plan and identify meaningful deviations; instrument depends on domain complexity"
     fallback_friendly: true
     purpose: "Read outputs so far, identify deviations from the execution plan, and write frago.md with targeted corrections if needed."
     artifacts: ["frago.md"]
   - name: continue
     sheets: 1
-    instrument_guidance: "score-author's choice — must be capable enough for the underlying task; the FRAGO adjustment doesn't change instrument requirements"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — must be capable enough for the underlying task; the FRAGO adjustment doesn't change instrument requirements"
     fallback_friendly: true
     purpose: "Read frago.md if it exists and adjust execution approach per the corrections while continuing the original plan."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Read-and-React"
     how: "Read-and-React provides the workspace-driven adaptation mechanism that the continue stage uses to detect and respond to the FRAGO correction document."

@@ -36,7 +36,10 @@ stages:
     fallback_friendly: true
     purpose: "Assemble all pre-validated components and verify all interfaces match the contract. Integration is mechanical if the contract is precise."
     artifacts: []
+dependencies: {}
 composes_with:
+  - pattern: "The Attested Merge Gate"
+    how: "The Attested Merge Gate supersedes Prefabrication when integration crosses a trust boundary: it retains the frozen interface contract but adds producer attestations, a deterministic byte sweep, and one serialized merge authority."
   - pattern: "Barn Raising"
     how: "Barn Raising establishes shared conventions before Prefabrication's parallel tracks begin, providing the foundation that the interface contract builds upon."
   - pattern: "Clash Detection"
@@ -79,6 +82,10 @@ sheets:
 
 Interface spec too loose allows incompatible implementations. Too tight eliminates the benefits of parallel work.
 
+### Review Integration
+
+Iteration 5.1 narrows this pattern's authority. Prefabrication remains sufficient when the parallel producers and merger share one trust domain and ordinary contract validation is enough. It is obsolete as guidance for untrusted or independently failing producers: use The Attested Merge Gate, which preserves the interface freeze while requiring attestations, a deterministic sweep over actual bytes, and one serialized merge authority. Job-level worktree isolation must not be described as per-sheet isolation; parallel voices instead write to instance-tagged namespaces for later integration.
+
 ### Composes With
 
-Barn Raising, Clash Detection, Mission Command
+The Attested Merge Gate, Barn Raising, Clash Detection, Mission Command

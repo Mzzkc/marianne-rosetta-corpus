@@ -21,22 +21,23 @@ fan_out:
 stages:
   - name: define-lines
     sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to define distinct objectives and measurable convergence criteria for each line"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — needs strong reasoning to define distinct objectives and measurable convergence criteria for each line"
     fallback_friendly: false
     purpose: "Define lines of effort with objectives and convergence criteria."
     artifacts: ["lines-definition.md"]
   - name: line-work
     sheets: "fan_out(3)"
-    instrument_guidance: "score-author's choice — each line may need different capability depending on its objective; instrument should match the line's task complexity"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — each line may need different capability depending on its objective; instrument should match the line's task complexity"
     fallback_friendly: true
     purpose: "Execute each line of effort per its defined objectives, working independently within shared workspace."
     artifacts: []
   - name: convergence-check
     sheets: 1
-    instrument_guidance: "score-author's choice — needs strong synthesis capability to assess convergence across all lines toward unified end state"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — needs strong synthesis capability to assess convergence across all lines toward unified end state"
     fallback_friendly: false
     purpose: "Read all line outputs and assess convergence toward the unified end state."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Season Bible"
     how: "Season Bible maintains the mutable reference document that tracks evolving state across lines, ensuring continuity as each line progresses."

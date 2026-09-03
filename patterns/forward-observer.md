@@ -17,16 +17,17 @@ signals:
 stages:
   - name: observe
     sheets: 1
-    instrument_guidance: "haiku — fast, cheap observation; sufficient for compression and extraction of key items"
+    instrument_guidance: "opencode — fast, cheap observation; sufficient for compression and extraction of key items"
     fallback_friendly: true
     purpose: "Read large input and extract key findings and actionable items into observer-brief.md."
     artifacts: ["observer-brief.md"]
   - name: operate
     sheets: 1
-    instrument_guidance: "opus — full reasoning capability required for detailed analysis on compressed input"
+    instrument_guidance: "claude-code — full reasoning capability required for detailed analysis on compressed input"
     fallback_friendly: false
     purpose: "Execute main analysis and detailed work based on the observer-brief.md summary."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Relay Zone"
     how: "Forward Observer produces a formatted brief that Relay Zone can reliably relay between stages."

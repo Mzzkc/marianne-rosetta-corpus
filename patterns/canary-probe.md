@@ -19,34 +19,35 @@ fan_out:
 stages:
   - name: select-canary
     sheets: 1
-    instrument_guidance: "score-author's choice — needs capability to identify structurally representative items (different sizes, formats, edge cases); haiku acceptable"
+    instrument_guidance: "score-author's choice — needs capability to identify structurally representative items (different sizes, formats, edge cases); opencode acceptable"
     fallback_friendly: true
     purpose: "Select a small representative subset from the full item list for testing."
     artifacts: ["canary-manifest.yaml"]
   - name: canary-run
     sheets: "fan_out(3)"
-    instrument_guidance: "score-author's choice — MUST match the exact instruments used in full-run; canary tests the identical pipeline"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — MUST match the exact instruments used in full-run; canary tests the identical pipeline"
     fallback_friendly: false
     purpose: "Execute the full pipeline on each canary item using identical instruments and validations."
     artifacts: ["canary-result-{{ instance_id }}.md"]
   - name: canary-evaluate
     sheets: 1
-    instrument_guidance: "score-author's choice — needs analysis and reasoning capability; haiku acceptable"
+    instrument_guidance: "score-author's choice — needs analysis and reasoning capability; opencode acceptable"
     fallback_friendly: true
     purpose: "Analyze all canary results and produce a go/no-go verdict with detailed reasoning."
     artifacts: ["canary-verdict.yaml"]
   - name: canary-gate
     sheets: 1
-    instrument_guidance: "cli — purely gatekeeping logic checking the verdict file; no LLM needed"
+    instrument_guidance: "any-wrapped CLI profile — purely gatekeeping logic checking the verdict file; no LLM needed"
     fallback_friendly: false
     purpose: "Enforce the canary verdict; halt execution if canary failed."
     artifacts: []
   - name: full-run
     sheets: "fan_out(20)"
-    instrument_guidance: "score-author's choice — must match canary-run instruments; processes remaining items"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — must match canary-run instruments; processes remaining items"
     fallback_friendly: false
     purpose: "Execute the full pipeline at scale on remaining items, conditional on canary verdict passing."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Progressive Rollout"
     how: "Canary Probe IS the validation gate and phase 1 of Progressive Rollout before scaling to full deployment."

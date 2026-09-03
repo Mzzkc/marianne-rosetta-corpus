@@ -24,16 +24,17 @@ config_features:
 stages:
   - name: assess
     sheets: "fan_out(3)"
-    instrument_guidance: "score-author's choice — needs strong reasoning capability for expert assessment; sonnet or opus recommended"
+    instrument_guidance: "score-author's choice — needs strong reasoning capability for expert assessment; codex-cli (gpt-5.5) or claude-code recommended"
     fallback_friendly: false
     purpose: "Each assessor independently evaluates the problem and documents their position, reading prior-round assessments if available."
     artifacts: []
   - name: check-convergence
     sheets: 1
-    instrument_guidance: "cli — convergence validation via user-supplied script that analyzes assessment variance"
+    instrument_guidance: "any-wrapped CLI profile — convergence validation via user-supplied script that analyzes assessment variance"
     fallback_friendly: true
     purpose: "Run the convergence check script to determine if assessments have sufficiently converged."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Source Triangulation"
     how: "Source Triangulation verifies consistency across one-pass multi-perspective views; Delphi Convergence extends to iterative rounds where perspectives update toward consensus."

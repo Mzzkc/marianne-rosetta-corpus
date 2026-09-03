@@ -16,16 +16,17 @@ signals:
 stages:
   - name: execute
     sheets: 1
-    instrument_guidance: "score-author's choice — any instrument capable of the actual work (code analysis, content generation, research, etc.); instrument selection determines speed and depth of Tier 1 attempt; weaker instruments may force faster fallback to Tier 2/3"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — any instrument capable of the actual work (code analysis, content generation, research, etc.); instrument selection determines speed and depth of Tier 1 attempt; weaker instruments may force faster fallback to Tier 2/3"
     fallback_friendly: true
     purpose: "Attempt Tier 1 (full output), fall back to Tier 2 (core sections) or Tier 3 (summary) if needed. Produce completion-status.yaml recording which tier was achieved."
     artifacts: ["completion-status.yaml", "analysis.md"]
   - name: verify-tier
     sheets: 1
-    instrument_guidance: "cli — lightweight validation of tier claims; verifies completion-status.yaml and asserts that claimed tier's artifacts exist with expected content"
+    instrument_guidance: "any-wrapped CLI profile — lightweight validation of tier claims; verifies completion-status.yaml and asserts that claimed tier's artifacts exist with expected content"
     fallback_friendly: true
     purpose: "Independently verify that claimed tier achievement matches the artifact contents; check that core sections exist if Tier 2+ claimed."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Andon Cord"
     how: "When Graceful Retreat selects a lower tier, Andon Cord provides detailed diagnostics of what failed in the higher tier for process improvement."

@@ -16,10 +16,11 @@ signals:
 stages:
   - name: weave
     sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning for position-taking and argument construction; sonnet or opus recommended for editorial depth"
+    instrument_guidance: "score-author's choice — needs strong reasoning for position-taking and argument construction; codex-cli (gpt-5.5) or claude-code recommended for editorial depth"
     fallback_friendly: false
     purpose: "Read diverse inputs, take an argued position, and produce editorial synthesis with supporting evidence and acknowledged counterarguments."
     artifacts: ["editorial-synthesis.md"]
+dependencies: {}
 composes_with:
   - pattern: "Fan-out + Synthesis"
     how: "Fan-out produces diverse inputs; Sugya Weave synthesizes them with an editorial position rather than neutral aggregation."

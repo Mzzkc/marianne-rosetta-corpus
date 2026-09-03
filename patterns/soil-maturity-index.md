@@ -16,16 +16,17 @@ signals:
 stages:
   - name: iterate
     sheets: 1
-    instrument_guidance: "score-author's choice — any instrument capable of reading and improving content based on domain-specific maturity criteria"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — any instrument capable of reading and improving content based on domain-specific maturity criteria"
     fallback_friendly: true
     purpose: "Read the output and refine it based on domain-specific maturity criteria, iteratively improving toward qualitative convergence."
     artifacts: ["output.md"]
   - name: maturity-check
     sheets: 1
-    instrument_guidance: "cli — executes the maturity assessment script to determine if output has reached target maturity state"
+    instrument_guidance: "any-wrapped CLI profile — executes the maturity assessment script to determine if output has reached target maturity state"
     fallback_friendly: false
     purpose: "Execute the maturity assessor script to determine if output has achieved desired maturity; exit code controls self-chaining termination."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Fixed-Point Iteration"
     how: "Soil Maturity Index provides domain-specific convergence detection where Fixed-Point Iteration uses only structural no-change metrics."

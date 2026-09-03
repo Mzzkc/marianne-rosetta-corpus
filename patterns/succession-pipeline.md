@@ -16,22 +16,23 @@ signals:
 stages:
   - name: parse
     sheets: 1
-    instrument_guidance: "score-author's choice — parsing is often mechanical; cheaper instruments or CLI parsers work if parsing is deterministic; use stronger instruments only if parsing requires inference"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — parsing is often mechanical; cheaper instruments or CLI parsers work if parsing is deterministic; use stronger instruments only if parsing requires inference"
     fallback_friendly: true
     purpose: "Parse source files into abstract syntax trees."
     artifacts: ["ast.json"]
   - name: transform
     sheets: 1
-    instrument_guidance: "score-author's choice — must understand both AST and target IR semantics; sonnet or opus recommended for complex transformations involving semantic analysis or optimization"
+    instrument_guidance: "score-author's choice — must understand both AST and target IR semantics; codex-cli (gpt-5.5) or claude-code recommended for complex transformations involving semantic analysis or optimization"
     fallback_friendly: false
     purpose: "Transform AST into intermediate representation."
     artifacts: ["ir.dot"]
   - name: generate
     sheets: 1
-    instrument_guidance: "score-author's choice — must understand IR and generate valid target code; sonnet or opus for complex languages, haiku may suffice for simple templated output"
+    instrument_guidance: "score-author's choice — must understand IR and generate valid target code; codex-cli (gpt-5.5) or claude-code for complex languages, opencode may suffice for simple templated output"
     fallback_friendly: false
     purpose: "Generate target code from intermediate representation."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Shipyard Sequence"
     how: "Shipyard Sequence gates each succession stage on environmental readiness, ensuring the substrate is prepared before the next transformation begins."

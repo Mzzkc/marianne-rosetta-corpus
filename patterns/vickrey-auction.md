@@ -16,22 +16,23 @@ approximation_note: "The YAML covers competitive probing and evaluation but not 
 stages:
   - name: probe-haiku
     sheets: 1
-    instrument_guidance: "haiku — one of the candidate instruments being competitively evaluated"
+    instrument_guidance: "opencode — one of the candidate instruments being competitively evaluated"
     fallback_friendly: false
     purpose: "Process a sample item using haiku to produce a probe output for comparison."
     artifacts: ["probe-haiku.md"]
   - name: probe-sonnet
     sheets: 1
-    instrument_guidance: "sonnet — one of the candidate instruments being competitively evaluated"
+    instrument_guidance: "codex-cli (gpt-5.5) — one of the candidate instruments being competitively evaluated"
     fallback_friendly: false
     purpose: "Process the same sample item using sonnet to produce a probe output for comparison."
     artifacts: ["probe-sonnet.md"]
   - name: evaluate
     sheets: 1
-    instrument_guidance: "score-author's choice — needs judgment capability to compare outputs and recommend an instrument; sonnet or opus recommended"
+    instrument_guidance: "score-author's choice — needs judgment capability to compare outputs and recommend an instrument; codex-cli (gpt-5.5) or claude-code recommended"
     fallback_friendly: true
     purpose: "Compare probe outputs and write an instrument recommendation with rationale."
     artifacts: ["instrument-recommendation.yaml"]
+dependencies: {}
 composes_with:
   - pattern: "Echelon Repair"
     how: "Vickrey Auction's probe results inform which instrument tiers to assign in Echelon Repair's classification-based routing."

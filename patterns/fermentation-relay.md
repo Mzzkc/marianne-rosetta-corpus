@@ -16,22 +16,23 @@ signals:
 stages:
   - name: extract
     sheets: 1
-    instrument_guidance: "haiku — fast, cheap initial processing; sufficient for raw information extraction from input"
+    instrument_guidance: "opencode — fast, cheap initial processing; sufficient for raw information extraction from input"
     fallback_friendly: true
     purpose: "Extract raw information from input."
     artifacts: ["extraction.md"]
   - name: refine
     sheets: 1
-    instrument_guidance: "sonnet — moderate reasoning to resolve ambiguities from raw extraction; capability tier between haiku and opus"
+    instrument_guidance: "codex-cli (gpt-5.5) — moderate reasoning to resolve ambiguities from raw extraction; capability tier between opencode and claude-code"
     fallback_friendly: false
     purpose: "Refine extraction by resolving ambiguities and inconsistencies."
     artifacts: ["refined.md"]
   - name: polish
     sheets: 1
-    instrument_guidance: "opus — highest reasoning capability for final quality pass; capable of catching subtle issues the refinement stage may miss"
+    instrument_guidance: "claude-code — highest reasoning capability for final quality pass; capable of catching subtle issues the refinement stage may miss"
     fallback_friendly: false
     purpose: "Perform final quality pass and produce polished output."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Echelon Repair"
     how: "Fermentation Relay defines the multi-tier instrument cost progression that Echelon Repair routes classified difficult items through for remediation."

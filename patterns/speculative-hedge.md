@@ -16,28 +16,29 @@ signals:
 stages:
   - name: analyze
     sheets: 1
-    instrument_guidance: "sonnet or opus — requires strategic analysis to define competing approaches and robust evaluation criteria"
+    instrument_guidance: "codex-cli (gpt-5.5) or claude-code — requires strategic analysis to define competing approaches and robust evaluation criteria"
     fallback_friendly: false
     purpose: "Analyze the problem and define two competing approaches with evaluation criteria."
     artifacts: ["hedge-plan.yaml"]
   - name: approach-a
     sheets: 1
-    instrument_guidance: "score-author's choice — instrument must match the task complexity; mechanical transformations may use cheaper instruments than clean-room rewrites"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — instrument must match the task complexity; mechanical transformations may use cheaper instruments than clean-room rewrites"
     fallback_friendly: true
     purpose: "Execute approach A using mechanical transformation strategy."
     artifacts: ["approach-a-result/**"]
   - name: approach-b
     sheets: 1
-    instrument_guidance: "score-author's choice — clean-room rewrites typically need stronger reasoning than mechanical transforms; choose based on actual task complexity"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — clean-room rewrites typically need stronger reasoning than mechanical transforms; choose based on actual task complexity"
     fallback_friendly: false
     purpose: "Execute approach B using clean-room rewrite strategy."
     artifacts: ["approach-b-result/**"]
   - name: evaluate
     sheets: 1
-    instrument_guidance: "sonnet or opus — must run tests, evaluate results, and make justified winner selection with rationale"
+    instrument_guidance: "codex-cli (gpt-5.5) or claude-code — must run tests, evaluate results, and make justified winner selection with rationale"
     fallback_friendly: false
     purpose: "Run tests against both approaches and select winner with rationale."
     artifacts: ["hedge-decision.yaml"]
+dependencies: {}
 composes_with:
   - pattern: "Canary Probe"
     how: "Canary Probe validates each approach on a small subset before Speculative Hedge commits full resources to parallel execution."

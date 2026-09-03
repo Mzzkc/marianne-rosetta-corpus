@@ -1,5 +1,5 @@
 ---
-name: "CEGAR Loop"
+name: "CEGAR Loop (Progressive Refinement)"
 scale: iteration
 type: orchestration-pattern
 status: working
@@ -18,28 +18,29 @@ signals:
 stages:
   - name: coarse-check
     sheets: 1
-    instrument_guidance: "sonnet — module-level analysis is primarily pattern-matching; sonnet provides good context for reducing false positives without the cost of opus"
+    instrument_guidance: "codex-cli (gpt-5.5) — module-level analysis is primarily pattern-matching; codex-cli (gpt-5.5) provides good context for reducing false positives without the cost of claude-code"
     fallback_friendly: true
     purpose: "Analyze code at module level, identifying potential issues without deep reasoning."
     artifacts: ["findings.yaml"]
   - name: triage-findings
     sheets: 1
-    instrument_guidance: "opus — distinguishing real from spurious findings requires deep code reasoning and domain knowledge; cannot be delegated to cheaper instruments"
+    instrument_guidance: "claude-code — distinguishing real from spurious findings requires deep code reasoning and domain knowledge; cannot be delegated to cheaper instruments"
     fallback_friendly: false
     purpose: "Verify each finding: determine if it is a real issue or an artifact of coarse abstraction."
     artifacts: ["triage-report.yaml"]
   - name: refine-or-report
     sheets: 1
-    instrument_guidance: "score-author's choice — filtering findings and selecting refinement targets is data-processing logic; any capable instrument suffices"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — filtering findings and selecting refinement targets is data-processing logic; any capable instrument suffices"
     fallback_friendly: true
     purpose: "Filter triage results and identify areas requiring finer-grained analysis; report findings confirmed as real."
     artifacts: ["refinement-targets.yaml", "current-report.md"]
   - name: check-termination
     sheets: 1
-    instrument_guidance: "cli — this stage uses shell-based validation to assert convergence (no LLM needed)"
+    instrument_guidance: "any-wrapped CLI profile — this stage uses shell-based validation to assert convergence (no LLM needed)"
     fallback_friendly: false
     purpose: "Verify that all refinement targets have been resolved, terminating the loop if convergence is achieved."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Memoization Cache"
     how: "Memoization Cache skips re-analysis of modules whose code has not changed, reducing the cost of CEGAR iterations."

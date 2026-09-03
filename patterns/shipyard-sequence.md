@@ -21,19 +21,19 @@ fan_out:
 stages:
   - name: construct-schema
     sheets: 1
-    instrument_guidance: "score-author's choice — needs code generation for schema/migrations; sonnet or opus for complex domains, haiku for simple schemas"
+    instrument_guidance: "score-author's choice — needs code generation for schema/migrations; codex-cli (gpt-5.5) or claude-code for complex domains, opencode for simple schemas"
     fallback_friendly: true
     purpose: "Generate the database schema and migration files."
     artifacts: ["schema.sql"]
   - name: launch-gate
     sheets: 1
-    instrument_guidance: "any instrument with command execution — validation is deterministic tool-based (command_succeeds), not LLM judgment; even haiku suffices"
+    instrument_guidance: "any instrument with command execution — validation is deterministic tool-based (command_succeeds), not LLM judgment; even opencode suffices"
     fallback_friendly: true
     purpose: "Validate the schema using real tools (migrate --check, test suite) before expensive fan-out."
     artifacts: []
   - name: outfitting
     sheets: "fan_out(4)"
-    instrument_guidance: "score-author's choice — builds services/modules on validated foundation; capability depends on service complexity"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — builds services/modules on validated foundation; capability depends on service complexity"
     fallback_friendly: true
     purpose: "Build services or modules in parallel against the validated schema."
     artifacts: []

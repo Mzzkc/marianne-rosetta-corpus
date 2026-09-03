@@ -22,22 +22,23 @@ config_features:
 stages:
   - name: evidence
     sheets: 1
-    instrument_guidance: "score-author's choice — capability depends on what artifact needs assembly (document analysis, code audit, synthesis work)"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — capability depends on what artifact needs assembly (document analysis, code audit, synthesis work)"
     fallback_friendly: true
     purpose: "Assemble the artifact that all analyst instances will examine from their different frames."
     artifacts: ["evidence/**"]
   - name: analyze
     sheets: "fan_out(4)"
-    instrument_guidance: "score-author's choice — needs analytical capability appropriate to the domain; all instances should use similar-strength instruments to avoid confounding frame differences with capability differences"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — needs analytical capability appropriate to the domain; all instances should use similar-strength instruments to avoid confounding frame differences with capability differences"
     fallback_friendly: true
     purpose: "Analyze the evidence through an assigned analytical frame (security, performance, maintainability, correctness) provided via cadenza."
     artifacts: ["analysis-{{ instance_id }}.md"]
   - name: triangulate
     sheets: 1
-    instrument_guidance: "score-author's choice — must distinguish genuine disagreement from different vocabulary and identify agreement patterns across frames; sonnet or opus recommended"
+    instrument_guidance: "score-author's choice — must distinguish genuine disagreement from different vocabulary and identify agreement patterns across frames; codex-cli (gpt-5.5) or claude-code recommended"
     fallback_friendly: false
     purpose: "Categorize all findings by agreement level (UNANIMOUS, MAJORITY, SPLIT, UNIQUE) and produce structured triangulation report."
     artifacts: ["triangulation.yaml"]
+dependencies: {}
 composes_with:
   - pattern: "Source Triangulation"
     how: "Rashomon Gate varies analytical frames over the same evidence; Source Triangulation varies evidence sources — they can be nested for full cross-product validation."

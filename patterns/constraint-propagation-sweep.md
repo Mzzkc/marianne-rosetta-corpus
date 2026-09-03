@@ -1,7 +1,7 @@
 ---
 name: "Constraint Propagation Sweep"
 scale: within-stage
-type: prompt-technique
+type: orchestration-pattern
 status: working
 forces:
   - "Information Asymmetry"
@@ -16,10 +16,11 @@ signals:
 stages:
   - name: synthesize
     sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to enumerate constraints, resolve pairwise contradictions, and generate from the reduced space; sonnet or opus recommended for complex constraint sets"
+    instrument_guidance: "score-author's choice — needs strong reasoning to enumerate constraints, resolve pairwise contradictions, and generate from the reduced space; codex-cli (gpt-5.5) or claude-code recommended for complex constraint sets"
     fallback_friendly: true
     purpose: "Single sheet with three mandatory prompt phases: ENUMERATE all constraints from inputs, RESOLVE them pairwise to prune contradictions, GENERATE output from the reduced solution space."
     artifacts: ["constraint-audit.yaml", "synthesis.md"]
+dependencies: {}
 composes_with:
   - pattern: "Decision Propagation"
     how: "Decision Propagation feeds structured constraint briefs into the sweep's enumeration phase, providing pre-identified constraints from upstream decisions."

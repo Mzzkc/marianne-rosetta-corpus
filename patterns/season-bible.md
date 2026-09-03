@@ -16,22 +16,23 @@ signals:
 stages:
   - name: read-bible
     sheets: 1
-    instrument_guidance: "score-author's choice — needs reading comprehension to extract relevant constraints from the bible; any capable instrument"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — needs reading comprehension to extract relevant constraints from the bible; any capable instrument"
     fallback_friendly: true
     purpose: "Read season-bible.md to understand current state and constraints before beginning work."
     artifacts: []
   - name: work
     sheets: 1
-    instrument_guidance: "score-author's choice — instrument depends entirely on the nature of the work being performed; bible reading is context, not the task"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — instrument depends entirely on the nature of the work being performed; bible reading is context, not the task"
     fallback_friendly: false
     purpose: "Execute the actual work while respecting constraints documented in the bible."
     artifacts: []
   - name: update-bible
     sheets: 1
-    instrument_guidance: "score-author's choice — needs to write coherent documentation updates; sonnet or haiku sufficient for most continuity recording"
+    instrument_guidance: "score-author's choice — needs to write coherent documentation updates; codex-cli (gpt-5.5) or opencode sufficient for most continuity recording"
     fallback_friendly: true
     purpose: "Update season-bible.md with new decisions, state changes, and continuity constraints discovered during work."
     artifacts: ["season-bible.md"]
+dependencies: {}
 composes_with:
   - pattern: "Lines of Effort"
     how: "Multiple parallel effort lines all read and update the shared bible, maintaining cross-stream continuity."

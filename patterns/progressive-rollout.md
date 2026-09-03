@@ -23,22 +23,23 @@ fan_out:
 stages:
   - name: select-batch
     sheets: 1
-    instrument_guidance: "score-author's choice — any instrument capable of reading YAML state, computing batch sizes, and updating rollout state; algorithmic task suitable for any tier"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — any instrument capable of reading YAML state, computing batch sizes, and updating rollout state; algorithmic task suitable for any tier"
     fallback_friendly: true
     purpose: "Select the next batch based on current rollout phase and update state."
     artifacts: ["current-batch.yaml", "rollout-state.yaml"]
   - name: execute-batch
     sheets: "fan_out(5)"
-    instrument_guidance: "score-author's choice — instrument depends on the actual work being rolled out (refactoring needs strong code reasoning, data migrations may need specific domain knowledge)"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — instrument depends on the actual work being rolled out (refactoring needs strong code reasoning, data migrations may need specific domain knowledge)"
     fallback_friendly: false
     purpose: "Process items in the current batch with 5 parallel workers."
     artifacts: []
   - name: monitor
     sheets: 1
-    instrument_guidance: "score-author's choice — any instrument capable of analyzing results, computing error rates, and making threshold-based go/no-go decisions"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — any instrument capable of analyzing results, computing error rates, and making threshold-based go/no-go decisions"
     fallback_friendly: true
     purpose: "Compute health metrics and determine whether to proceed to the next phase."
     artifacts: ["phase-verdict.yaml"]
+dependencies: {}
 composes_with:
   - pattern: "Canary Probe"
     how: "Canary Probe provides the initial safety probe that becomes phase 1 of Progressive Rollout's graduated deployment sequence."

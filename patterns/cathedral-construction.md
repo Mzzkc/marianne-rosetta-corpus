@@ -19,22 +19,23 @@ config_features:
 stages:
   - name: plan-iteration
     sheets: 1
-    instrument_guidance: "score-author's choice — planning benefits from strong reasoning (sonnet/opus recommended), but the iteration cycle provides correction opportunities so mid-tier instruments are viable"
+    instrument_guidance: "score-author's choice — planning benefits from strong reasoning (codex-cli (gpt-5.5)/claude-code recommended), but the iteration cycle provides correction opportunities so mid-tier instruments are viable"
     fallback_friendly: true
     purpose: "Read current state and plan what to add this iteration."
     artifacts: []
   - name: build
     sheets: 1
-    instrument_guidance: "score-author's choice — depends entirely on what is being built (code, documentation, analysis); match instrument capability to the construction task complexity"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — depends entirely on what is being built (code, documentation, analysis); match instrument capability to the construction task complexity"
     fallback_friendly: true
     purpose: "Execute the plan and add to the cathedral."
     artifacts: ["cathedral/**"]
   - name: inspect
     sheets: 1
-    instrument_guidance: "score-author's choice — review and critique work; sonnet-level reasoning typically sufficient since this is evaluation rather than primary construction"
+    instrument_guidance: "score-author's choice — review and critique work; codex-cli (gpt-5.5)-level reasoning typically sufficient since this is evaluation rather than primary construction"
     fallback_friendly: true
     purpose: "Review what was built and write inspection report."
     artifacts: ["inspection-report.md"]
+dependencies: {}
 composes_with:
   - pattern: "After-Action Review"
     how: "After-Action Review extracts lessons from the iteration history that Cathedral Construction accumulates, turning execution record into doctrine."

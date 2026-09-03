@@ -19,22 +19,23 @@ fan_out:
 stages:
   - name: analyze
     sheets: "fan_out(5)"
-    instrument_guidance: "score-author's choice — any instrument capable of analyzing the artifact; quorum is based on count, not quality"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — any instrument capable of analyzing the artifact; quorum is based on count, not quality"
     fallback_friendly: true
     purpose: "Execute analysis in parallel across 5 agents, each producing a workspace file."
     artifacts: ["analysis-*.md"]
   - name: quorum-check
     sheets: 1
-    instrument_guidance: "cli instrument — executes validation command to verify that at least 3 analyses were produced"
+    instrument_guidance: "claude-code or codex-cli — cli instrument — executes validation command to verify that at least 3 analyses were produced"
     fallback_friendly: false
     purpose: "Verify that at least 3 of 5 agents produced valid outputs."
     artifacts: []
   - name: synthesize
     sheets: 1
-    instrument_guidance: "score-author's choice — instrument should be capable of reading multiple analyses and synthesizing consensus; stronger instruments produce higher-quality synthesis"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — instrument should be capable of reading multiple analyses and synthesizing consensus; stronger instruments produce higher-quality synthesis"
     fallback_friendly: true
     purpose: "Synthesize consensus from successful analyses, noting which agents' outputs were missing."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Triage Gate"
     how: "Triage Gate pre-filters candidates before Quorum Consensus's fan-out, reducing unnecessary agent invocations."

@@ -25,28 +25,29 @@ config_features:
 stages:
   - name: process
     sheets: "fan_out(10)"
-    instrument_guidance: "score-author's choice — initial batch processing; proof score demonstrates haiku for cost efficiency, but any capable instrument works"
+    instrument_guidance: "score-author's choice — initial batch processing; proof score demonstrates opencode for cost efficiency, but any capable instrument works"
     fallback_friendly: true
     purpose: "Process batch items in parallel, writing success results to workspace files."
     artifacts: ["result-*.md"]
   - name: collect
     sheets: 1
-    instrument_guidance: "score-author's choice — failure detection and categorization; needs judgment to classify error types and extract symptoms from missing/malformed outputs"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — failure detection and categorization; needs judgment to classify error types and extract symptoms from missing/malformed outputs"
     fallback_friendly: true
     purpose: "Identify failed items from missing or invalid outputs and create structured quarantine manifest."
     artifacts: ["quarantine.yaml"]
   - name: analyze-quarantine
     sheets: 1
-    instrument_guidance: "capable instrument required — cross-failure pattern analysis is the core Dead Letter Quarantine dynamic; identifies systematic causes not visible in individual failures; proof score recommends opus"
+    instrument_guidance: "capable instrument required — cross-failure pattern analysis is the core Dead Letter Quarantine dynamic; identifies systematic causes not visible in individual failures; proof score recommends claude-code"
     fallback_friendly: false
     purpose: "Analyze quarantined items to identify common failure patterns and design adapted reprocessing strategies."
     artifacts: ["quarantine-analysis.md"]
   - name: reprocess
     sheets: 1
-    instrument_guidance: "score-author's choice — applies adapted strategies from analysis; needs sufficient capability for the underlying task (code generation, data transformation, etc.)"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — applies adapted strategies from analysis; needs sufficient capability for the underlying task (code generation, data transformation, etc.)"
     fallback_friendly: true
     purpose: "Reprocess quarantined items using adapted strategies that address identified root causes."
     artifacts: ["reprocess-results.yaml"]
+dependencies: {}
 composes_with:
   - pattern: "Triage Gate"
     how: "Triage Gate's BLACK-category items (reject/quarantine) feed directly into Dead Letter Quarantine's collection stage for batch pattern analysis."

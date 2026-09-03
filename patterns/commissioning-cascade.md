@@ -18,22 +18,23 @@ signals:
 stages:
   - name: unit-check
     sheets: 1
-    instrument_guidance: "cli — required for reliable shell command execution; capability is running shell commands"
+    instrument_guidance: "any-wrapped CLI profile — required for reliable shell command execution; capability is running shell commands"
     fallback_friendly: true
     purpose: "Run unit tests against the codebase."
     artifacts: []
   - name: integration-check
     sheets: 1
-    instrument_guidance: "cli — required for reliable shell command execution; capability is running shell commands"
+    instrument_guidance: "any-wrapped CLI profile — required for reliable shell command execution; capability is running shell commands"
     fallback_friendly: true
     purpose: "Run integration tests against deployed services."
     artifacts: []
   - name: acceptance-review
     sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to evaluate test results against requirements; sonnet or opus recommended"
+    instrument_guidance: "score-author's choice — needs strong reasoning to evaluate test results against requirements; codex-cli (gpt-5.5) or claude-code recommended"
     fallback_friendly: false
     purpose: "Read test results and write acceptance report."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Echelon Repair"
     how: "Echelon Repair classifies work items by difficulty; Commissioning Cascade validates each echelon's output using tier-appropriate validation instruments."

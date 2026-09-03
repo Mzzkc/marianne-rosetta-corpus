@@ -1,7 +1,7 @@
 ---
 name: "Quorum Trigger"
 scale: within-stage
-type: prompt-technique
+type: orchestration-pattern
 status: working
 forces:
   - "Accumulated Signal"
@@ -16,16 +16,17 @@ signals:
 stages:
   - name: audit
     sheets: 1
-    instrument_guidance: "score-author's choice — must be capable enough for the domain task (code review, research, data processing) and disciplined enough to maintain the signal register faithfully"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — must be capable enough for the domain task (code review, research, data processing) and disciplined enough to maintain the signal register faithfully"
     fallback_friendly: true
     purpose: "Execute the primary task while maintaining a signal register; switch to alternate behavior (remediation, escalation) when accumulated signals cross the predefined threshold."
     artifacts: ["signal-register.yaml", "quorum-trigger-report.md"]
   - name: verify-threshold
     sheets: 1
-    instrument_guidance: "cli — deterministic validation that the threshold state matches the agent's claimed behavior"
+    instrument_guidance: "any-wrapped CLI profile — deterministic validation that the threshold state matches the agent's claimed behavior"
     fallback_friendly: false
     purpose: "Independently verify that the signal register's threshold state matches whether the trigger report exists, catching agent miscounting or threshold evasion."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Andon Cord"
     how: "Quorum Trigger fires within a stage to detect accumulated problems; Andon Cord provides the between-stage diagnostic response when the trigger fires."

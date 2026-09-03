@@ -18,28 +18,29 @@ signals:
 stages:
   - name: classify
     sheets: 1
-    instrument_guidance: "haiku — fast, cheap classification; capability is sufficient for difficulty labeling"
+    instrument_guidance: "opencode — fast, cheap classification; capability is sufficient for difficulty labeling"
     fallback_friendly: true
     purpose: "Read each work item and classify difficulty as E1/E2/E3."
     artifacts: ["echelon-manifest.yaml"]
   - name: e1-repair
     sheets: 1
-    instrument_guidance: "haiku — simple items; speed and cost matter more than depth"
+    instrument_guidance: "opencode — simple items; speed and cost matter more than depth"
     fallback_friendly: true
     purpose: "Process items classified as E1 (simple)."
     artifacts: []
   - name: e2-repair
     sheets: 1
-    instrument_guidance: "sonnet — moderate items; needs more reasoning than haiku provides"
+    instrument_guidance: "codex-cli (gpt-5.5) — moderate items; needs more reasoning than opencode provides"
     fallback_friendly: false
     purpose: "Process items classified as E2 (moderate complexity)."
     artifacts: []
   - name: e3-repair
     sheets: 1
-    instrument_guidance: "opus — complex items; full reasoning capability required"
+    instrument_guidance: "claude-code — complex items; full reasoning capability required"
     fallback_friendly: false
     purpose: "Process items classified as E3 (high complexity)."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Commissioning Cascade"
     how: "Commissioning Cascade verifies the output quality of each echelon tier."

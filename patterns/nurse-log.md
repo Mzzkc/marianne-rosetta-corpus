@@ -18,16 +18,17 @@ fan_out:
 stages:
   - name: prepare-substrate
     sheets: 1
-    instrument_guidance: "score-author's choice — needs capability for thorough research, data collection, and organization; sonnet or opus recommended because substrate quality is load-bearing for all downstream instances"
+    instrument_guidance: "score-author's choice — needs capability for thorough research, data collection, and organization; codex-cli (gpt-5.5) or claude-code recommended because substrate quality is load-bearing for all downstream instances"
     fallback_friendly: false
     purpose: "Research the domain, collect reference material, and organize it into shared substrate."
     artifacts: ["substrate/"]
   - name: work
     sheets: "fan_out(4)"
-    instrument_guidance: "score-author's choice — depends on component-building task complexity; substrate reading requires minimal capability, but actual component construction may require more reasoning"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — depends on component-building task complexity; substrate reading requires minimal capability, but actual component construction may require more reasoning"
     fallback_friendly: true
     purpose: "Build component using the prepared substrate."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Fermentation Relay"
     how: "Fermentation Relay can escalate the substrate preparation stage if initial research proves insufficient for downstream work."

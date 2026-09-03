@@ -12,11 +12,62 @@ If you're new to orchestration, start with these five patterns in order. They co
 |---------|-------------------|----------------|
 | **Fan-out + Synthesis** | Work could be parallelized but isn't, or parallel outputs remain fragmented | Problem decomposes into independent sub-problems; need to integrate diverse perspectives |
 | **Shipyard Sequence** | Expensive work proceeds on a broken foundation, wasting resources | Downstream work is expensive; foundation must be solid before scaling |
-| **The Tool Chain** | AI instruments waste budget on deterministic tasks that CLI tools could handle | Most pipeline stages are deterministic transformations; costs are high using AI for every step |
+| **The Etiquette Law** | Thinking instruments make deterministic protocol checks less reliable | A check can be expressed as a command with an exit status; protocol stages need empty AI fallback chains |
 | **Canary Probe** | Full-scale execution risks loss when pipeline changes are unproven | Batch processing with unproven pipeline; high cost of full-scale failure |
 | **Andon Cord** | Validation failures retry blindly without diagnosing root cause | Validation failures repeat the same error; failure output is informative but gets ignored |
 
-**Why this order?** Fan-out + Synthesis teaches parallelization. Shipyard Sequence shows validation before scaling. The Tool Chain demonstrates instrument selection. Canary Probe introduces incremental commitment. Andon Cord closes the loop with intelligent failure handling.
+**Why this order?** Fan-out + Synthesis teaches parallelization. Shipyard Sequence shows validation before scaling. The Etiquette Law establishes deterministic protocol ownership. Canary Probe introduces incremental commitment. Andon Cord closes the loop with intelligent failure handling.
+
+---
+
+## Iteration 5.1 Problem → Pattern Additions
+
+These rows cover every newly curated split pattern, plus the renamed foundational law. Archived/incubator entries remain selectable: their individual files state their evidence strength and limits.
+
+| If your problem is… | Start with | Compose with |
+|---|---|---|
+| Deterministic protocol checks are given to LLM instruments that can hallucinate them, making the coordination layer no more reliable than the performers it coordinates. | **The Etiquette Law** | Pattern-specific gate or evidence carrier |
+| In a system with a powerful reviewer and an automated remediation path, the reviewer is the most dangerous instrument: a false-positive finding triggers rollback or deletion of healthy work. | **Immune Checkpoint** | The Skeptical Oracle, Andon Cord |
+| Mechanism interactions — concurrency windows, skip/fallback interplay, self-chain livelock — are invisible in YAML source and kill in production. | **Behavioral Pre-Mortem** | Self-Stabilizing Custody, The Etiquette Law |
+| A single inventory count cannot distinguish a real total from omissions caused by one traversal or observer. | **Concurrent Count** | The Skeptical Oracle |
+| Configuration changes cross a shared boundary without one serialized authority, so individually reasonable edits combine into an incoherent active configuration. | **Configuration Control Board** | Flight Rules |
+| Forward scheduling discovers too late that prerequisite work cannot fit before a fixed release instant. | **Firing the Pass** | Graceful Retreat, Standby–GO |
+| Validating each item of a large homogeneous fan-out from first principles is unaffordable, and validating none is unacceptable. | **First Article Characterization** | Standby–GO, The Skeptical Oracle, The Attested Merge Gate |
+| Every local handoff looks plausible while the rendered score graph contains an unmet need, type mismatch, or dependency deadlock. | **Globally-Typed Choreography** | Proof-Carrying Artifact, Behavioral Pre-Mortem |
+| The fan-in point is both a bottleneck and a trust point: merging concurrent writers requires arbitration that can destroy concurrent work. | **Join-Semilattice Merge** | Fan-out + Synthesis, The Attested Merge Gate |
+| Sequential creative agents lose artistic continuity or individual authority because handoffs preserve either substrate or voice, but not the living identity of the performance. | **Live Relay** | Mission Command, Stigmergic Workspace, Succession Pipeline |
+| A hard deadline collapses independent review obligations into one vague approval, hiding which failure class was knowingly waived. | **Sign-Off Chain Against the Hard Date** | The Attested Merge Gate |
+| Parallel writers produce artifacts that must compose, and trusting their self-reports lets incompatible work merge. | **The Attested Merge Gate** | Join-Semilattice Merge, First Article Characterization, Prefabrication |
+| Vendor-diverse advisors' findings cannot enter the record without importing their hallucinations. | **The Skeptical Oracle** | Proof-Carrying Artifact, Immune Checkpoint |
+| A continuous stream of work outlives any single worker's endurance — context, budget, or lease — and restarts from zero at every boundary. | **Canon of Phases** | Positive Transfer, Replication Licensing |
+| Participants consume shared quality improvements without returning evidence or maintenance, so the shared substrate degrades. | **Mycorrhizal Reciprocity** | Season Bible |
+| Admitted claims silently rot as their external sources move, and derived work keeps building on stale truth. | **Negative-Treatment Watch** | The Errata Ledger, Flight Rules, Proof-Carrying Artifact |
+| Planned succession changes the named operator but leaves tacit state, pending decisions, and incident context behind. | **Transfer of Command** | The Black-Box Ledger, Positive Transfer |
+| Parallel authors silently contradict shared world facts because prose canon has no typed, serialized assertion boundary. | **Continuity Ledger** | Join-Semilattice Merge, The Errata Ledger |
+| A receiver acknowledges custody without proving that the bytes received are the bytes the sender released. | **Custody Transfer with Seals** | Positive Transfer, Fork-Evident History |
+| A retroactively edited history is undetectable, so downstream consumers cannot know they saw the same claims as everyone else. | **Fork-Evident History** | The Errata Ledger, Proof-Carrying Artifact, Self-Stabilizing Custody |
+| A sender infers that a shared medium is free and transmits into an unobserved conflicting operation. | **Is-Line-Clear** | Standby–GO |
+| Work moving between executors passes through moments with no owner, and a failed handoff silently drops custody. | **Positive Transfer** | Canon of Phases, The Black-Box Ledger |
+| Consumers must either trust producer claims across a trust boundary or re-derive the work at full cost. | **Proof-Carrying Artifact** | Fork-Evident History, Flight Rules, The Skeptical Oracle |
+| A response claims to address review findings while omitting, duplicating, or answering a different finding under similar prose. | **Rejoinder Ledger** | The Skeptical Oracle |
+| A one-phase cue discovers receiver readiness at the moment of irreversible execution. | **Standby–GO** | First Article Characterization, Hutchinson's Warning |
+| A correction that silently rewrites the text lies about its own history, and a correction notice nobody consumes leaves derived copies wrong. | **The Errata Ledger** | Fork-Evident History, Negative-Treatment Watch, Proof-Carrying Artifact |
+| A retry loop treats an arriving item as fresh and repeats an intervention that already failed, wasting the window or compounding damage. | **The MIST Card** | The Black-Box Ledger, Flight Rules, Replication Licensing |
+| Synthesis erases material dissent to produce one smooth deliverable, depriving consumers of the conditions under which the conclusion changes. | **Variant Apparatus** | Sugya Weave (Editorial Synthesis), Talmudic Page |
+| A system holds a fixed quality or throughput target while cumulative wear rises invisibly until performance collapses. | **Allostatic Setpoint** | Hutchinson's Warning |
+| A manifest or rule is treated as timeless even though it is valid only for a bounded configuration, population, or interval. | **Effectivity Blocks** | Flight Rules, First Article Characterization, Replication Licensing |
+| Under failure, deliberation is the enemy: the response is re-derived under duress instead of looked up from pre-negotiated, versioned condition-action bindings. | **Flight Rules** | The Black-Box Ledger, The MIST Card, After-Action Review |
+| Negative feedback with lag oscillates: a controller fed by lagged telemetry throttles hard, bursts through, and throttles hard forever. | **Hutchinson's Warning** | The Etiquette Law, Standby–GO |
+| A fixed merge admission rate either starves available capacity or overloads the consumer when measured congestion changes with delay. | **Metered Merge** | Hutchinson's Warning |
+| Crash, corruption, and restart are treated as exceptional events requiring an exceptional recovery protocol, when they are just arbitrary states the ordinary rules should leave. | **Self-Stabilizing Custody** | The Fencing Token, The Black-Box Ledger, Behavioral Pre-Mortem |
+| After the executor dies, what happened is knowable only from survivor testimony — reconstructed memory — unless a channel that does not share the executor's fate recorded it continuously. | **The Black-Box Ledger** | Flight Rules, The MIST Card, Positive Transfer |
+| A paused or retried executor cannot observe its own expiry and silently overwrites newer work with older, slower work. | **The Fencing Token** | Self-Stabilizing Custody, Replication Licensing |
+| Authority expressed as a list of rights the subject names lets authority leak through any confused intermediary. | **Designation Is Authorization** | Proof-Carrying Artifact, The Etiquette Law |
+| A population's risk tier changes item by item, leaving structurally similar items under inconsistent controls after systemic evidence appears. | **Re-Tiering Decision** | Negative-Treatment Watch, Screening Cascade |
+| Low-grade workspace fuel accumulates until cleanup becomes a disruptive emergency instead of a bounded maintenance action. | **Prescribed-Fire Pulse** | Stigmergic Workspace |
+| A cycle counter cannot prevent a side-effectful cycle from happening twice, and naive retries duplicate deployments. | **Replication Licensing** | The Fencing Token, Canon of Phases |
+
+**Iteration 5.1 start-here chain:** The Etiquette Law → Fan-out + Synthesis → Proof-Carrying Artifact → The Fencing Token → Standby–GO.
 
 ---
 
@@ -42,7 +93,7 @@ If you're new to orchestration, start with these five patterns in order. They co
 **Compositions:**
 - **Echelon Repair + Screening Cascade + Commissioning Cascade** — Classify upfront, route to appropriate tiers, validate each tier's output
 - **Fermentation Relay + Succession Pipeline** — Use cheap instruments for initial extraction, escalate through cost-graduated refinement
-- **The Tool Chain + Echelon Repair** — Route deterministic work to CLI tools, use AI only for complex items
+- **The Etiquette Law + Echelon Repair** — Route deterministic work to CLI tools, use AI only for complex items
 
 **Signals:** Work items vary wildly in complexity; costs are high but most work is simple; expensive instrument wasted on trivial tasks
 
@@ -66,7 +117,7 @@ If you're new to orchestration, start with these five patterns in order. They co
 **Problem:** Single-perspective analysis produces unreliable conclusions when the optimal analytical frame is unknown.
 
 **Compositions:**
-- **Rashomon Gate + Sugya Weave + Source Triangulation** — Apply multiple frames, synthesize with editorial judgment, verify across independent sources
+- **Rashomon Gate + Sugya Weave (Editorial Synthesis) + Source Triangulation** — Apply multiple frames, synthesize with editorial judgment, verify across independent sources
 - **Fan-out + Synthesis + Talmudic Page** — Parallelize analysis, produce multi-layer annotations that reference each other
 - **Red Team / Blue Team + After-Action Review** — Adversarial testing with systematic learning capture
 
@@ -92,7 +143,7 @@ If you're new to orchestration, start with these five patterns in order. They co
 **Problem:** Same mistakes happen repeatedly because execution insights aren't captured or propagated.
 
 **Compositions:**
-- **CDCL Search + After-Action Review + Back-Slopping** — Extract constraints from failures, capture methodology improvements, inherit learning across iterations
+- **CDCL Search + After-Action Review + Back-Slopping (Learning Inheritance)** — Extract constraints from failures, capture methodology improvements, inherit learning across iterations
 - **Systemic Acquired Resistance + Circuit Breaker** — Propagate failure patterns across concert, halt when patterns recur
 - **Andon Cord + CDCL Search** — Diagnose root cause, convert to constraint to prevent recurrence
 
@@ -105,9 +156,9 @@ If you're new to orchestration, start with these five patterns in order. They co
 **Problem:** Large artifacts require iterative construction, but iterations are expensive and convergence is unclear.
 
 **Compositions:**
-- **Cathedral Construction + Memoization Cache + Back-Slopping** — Build incrementally toward target, cache unchanged regions, inherit learning
+- **Cathedral Construction + Memoization Cache + Back-Slopping (Learning Inheritance)** — Build incrementally toward target, cache unchanged regions, inherit learning
 - **Fixed-Point Iteration + Soil Maturity Index** — Refine repeatedly, measure domain-specific convergence readiness
-- **CEGAR Loop + Memoization Cache** — Progressively refine abstraction, skip re-analysis of unchanged regions
+- **CEGAR Loop (Progressive Refinement) + Memoization Cache** — Progressively refine abstraction, skip re-analysis of unchanged regions
 
 **Signals:** Artifact too large to complete in one pass; iterations are expensive and need measurable termination; each iteration adds structural elements
 
@@ -133,7 +184,7 @@ If you're new to orchestration, start with these five patterns in order. They co
 **Compositions:**
 - **Relay Zone + Forward Observer + Screening Cascade** — Compress handoffs, use cheap summarization upfront, pre-filter before expensive processing
 - **Immune Cascade + Relay Zone** — Narrow scope with cheap scanning, compress findings before triage
-- **Forward Observer + The Tool Chain** — Summarize raw input cheaply, route deterministic work to CLI tools
+- **Forward Observer + The Etiquette Law** — Summarize raw input cheaply, route deterministic work to CLI tools
 
 **Signals:** Input exceeds context window; later stages receive more context than they can effectively use; token costs dominate total cost
 
@@ -158,7 +209,7 @@ If you're new to orchestration, start with these five patterns in order. They co
 
 **Compositions:**
 - **Succession Pipeline + Shipyard Sequence + Barn Raising** — Sequential substrate transformations, validate each stage, establish shared conventions
-- **Composting Cascade + The Tool Chain + Succession Pipeline** — Measure readiness signals, chain CLI tools with AI stages, progress through categorical transformations
+- **Composting Cascade + The Etiquette Law + Succession Pipeline** — Measure readiness signals, chain CLI tools with AI stages, progress through categorical transformations
 - **Closed-Loop Call + Relay Zone** — Verify semantic fidelity at handoffs, compress cumulative outputs
 
 **Signals:** Each stage needs fundamentally different methods; one stage's output becomes next stage's input substrate; stages have categorical differences
@@ -171,7 +222,7 @@ If you're new to orchestration, start with these five patterns in order. They co
 
 **Compositions:**
 - **Shipyard Sequence + Succession Pipeline + Immune Cascade** — Validate foundation before fan-out, progress through quality gates, narrow findings cheaply
-- **Commissioning Cascade + Echelon Repair + The Tool Chain** — Different validation scopes with appropriate instruments, tier-matched validation, validate CLI tool outputs
+- **Commissioning Cascade + Echelon Repair + The Etiquette Law** — Different validation scopes with appropriate instruments, tier-matched validation, validate CLI tool outputs
 - **Triage Gate + Fan-out + Synthesis** — Filter mixed-quality outputs before synthesis, prevent garbage from reaching expensive stages
 
 **Signals:** Unit tests pass but integration fails; downstream fan-out is expensive; need to narrow findings before expensive deep analysis
@@ -198,7 +249,7 @@ If you're new to orchestration, start with these five patterns in order. They co
 **Compositions:**
 - **Delphi Convergence + Source Triangulation + Rashomon Gate** — Iterate toward consensus without early anchoring, verify across independent sources, apply multiple analytical frames
 - **Quorum Consensus + Fan-out + Synthesis** — Proceed with majority agreement, integrate diverse perspectives
-- **Sugya Weave + Talmudic Page** — Editorial synthesis with argued positions, multi-layer annotation with cross-references
+- **Sugya Weave (Editorial Synthesis) + Talmudic Page** — Editorial synthesis with argued positions, multi-layer annotation with cross-references
 
 **Signals:** Expert opinions vary widely and need to converge; single-round synthesis isn't achieving consensus; agents anchor on initial assessments
 
@@ -250,11 +301,12 @@ If you're new to orchestration, start with these five patterns in order. They co
 | Scale | What It Controls | Example Patterns |
 |-------|------------------|------------------|
 | **Within-Stage** | Single sheet's prompt content or behavior | Commander's Intent Envelope, Decision Propagation, Quorum Trigger |
-| **Score-Level** | Multiple sheets within a single score | Fan-out + Synthesis, Shipyard Sequence, Canary Probe, Barn Raising, Mission Command |
+| **Foundational** | Primitive moves used across all scopes | The Etiquette Law, Fan-out + Synthesis |
+| **Score-Level** | Multiple sheets within a single score | Shipyard Sequence, Canary Probe, Barn Raising, Mission Command |
 | **Concert-Level** | Multiple scores in a campaign | Lines of Effort, Progressive Rollout, Season Bible, Saga Compensation Chain |
 | **Communication** | Coordination through workspace state | Stigmergic Workspace |
-| **Adaptation** | Adjust behavior mid-execution based on runtime conditions | Andon Cord, Circuit Breaker, Read-and-React, FRAGO |
-| **Instrument-Strategy** | Match instrument capabilities to task requirements | Echelon Repair, The Tool Chain, Commissioning Cascade, Screening Cascade |
+| **Adaptation** | Adjust behavior mid-execution based on runtime conditions | Andon Cord, Circuit Breaker, Read-and-React, Fragmentary Order (FRAGO) |
+| **Instrument-Strategy** | Match instrument capabilities to task requirements | Echelon Repair, Commissioning Cascade, Screening Cascade |
 | **Iteration** | Repeated refinement and learning across execution cycles | CDCL Search, Cathedral Construction, After-Action Review, Memoization Cache |
 
 ---

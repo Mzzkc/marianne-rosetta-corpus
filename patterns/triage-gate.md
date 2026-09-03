@@ -19,10 +19,11 @@ config_features:
 stages:
   - name: triage
     sheets: 1
-    instrument_guidance: "haiku recommended — classification task dominated by structural checks (schema, sections, word count); semantic assessment is secondary and doesn't require strong reasoning"
+    instrument_guidance: "opencode recommended — classification task dominated by structural checks (schema, sections, word count); semantic assessment is secondary and doesn't require strong reasoning"
     fallback_friendly: true
     purpose: "Classify each fan-out output as RED (forward to synthesis), YELLOW (rework with targeted prompt), GREEN (supplementary), or BLACK (discard with logged reason)."
     artifacts: ["triage-manifest.yaml"]
+dependencies: {}
 composes_with:
   - pattern: "Immune Cascade"
     how: "Triage Gate provides coarse filtering that precedes Immune Cascade's graduated verification stages."

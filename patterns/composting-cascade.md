@@ -18,34 +18,35 @@ signals:
 stages:
   - name: simple-work
     sheets: 1
-    instrument_guidance: "score-author's choice — simple cleanup (renaming, type hints, extraction) is cost-sensitive but needs reasoning; haiku recommended"
+    instrument_guidance: "score-author's choice — simple cleanup (renaming, type hints, extraction) is cost-sensitive but needs reasoning; opencode recommended"
     fallback_friendly: true
     purpose: "Execute simple cleanup tasks (renaming, type hints, function extraction)."
     artifacts: []
   - name: temperature-check
     sheets: 1
-    instrument_guidance: "cli — shell script measuring workspace metrics (type coverage, test pass rate, etc.); must support --threshold argument"
+    instrument_guidance: "any-wrapped CLI profile — shell script measuring workspace metrics (type coverage, test pass rate, etc.); must support --threshold argument"
     fallback_friendly: false
     purpose: "Check if workspace metrics meet threshold for phase transition."
     artifacts: []
   - name: complex-work
     sheets: 1
-    instrument_guidance: "opus — complex restructuring (abstractions, algorithm rewrites) requires full reasoning capability; haiku or sonnet insufficient"
+    instrument_guidance: "claude-code — complex restructuring (abstractions, algorithm rewrites) requires full reasoning capability; opencode or codex-cli (gpt-5.5) insufficient"
     fallback_friendly: false
     purpose: "Execute complex restructuring (abstractions, algorithm rewrites)."
     artifacts: []
   - name: cooling-check
     sheets: 1
-    instrument_guidance: "cli — shell script measuring change rate (code churn, diff magnitude); must support --max-churn argument"
+    instrument_guidance: "any-wrapped CLI profile — shell script measuring change rate (code churn, diff magnitude); must support --max-churn argument"
     fallback_friendly: false
     purpose: "Check if work is cooling (change rate below exhaustion threshold)."
     artifacts: []
   - name: maturation
     sheets: 1
-    instrument_guidance: "haiku — documentation writing is cost-sensitive; cheaper instrument sufficient for guides and changelogs"
+    instrument_guidance: "opencode — documentation writing is cost-sensitive; cheaper instrument sufficient for guides and changelogs"
     fallback_friendly: true
     purpose: "Write documentation (migration guide, changelog)."
     artifacts: ["migration-guide.md", "changelog.md"]
+dependencies: {}
 composes_with:
   - pattern: "The Tool Chain"
     how: "Composting Cascade uses CLI instruments (Tool Chain) as workspace thermometers to measure readiness for phase transitions."

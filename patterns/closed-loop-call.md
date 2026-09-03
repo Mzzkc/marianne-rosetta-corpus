@@ -18,22 +18,23 @@ signals:
 stages:
   - name: produce
     sheets: 1
-    instrument_guidance: "score-author's choice — any instrument capable of writing structured output with key decisions listed"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — any instrument capable of writing structured output with key decisions listed"
     fallback_friendly: true
     purpose: "Write output with a manifest listing key decisions."
     artifacts: ["manifest.yaml"]
   - name: consume
     sheets: 1
-    instrument_guidance: "score-author's choice — instrument must be capable of reading and comprehending the produce output"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — instrument must be capable of reading and comprehending the produce output"
     fallback_friendly: true
     purpose: "Read output and write a readback confirming comprehension of each decision."
     artifacts: ["readback.yaml"]
   - name: verify
     sheets: 1
-    instrument_guidance: "cli — Python validation script comparing manifest.yaml and readback.yaml for structural alignment"
+    instrument_guidance: "any-wrapped CLI profile — Python validation script comparing manifest.yaml and readback.yaml for structural alignment"
     fallback_friendly: false
     purpose: "Validate that the readback matches the manifest structure, catching semantic drift."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Prefabrication"
     how: "Prefabrication defines strict output contracts that Closed-Loop Call verifies are correctly understood."

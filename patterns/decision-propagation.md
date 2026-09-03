@@ -20,16 +20,17 @@ config_features:
 stages:
   - name: decide
     sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to identify load-bearing decisions and write concrete constraint briefs; sonnet or opus recommended"
+    instrument_guidance: "score-author's choice — needs strong reasoning to identify load-bearing decisions and write concrete constraint briefs; codex-cli (gpt-5.5) or claude-code recommended"
     fallback_friendly: false
     purpose: "Make the architecture decision and write a structured constraint-brief with decision, rationale, implications, and downstream constraints."
     artifacts: ["constraint-brief.yaml"]
   - name: implement
     sheets: "fan_out(4)"
-    instrument_guidance: "score-author's choice — must be capable enough for the implementation task; constraints are externalized in the brief so instrument follows them"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — must be capable enough for the implementation task; constraints are externalized in the brief so instrument follows them"
     fallback_friendly: true
     purpose: "Read the constraint brief, build one component per instance, and acknowledge which constraints were incorporated."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "CDCL Search"
     how: "When propagated decisions lead to failure, CDCL Search extracts the failure reason as a learned clause that prevents the same bad decision propagation in future iterations."

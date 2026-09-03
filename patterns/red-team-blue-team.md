@@ -16,28 +16,29 @@ signals:
 stages:
   - name: red-attack
     sheets: 1
-    instrument_guidance: "score-author's choice — needs reasoning capability to devise effective attacks; stronger instrument produces more sophisticated attacks"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — needs reasoning capability to devise effective attacks; stronger instrument produces more sophisticated attacks"
     fallback_friendly: true
     purpose: "Devise and execute attacks against the artifact, recording both methods and effects."
     artifacts: ["red-workspace/effects.md", "red-workspace/methods.md"]
   - name: relay
     sheets: 1
-    instrument_guidance: "cli — shell command to copy effect descriptions without revealing method details"
+    instrument_guidance: "any-wrapped CLI profile — shell command to copy effect descriptions without revealing method details"
     fallback_friendly: true
     purpose: "Copy attack effects from red's workspace to blue's briefing, redacting methods."
     artifacts: ["blue-briefing/effects.md"]
   - name: blue-defend
     sheets: 1
-    instrument_guidance: "score-author's choice — must have reasoning capability to devise defenses against unknown attacks; stronger instrument produces more robust defenses"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — must have reasoning capability to devise defenses against unknown attacks; stronger instrument produces more robust defenses"
     fallback_friendly: true
     purpose: "Read attack effects and devise defenses without knowing attack methods."
     artifacts: ["blue-response.md"]
   - name: purple-debrief
     sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to analyze attack-defense interactions and extract lessons; opus or sonnet recommended"
+    instrument_guidance: "score-author's choice — needs strong reasoning to analyze attack-defense interactions and extract lessons; claude-code or codex-cli (gpt-5.5) recommended"
     fallback_friendly: false
     purpose: "Analyze all attack and defense data to generate attack-defense matrix and lessons."
     artifacts: ["debrief.md"]
+dependencies: {}
 composes_with:
   - pattern: "After-Action Review"
     how: "Purple debrief IS an after-action review, documenting attack-defense interactions and extracting patterns."

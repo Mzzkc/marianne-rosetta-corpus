@@ -20,10 +20,11 @@ config_features:
 stages:
   - name: work
     sheets: 1
-    instrument_guidance: "score-author's choice — must handle failure recovery and write structured primers; stronger instruments produce more effective countermeasures"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — must handle failure recovery and write structured primers; stronger instruments produce more effective countermeasures"
     fallback_friendly: false
     purpose: "Execute the primary task while reading relevant defense primers and writing new primers when recovering from failures."
     artifacts: ["output.md", "priming/*.yaml"]
+dependencies: {}
 composes_with:
   - pattern: "After-Action Review"
     how: "Primers are structured AAR output — AAR extracts lessons, SAR broadcasts them as actionable defenses."

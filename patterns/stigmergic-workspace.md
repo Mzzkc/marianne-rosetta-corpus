@@ -21,10 +21,11 @@ fan_out:
 stages:
   - name: work
     sheets: "fan_out(8)"
-    instrument_guidance: "score-author's choice — this is a communication mechanism, not an execution prescription; instrument depends entirely on the actual task the workers perform"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — this is a communication mechanism, not an execution prescription; instrument depends entirely on the actual task the workers perform"
     fallback_friendly: true
     purpose: "Read workspace for current state, perform assigned work, write results and signals to shared directories for other workers to discover."
     artifacts: ["shared/signals/"]
+dependencies: {}
 composes_with:
   - pattern: "Barn Raising"
     how: "Barn Raising establishes shared workspace conventions (naming, directory structure, file formats) that prevent Stigmergic Workspace's failure mode of conflicting writes."

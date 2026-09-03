@@ -18,22 +18,23 @@ signals:
 stages:
   - name: screen-1
     sheets: 1
-    instrument_guidance: "haiku — fast, cost-effective initial screening; sufficient to identify items requiring stronger instruments"
+    instrument_guidance: "opencode — fast, cost-effective initial screening; sufficient to identify items requiring stronger instruments"
     fallback_friendly: true
     purpose: "Process all items with cheap instrument; mark uncertain items for escalation."
     artifacts: ["screen-1-results.yaml"]
   - name: screen-2
     sheets: 1
-    instrument_guidance: "sonnet — stronger reasoning than haiku; handles items that exceed haiku's capability but don't require opus"
+    instrument_guidance: "codex-cli (gpt-5.5) — stronger reasoning than opencode; handles items that exceed opencode's capability but don't require claude-code"
     fallback_friendly: false
     purpose: "Screen items escalated from stage 1 with improved capability; further escalate remaining uncertain items."
     artifacts: ["screen-2-results.yaml"]
   - name: screen-3
     sheets: 1
-    instrument_guidance: "opus — full reasoning capability for items that exceeded both cheaper instruments; required for the most difficult work"
+    instrument_guidance: "claude-code — full reasoning capability for items that exceeded both cheaper instruments; required for the most difficult work"
     fallback_friendly: false
     purpose: "Process items escalated from stage 2 with maximum reasoning capability."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Echelon Repair"
     how: "Screening Cascade discovers difficulty progressively through escalating screens; Echelon Repair pre-classifies items upfront, providing alternative approaches to matching work with instruments."

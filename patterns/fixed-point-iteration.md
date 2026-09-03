@@ -17,17 +17,18 @@ config_features:
 stages:
   - name: iterate
     sheets: 1
-    instrument_guidance: "score-author's choice — the improvement task itself determines required instrument capability; Fixed-Point Iteration prescribes no specific tier"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — the improvement task itself determines required instrument capability; Fixed-Point Iteration prescribes no specific tier"
     fallback_friendly: true
     purpose: "Read the previous iteration's output and improve it."
     artifacts:
       - "output.md"
   - name: convergence-check
     sheets: 1
-    instrument_guidance: "cli instrument is required — the convergence validation uses actual shell commands (diff) to measure iteration deltas"
+    instrument_guidance: "claude-code or codex-cli — cli instrument is required — the convergence validation uses actual shell commands (diff) to measure iteration deltas"
     fallback_friendly: false
     purpose: "Check if output has converged by comparing current iteration to previous."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "CDCL Search"
     how: "CDCL Search instantiates fixed-point iteration as a SAT solver, iteratively refining clause sets toward satisfiability."

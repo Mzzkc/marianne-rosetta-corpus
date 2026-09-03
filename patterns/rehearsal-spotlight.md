@@ -25,22 +25,23 @@ script_dependencies:
 stages:
   - name: evaluate
     sheets: 1
-    instrument_guidance: "score-author's choice — must reason about section quality; sonnet or opus recommended"
+    instrument_guidance: "score-author's choice — must reason about section quality; codex-cli (gpt-5.5) or claude-code recommended"
     fallback_friendly: true
     purpose: "Read output, score each section for quality, and identify targets for rework."
     artifacts: ["spotlight-targets.yaml"]
   - name: rehearse
     sheets: "fan_out(3)"
-    instrument_guidance: "score-author's choice — must match the task being reworked (code, prose, analysis, etc.); capability is load-bearing for quality"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — must match the task being reworked (code, prose, analysis, etc.); capability is load-bearing for quality"
     fallback_friendly: false
     purpose: "Rework the targeted weak sections based on evaluation feedback."
     artifacts: []
   - name: check-done
     sheets: 1
-    instrument_guidance: "cli — executes shell-based quality validation checks"
+    instrument_guidance: "any-wrapped CLI profile — executes shell-based quality validation checks"
     fallback_friendly: false
     purpose: "Verify that reworked sections meet quality threshold; trigger self-chain if quality is insufficient."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Echelon Repair"
     how: "Echelon Repair allocates effort by difficulty tier; Rehearsal Spotlight focuses rework effort on specific weak sections within one score iteration."

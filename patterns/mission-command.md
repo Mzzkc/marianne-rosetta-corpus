@@ -18,16 +18,17 @@ fan_out:
 stages:
   - name: mission-brief
     sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to write a clear intent envelope with testable end-state; sonnet or opus recommended"
+    instrument_guidance: "score-author's choice — needs strong reasoning to write a clear intent envelope with testable end-state; codex-cli (gpt-5.5) or claude-code recommended"
     fallback_friendly: false
     purpose: "Write the mission brief defining PURPOSE, KEY TASKS, and END STATE."
     artifacts: ["mission-brief.md"]
   - name: execute
     sheets: "fan_out(4)"
-    instrument_guidance: "score-author's choice — must be capable enough for the actual task (code refactoring, analysis, etc.); instrument depends on task complexity"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — must be capable enough for the actual task (code refactoring, analysis, etc.); instrument depends on task complexity"
     fallback_friendly: false
     purpose: "Execute the mission by reading the brief and working autonomously within the intent envelope."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "After-Action Review"
     how: "After-Action Review evaluates whether decentralized execution achieved the mission brief's end state and extracts lessons."

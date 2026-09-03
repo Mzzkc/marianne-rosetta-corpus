@@ -1,15 +1,29 @@
-## Patterns Awaiting Primitives
+# Patterns Awaiting Primitives
 
-Confirmed by cross-domain convergence but requiring Marianne capabilities not yet available:
+Each row was rechecked against the source-verified Marianne primitives on 2026-09-03. A nearby mechanism is not treated as the missing primitive: `cost_limits` is per-job, `fan_out` is parse-time static, and ordinary parallelism does not provide consumer-driven backpressure or multi-host authority.
 
-| Pattern | Blocked By | Notes |
-|---------|-----------|-------|
-| Bulkhead Isolation | Per-sheet resource budgets | Prevents one sheet from consuming all tokens |
-| Kanban Pull | Conductor WIP limits | Pull-based work assignment |
-| Supervision Tree | Concert restart strategies | Hierarchical fault tolerance (Erlang OTP model). Can be approximated with workspace snapshots + conductor-mediated restart |
-| OODA Pulse | Self-correcting orientation phase | Observe-Orient-Decide-Act loop |
-| The Aboyeur | Start-time scheduling | Stagger start times by predicted duration. Requires predictable execution times AND conductor scheduling support |
-| Backpressure Valve | Concurrent score execution | Sequential batch processing is not backpressure. Requires concurrent producer/consumer with the consumer signaling capacity while both run. Source: Reactive Streams, TCP flow control (Iteration 4, cut after review) |
-| Stretto Entry | Staggered/overlapping sheet execution | Overlapping pipeline: next instance starts before previous finishes. Approximation via file_exists dependencies produces sequential-with-trigger, not true overlap. Source: Fugal composition (Iteration 4, cut after review) |
-| Comping Substrate | Concurrent score execution + shared filesystem | Adaptive coordination layer running alongside work scores. Requires reading all workspace outputs each iteration. Source: Jazz rhythm section (Iteration 4, cut after review) |
-| Physarum Path Reinforcement | Dynamic fan-out allocation | Runtime allocation changes to instance counts and instrument assignments based on workspace state. Source: Physarum polycephalum optimization |
+| Pattern | Blocked By | Buildable approximation / current boundary |
+|---|---|---|
+| Bulkhead Isolation | Per-sheet resource budgets | `cost_limits` constrains and pauses the whole job; it cannot cap one sheet independently. |
+| Kanban Pull | Conductor-level pull/WIP admission limits | `parallel.max_concurrent` is a static job concurrency ceiling, not consumer-signaled pull. |
+| Supervision Hierarchy | A supervisor configuration surface with hierarchical restart policies | Workspace snapshots plus conductor-mediated restart remain a manual approximation; durable `on_failure` is terminal handling, not a restart tree. |
+| OODA Pulse | A runtime feedback hook that can re-orient and alter the next execution cycle | A score-authored observe/decide self-chain can approximate the loop, but the engine exposes no self-correcting orientation phase. |
+| Backpressure Valve | Concurrent producer/consumer score execution with consumer capacity feedback | Metered Merge offers leased admission, but ordinary parallel execution has no capacity signal flowing from consumer to producer. |
+| Comping Substrate | A long-lived adaptive coordinator executing concurrently with work scores over shared state | Canon of Phases supplies scheduled rotation, not a continuously adapting shared-filesystem rhythm layer. |
+| Physarum Path Reinforcement | Runtime fan-out width and instrument reassignment | `fan_out` expands at parse time; allocation cannot change from workspace evidence during the run. |
+| Zeitgeber Entrainment | Offset-from-artifact or offset-from-heartbeat scheduling | Leased `schedule` plus a required heartbeat cadenza and command-form staleness gate can poll and skip, but cannot phase-lock. |
+| Accountability Board (score-facing PAR sweep) | Score-facing export of conductor claims with physical process handles | A CLI process probe can reconcile only a score-owned claims ledger and processes it can identify. |
+| MIST Card (conductor retries) | Per-attempt retry hooks that append to a user-visible ledger | The curated MIST Card is explicitly an approximation over score-authored retry wrappers. |
+| True capability confinement | OS-level sandboxing of sheet filesystem and tool access | Designation Is Authorization confines delivered context, not process reach. |
+| Devolution Packet | Multi-host orchestration and delegated host authority | No faithful single-host approximation. Re-proposable when the multi-host primitive exists. |
+| Black Start | Multi-host capability discovery and dependency-ordered global restart | No faithful single-host approximation. Re-proposable when the multi-host primitive exists. |
+
+## Moved Out of Awaiting
+
+- **Saga Compensation Chain** is now a working concert-level pattern: durable top-level `on_failure` hooks exist, including restart reconciliation and same-ID protection.
+- **Stretto Entry** is superseded by **Canon of Phases**, which uses leased recurrence plus explicit multi-deployment rotation; the old overlapping-sheet name is retired rather than kept as a duplicate.
+- **The Aboyeur** is superseded by **Firing the Pass**, which computes deadline-first dated inputs without claiming nonexistent offset-from-artifact scheduling.
+
+## Re-Proposable Research Names
+
+**Contact Point co-evolution** was removed from the iteration-5.1 monolith without a concrete blocking primitive or curated pattern. It is not an awaiting pattern today; a future iteration may re-propose it with a precise substrate contract.

@@ -17,22 +17,23 @@ config_features:
 stages:
   - name: recon
     sheets: 1
-    instrument_guidance: "sonnet — balanced cost and capability; sufficient for landscape discovery without deep reasoning"
+    instrument_guidance: "codex-cli (gpt-5.5) — balanced cost and capability; sufficient for landscape discovery without deep reasoning"
     fallback_friendly: true
     purpose: "Discover and document the landscape of the input: structure, complexity, and risks."
     artifacts: ["recon-report.md"]
   - name: plan
     sheets: 1
-    instrument_guidance: "score-author's choice — planning complexity depends on task and landscape complexity; stronger instruments benefit from comprehensive recon"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — planning complexity depends on task and landscape complexity; stronger instruments benefit from comprehensive recon"
     fallback_friendly: true
     purpose: "Analyze reconnaissance findings and synthesize a detailed execution plan."
     artifacts: ["execution-plan.md"]
   - name: execute
     sheets: 1
-    instrument_guidance: "score-author's choice — execution capability must match task requirements; recon and plan inform instrument selection"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — execution capability must match task requirements; recon and plan inform instrument selection"
     fallback_friendly: false
     purpose: "Execute the work as specified in the execution plan."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Mission Command"
     how: "Reconnaissance Pull provides landscape discovery before Mission Command agents begin execution within their intent envelope."

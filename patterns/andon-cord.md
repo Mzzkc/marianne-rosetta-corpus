@@ -17,22 +17,23 @@ signals:
 stages:
   - name: generate
     sheets: 1
-    instrument_guidance: "score-author's choice — must be capable enough for the implementation task; pattern focuses on failure handling workflow rather than generation instrument selection"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — must be capable enough for the implementation task; pattern focuses on failure handling workflow rather than generation instrument selection"
     fallback_friendly: true
     purpose: "Generate the initial implementation."
     artifacts: ["test-output.log"]
   - name: diagnose
     sheets: 1
-    instrument_guidance: "capable instrument (sonnet or opus recommended) — diagnostic reasoning is load-bearing; failure mode explicitly mentions opus for triage to ensure accurate root cause analysis"
+    instrument_guidance: "capable instrument (codex-cli (gpt-5.5) or claude-code recommended) — diagnostic reasoning is load-bearing; failure mode explicitly mentions claude-code for triage to ensure accurate root cause analysis"
     fallback_friendly: false
     purpose: "Analyze failure output and identify root cause with concrete fix plan."
     artifacts: ["andon-diagnosis.md"]
   - name: regenerate
     sheets: 1
-    instrument_guidance: "score-author's choice — same capability tier as generate stage; applies the identified fix rather than performing full regeneration"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — same capability tier as generate stage; applies the identified fix rather than performing full regeneration"
     fallback_friendly: true
     purpose: "Apply the diagnosis to fix the identified issue without rewriting from scratch."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Circuit Breaker"
     how: "Circuit Breaker monitors instrument-level failures across tasks; Andon Cord diagnoses task-level validation failures within a single workflow, operating at different failure scopes."

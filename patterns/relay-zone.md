@@ -16,10 +16,11 @@ signals:
 stages:
   - name: relay
     sheets: 1
-    instrument_guidance: "score-author's choice — needs strong enough comprehension to identify key findings and compress without losing critical information; sonnet recommended for cost-effective compression"
+    instrument_guidance: "score-author's choice — needs strong enough comprehension to identify key findings and compress without losing critical information; codex-cli (gpt-5.5) recommended for cost-effective compression"
     fallback_friendly: true
     purpose: "Read all prior stage outputs and compress to a relay brief preserving key findings, open questions, and critical data at ~20% of original size."
     artifacts: ["relay-brief.md"]
+dependencies: {}
 composes_with:
   - pattern: "Fan-out + Synthesis"
     how: "Relay Zone compresses fan-out outputs before synthesis, preventing context window overflow when many parallel streams merge."

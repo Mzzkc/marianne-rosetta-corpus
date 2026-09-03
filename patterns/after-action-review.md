@@ -20,10 +20,11 @@ config_features:
 stages:
   - name: aar
     sheets: 1
-    instrument_guidance: "sonnet or opus recommended — must synthesize multiple execution outputs, identify concrete deltas between intent and reality, extract actionable lessons with specific references; cheaper instruments risk the documented failure mode (generic platitudes without specific output references)"
+    instrument_guidance: "codex-cli (gpt-5.5) or claude-code recommended — must synthesize multiple execution outputs, identify concrete deltas between intent and reality, extract actionable lessons with specific references; cheaper instruments risk the documented failure mode (generic platitudes without specific output references)"
     fallback_friendly: false
     purpose: "Analyze execution outcomes against original intent, identify concrete deltas, extract what to sustain and what to improve for next iteration."
     artifacts: ["aar.md"]
+dependencies: {}
 composes_with:
   - pattern: "Immune Cascade"
     how: "AAR analyzes which items graduated through Immune Cascade's tier gates and extracts lessons about gate criteria effectiveness for refinement."

@@ -19,19 +19,19 @@ signals:
 stages:
   - name: extract
     sheets: 1
-    instrument_guidance: "haiku or similar cheap instrument — claim extraction is straightforward identification work, doesn't require deep reasoning"
+    instrument_guidance: "opencode or similar cheap instrument — claim extraction is straightforward identification work, doesn't require deep reasoning"
     fallback_friendly: true
     purpose: "Extract and structure claims that need verification, defining verification criteria for each."
     artifacts: ["01-claims.md"]
   - name: investigate
     sheets: "fan_out(3)"
-    instrument_guidance: "sonnet or similar mid-tier instrument — each voice needs code/doc/test reading and analysis capability to find supporting or contradicting evidence"
+    instrument_guidance: "codex-cli (gpt-5.5) or similar mid-tier instrument — each voice needs code/doc/test reading and analysis capability to find supporting or contradicting evidence"
     fallback_friendly: false
     purpose: "Analyze from assigned source (code/docs/tests) to find evidence supporting or contradicting each claim."
     artifacts: ["02-code-findings.md", "02-docs-findings.md", "02-test-findings.md"]
   - name: triangulate
     sheets: 1
-    instrument_guidance: "opus or sonnet — deep cross-referencing synthesis requires strong reasoning to categorize claims across all source evidence"
+    instrument_guidance: "claude-code or codex-cli (gpt-5.5) — deep cross-referencing synthesis requires strong reasoning to categorize claims across all source evidence"
     fallback_friendly: false
     purpose: "Cross-reference all investigation results to categorize each claim as CORROBORATED, UNCORROBORATED, or CONTRADICTED."
     artifacts: ["03-triangulation.md"]

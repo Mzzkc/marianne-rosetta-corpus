@@ -17,7 +17,7 @@ signals:
 stages:
   - name: check-circuit
     sheets: 1
-    instrument_guidance: "cli — system introspection only; reads circuit-state.yaml to determine current breaker status (closed/open/half-open)"
+    instrument_guidance: "any-wrapped CLI profile — system introspection only; reads circuit-state.yaml to determine current breaker status (closed/open/half-open)"
     fallback_friendly: true
     purpose: "Read the persistent circuit state and report the current status."
     artifacts: []
@@ -29,16 +29,17 @@ stages:
     artifacts: ["probe-result.yaml"]
   - name: route-work
     sheets: 1
-    instrument_guidance: "score-author's choice — makes routing decisions between primary and fallback based on circuit state; needs logical capability"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — makes routing decisions between primary and fallback based on circuit state; needs logical capability"
     fallback_friendly: false
     purpose: "Read circuit state and probe results; route work to primary instrument (if closed and healthy) or fallback (if open or failed). Update circuit state with new failure counts and timestamps."
     artifacts: ["circuit-state.yaml"]
   - name: consolidate
     sheets: 1
-    instrument_guidance: "score-author's choice — final assembly of outputs from whichever execution path succeeded; straightforward merging task"
+    instrument_guidance: "claude-code or codex-cli — score-author's choice — final assembly of outputs from whichever execution path succeeded; straightforward merging task"
     fallback_friendly: true
     purpose: "Merge results from primary or fallback execution paths into a unified output."
     artifacts: []
+dependencies: {}
 composes_with:
   - pattern: "Dead Letter Quarantine"
     how: "Dead Letter Quarantine receives items that fail both primary and fallback execution routes for manual inspection."
