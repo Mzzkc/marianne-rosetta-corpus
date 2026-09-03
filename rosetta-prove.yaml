@@ -50,13 +50,39 @@
 #              [on_success: self-chain to prove next pattern]
 
 name: rosetta-prove
-workspace: /home/emzi/Projects/marianne-ai-compose/workspaces/rosetta-prove
+# Workspace auto-derives to ~/workspaces/rosetta-prove (#58).
 description: "Prove orchestration patterns with production-grade demonstration scores"
 
 instrument: claude-code
 instrument_config:
   timeout_seconds: 7200
-instrument_fallbacks: [gemini-cli]
+instrument_fallbacks: [codex-cli]
+
+# Vendor-diverse adversarial reviewers — independence by construction:
+# three different vendor families, not three runs of one model.
+instruments:
+  reviewer-opus:
+    profile: claude-code
+    config:
+      model: claude-opus-4-7
+      timeout_seconds: 3600
+  reviewer-codex:
+    profile: codex-cli
+    config:
+      model: "gpt-5.5"
+      timeout_seconds: 3600
+  reviewer-glm:
+    profile: opencode
+    config:
+      model: "zai-coding-plan/glm-5.2"
+      timeout_seconds: 3600
+
+# Fan-out survival: repeated instrument failures open the circuit instead of
+# cascading through every remaining sheet.
+circuit_breaker:
+  enabled: true
+  failure_threshold: 5
+  recovery_timeout_seconds: 600
 
 concert:
   enabled: true
@@ -73,6 +99,11 @@ sheet:
   total_items: 6
   fan_out:
     5: 3
+  # Movement-5 review voices: Anthropic / OpenAI / Z.AI (sheets 5-7)
+  instrument_map:
+    reviewer-opus: [5]
+    reviewer-codex: [6]
+    reviewer-glm: [7]
   dependencies:
     2: [1]
     3: [2]
@@ -82,12 +113,15 @@ sheet:
   # Every stage gets the corpus index, forces, and composition DAG as context —
   # agents need the full pattern vocabulary and composition edges at all times.
   prelude:
-    - file: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/INDEX.md"
+    - file: "{{ score_dir }}/INDEX.md"
       as: context
-    - file: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/forces.md"
+      required: true
+    - file: "{{ score_dir }}/forces.md"
       as: context
-    - file: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/selection-guide.md"
+      required: true
+    - file: "{{ score_dir }}/selection-guide.md"
       as: context
+      required: true
 
 parallel:
   enabled: true
@@ -113,16 +147,16 @@ cross_sheet:
 prompt:
   variables:
     # Corpus locations
-    corpus_index: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/INDEX.md"
-    corpus_patterns_dir: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/patterns"
-    corpus_forces: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/forces.md"
-    corpus_selection_guide: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/selection-guide.md"
+    corpus_index: "{{ score_dir }}/INDEX.md"
+    corpus_patterns_dir: "{{ score_dir }}/patterns"
+    corpus_forces: "{{ score_dir }}/forces.md"
+    corpus_selection_guide: "{{ score_dir }}/selection-guide.md"
 
     # Existing proof scores — avoid duplicating
-    proof_scores_dir: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/proof-scores"
+    proof_scores_dir: "{{ score_dir }}/proof-scores"
 
     # Where new proof scores land
-    proof_output_dir: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/proof-scores"
+    proof_output_dir: "{{ score_dir }}/proof-scores"
 
     # The instrument universe — what agents can reach for beyond LLMs
     instrument_categories: |
@@ -690,7 +724,7 @@ validations:
     timeout_seconds: 60
     description: "Final score passes Marianne validation"
   - type: command_succeeds
-    command: 'test $(find /home/emzi/Projects/marianne-ai-compose/examples/rosetta/ -name "*.yaml" -newer "{workspace}/04-proof-score.yaml" | wc -l) -ge 1'
+    command: 'test $(find {score_dir}/../../examples/rosetta/ -name "*.yaml" -newer "{workspace}/04-proof-score.yaml" | wc -l) -ge 1'
     condition: "sheet_num == 8"
     stage: 2
     description: "Revised proof score was written to proof-scores/"
@@ -698,7 +732,7 @@ validations:
 # Self-chain to prove next pattern
 on_success:
   - type: run_job
-    job_path: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/rosetta-prove.yaml"
+    job_path: "rosetta-prove.yaml"
     detached: true
     fresh: true
     inherit_learning: true

@@ -57,12 +57,39 @@
 name: "the-rosetta-score"
 description: "Self-perpetuating pattern discovery — six domains, adversarial review, proof by composition, chains to discover more"
 
-workspace: "/home/emzi/Projects/marianne-ai-compose/workspaces/rosetta-workspace"
+# Workspace auto-derives to ~/workspaces/the-rosetta-score (#58); the corpus
+# lives outside the workspace and survives archival.
 
 instrument: claude-code
 instrument_config:
   timeout_seconds: 3600
-instrument_fallbacks: [gemini-cli]
+instrument_fallbacks: [codex-cli]
+
+# Vendor-diverse adversarial reviewers — independence by construction:
+# three different vendor families, not three runs of one model.
+instruments:
+  reviewer-opus:
+    profile: claude-code
+    config:
+      model: claude-opus-4-7
+      timeout_seconds: 3600
+  reviewer-codex:
+    profile: codex-cli
+    config:
+      model: "gpt-5.5"
+      timeout_seconds: 3600
+  reviewer-glm:
+    profile: opencode
+    config:
+      model: "zai-coding-plan/glm-5.2"
+      timeout_seconds: 3600
+
+# Fan-out survival: repeated instrument failures open the circuit instead of
+# cascading through every remaining sheet.
+circuit_breaker:
+  enabled: true
+  failure_threshold: 5
+  recovery_timeout_seconds: 600
 
 # Self-chaining: discover → prove → discover more
 concert:
@@ -81,6 +108,11 @@ sheet:
   fan_out:
     2: 6
     5: 3
+  # Movement-5 review voices: Anthropic / OpenAI / Z.AI (sheets 10-12)
+  instrument_map:
+    reviewer-opus: [10]
+    reviewer-codex: [11]
+    reviewer-glm: [12]
   dependencies:
     2: [1]
     3: [2]
@@ -112,26 +144,28 @@ prompt:
     # ─── PERMANENT LOCATIONS ───
     # The corpus lives outside the workspace and survives archival.
     # Each iteration reads it, adds to it, writes it back.
-    corpus_path: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/archive/rosetta-corpus.md"
+    # {{ score_dir }} anchors every reference to this score's own directory —
+    # the corpus root. Portable across clone locations.
+    corpus_path: "{{ score_dir }}/archive/rosetta-corpus.md"
 
     # ─── SCORE DIRECTORIES ───
     # The expeditions scan these for existing scores. Multiple dirs
     # so the score sees both public examples and the broader collection.
     score_dirs:
-      - "/home/emzi/Projects/marianne-ai-compose/examples"
-      - "/home/emzi/Projects/claude-compositions/scores"
+      - "{{ score_dir }}/../../examples"
+      - "{{ score_dir }}/proof-scores"
 
     # Where proof scores land — in the rosetta subdirectory of examples.
-    proof_output_dir: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/proof-scores"
+    proof_output_dir: "{{ score_dir }}/proof-scores"
 
     # Previously produced proof scores — the score reads these to avoid
     # re-proving patterns and to maintain a quality bar.
-    proof_scores_dir: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/proof-scores"
+    proof_scores_dir: "{{ score_dir }}/proof-scores"
 
     # Decomposed corpus index — individual pattern files for targeted reading.
     # Produced by scripts/split-rosetta-corpus.py from the monolith.
-    corpus_index: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/INDEX.md"
-    corpus_patterns_dir: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/patterns"
+    corpus_index: "{{ score_dir }}/INDEX.md"
+    corpus_patterns_dir: "{{ score_dir }}/patterns"
 
     # ─── THE QUESTION ───
     question: |
@@ -233,14 +267,26 @@ prompt:
       + Synthesis, Shipyard Sequence, The Tool Chain) to advanced (CEGAR
       Loop, Saga Compensation Chain, Lines of Effort).
 
-      **New capabilities since last iteration that patterns should USE:**
-      - Per-sheet instrument assignment (mixed-instrument scores)
-      - Specification corpus injection (spec_dir + spec_tags)
-      - Grounding hooks (verify output against source material)
-      - skip_when (conditional sheet execution)
-      - stagger_delay_ms (fan-out launch staggering)
-      - cross_sheet fine-grained context control
-      - Named movements (movements: YAML key)
+      **New capabilities since last accounting (2026-09-03) that patterns should USE:**
+      - score_dir anchor ({{ score_dir }} in prompts/preludes, {score_dir} in
+        validations and hooks) — machine-portable repo file references
+      - Relative run_job job_path (anchors to the submitting score's dir)
+      - Per-sheet instrument assignment + instrument_map (mixed-instrument,
+        vendor-diverse review — see this score's movement 5)
+      - per_sheet_fallbacks with EMPTY chains for deterministic sheets
+        (a cli gate must never inherit an AI fallback that reinterprets it)
+      - on_failure durable hooks (terminal-failure custody, restart-safe)
+      - schedule: recurring execution with durable leases across restarts
+      - max_wall_seconds (whole-job wall deadline)
+      - circuit_breaker (fan-out failure isolation; this score uses it)
+      - cost_limits (spend ceilings per run)
+      - isolation: git worktree isolation for parallel writers
+      - Techniques ECS (skill/mcp/protocol components resolved per sheet)
+      - Directory cadenzas (inject a whole curated directory as context)
+      - required: true cadenza attachments (fail-closed on missing context)
+      - Auto-derived workspaces (omit workspace: → ~/workspaces/<name>, #58)
+      - skip_when, stagger_delay_ms, cross_sheet control, named movements
+      - mzt recover / resolve / --escalation recovery flows
 
       **Practiced patterns from real scores:**
       - Verification loop (style-ghost: 23 sheets, triple fan-out)
@@ -875,13 +921,13 @@ validations:
 
   # Stage 7 (proof composition) moved to rosetta-prove.yaml
 
-# Post-completion: decompose corpus, then prove patterns
+# Post-completion: prove patterns. Relative job_path anchors to this score's
+# directory (the conductor CWD is an accident, not a contract). The legacy
+# split-corpus step was removed 2026-09-03: the decomposed corpus is curated
+# directly by Stage 6 and is not derivable from the monolith.
 on_success:
-  - type: run_command
-    command: "python3 /home/emzi/Projects/marianne-ai-compose/scripts/split-rosetta-corpus.py"
-    description: "Decompose corpus monolith into indexed pattern files"
   - type: run_job
-    job_path: "/home/emzi/Projects/marianne-ai-compose/scores/rosetta-corpus/rosetta-prove.yaml"
+    job_path: "rosetta-prove.yaml"
     detached: true
     fresh: true
     inherit_learning: true
