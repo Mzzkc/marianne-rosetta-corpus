@@ -783,10 +783,22 @@ prompt:
     ---
     ```
 
-    Write the corpus to BOTH locations:
+    Write the corpus to THREE locations:
 
     1. `{{ workspace }}/06-the-corpus.md` (workspace copy)
     2. `{{ corpus_path }}` (PERMANENT — survives workspace archival)
+    3. THE DECOMPOSED VIEW (PERMANENT — downstream scores select patterns
+       from these files, not the monolith; a monolith-only update leaves
+       downstream selection stale):
+       - Write each NEW or CHANGED pattern to
+         `{{ corpus_patterns_dir }}/<name-slug>.md` with the frontmatter
+         schema above. Match the format of existing pattern files.
+       - Update `{{ corpus_index }}` — one entry per pattern (problem,
+         signals, key compositions), preserving the existing index format.
+       - Update `{{ corpus_selection_guide }}` if new problem→pattern rows
+         apply.
+       - Do NOT regenerate or rewrite unchanged pattern files — curate,
+         don't bulk-transform.
 
     The permanent copy is what the next iteration reads. Make sure
     it's complete, self-contained, and includes ALL patterns from
@@ -918,6 +930,16 @@ validations:
     condition: "stage == 6"
     stage: 2
     description: "Documents what changed from review"
+  - type: file_modified
+    path: "{score_dir}/INDEX.md"
+    condition: "stage == 6"
+    stage: 2
+    description: "Decomposed view updated: INDEX.md refreshed this iteration"
+  - type: command_succeeds
+    command: 'test $(find {score_dir}/patterns -name "*.md" -newer "{workspace}/04-draft-corpus.md" | wc -l) -ge 1'
+    condition: "stage == 6"
+    stage: 2
+    description: "At least one pattern file written to the decomposed view"
 
   # Stage 7 (proof composition) moved to rosetta-prove.yaml
 
