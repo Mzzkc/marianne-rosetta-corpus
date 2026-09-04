@@ -299,6 +299,30 @@ prompt:
       - skip_when, stagger_delay_ms, cross_sheet control, named movements
       - mzt recover / resolve / --escalation recovery flows
 
+      **Primitive coverage refresh (2026-09-04, source-verified):**
+      - prompt_extensions: global directives, then expanded-sheet directives
+      - self_healing: HEALING baton state after retry exhaustion; diagnosis and
+        re-dispatch via the healing coordinator (--self-healing/--escalation)
+      - interactive_mode: profile-default/forced interactive/headless + nudges
+      - mcp_shared_pool: daemon-shared MCP processes for active techniques
+      - bridge: accepted proxy/hybrid config, currently conductor-unconsumed
+      - code_execution: opt-in classified blocks; require_sandbox fails closed
+      - sheet_pacing: pause_between_sheets_seconds between serial successes
+      - relative_workspace_anchor: score-file parent vs string-load process CWD
+      - state_backends: score json/sqlite model; live conductor registry is SQLite
+      - entropy_response: modeled per score, live health loop does not consume it
+      - learning_auto_apply: trust-aware config, not honored by live injection yet
+      - agent_card: in-process A2A discovery/routing, not restart-persistent
+      - runtime_variables: repeated mzt run --var overrides, persisted on resume
+      - cli_pause: graceful sheet-boundary pause; --force cancels
+      - cli_resume: durable resume; --from-sheet resets the later cascade
+      - cli_modify: validate, pause, replace config, optionally resume
+      - cli_cancel: immediate mid-sheet cancellation
+      - cli_clear: remove eligible terminal job state
+      - conductor_lifecycle_cli: mzt start/stop/restart/conductor-status
+      - clear_rate_limits_cli: clear limits and redispatch WAITING sheets
+      - prompt_preflight: daemon token warning/error thresholds; zero disables
+
       **Practiced patterns from real scores:**
       - Verification loop (style-ghost: 23 sheets, triple fan-out)
       - Swarm (v3 orchestra: 706 sheets, 32 equal peers)

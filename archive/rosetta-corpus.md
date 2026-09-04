@@ -1,258 +1,275 @@
-# The Rosetta Pattern Corpus — v5.1 (Final, post-adversarial-review)
+# The Rosetta Pattern Corpus — v6 (Final, post-adversarial-review)
 
-**Iteration:** 5, revision 1 — the v5 draft after three adversarial reviews (Practitioner, Skeptic, Newcomer), all three of which returned **Needs revision**; this document is the integration.
-**Core patterns:** 21 (down from the draft's 25 — see Review Integration).
-**Foundational primitives:** 2 (Fan-out + Synthesis; The Tool Chain, restated as the Etiquette Law).
-**Candidate pool:** 47 patterns from six disjoint iteration-5 expeditions (Builder, Gardener, Dancer, Reasoner, Commander, Storyteller), collided; plus the 56-pattern v4 bestiary, all of which appear in this document (Appendix A) with frontmatter.
-**Convergences:** 10 structural moves (C1–C10), each now with a structural identity table (state variables, authority, medium, deterministic check, failure transition, non-example).
-**Generators:** 6 (G1–G6), subsuming v4's Ten Forces.
-**Status of this document:** FINAL for iteration 5. Every curation decision below was attacked by three reviewers and either survived, was cut, or was strengthened; the disposition of each is recorded in Review Integration. Score structures are written in the dialect the engine actually accepts (see The Real Dialect).
+**Iteration:** 6, final — the v6 draft after three adversarial reviews (Practitioner, Skeptic, Newcomer), verdicts **Flawed; needs major revision** / **Needs revision** / **Needs revision**; this document is the integration.
+**Core entries:** 17 counted — 5 laws (The Etiquette Law, The Validity Window, The Freeze, Typed Force, The Write-Time Record) and 12 patterns — down from the draft's 25. Seven draft entries left the core (4 → Awaiting Primitives, 2 → archive, 1 → demoted to an idiom); 1 was split and survives renamed. Fan-out + Synthesis returns to **foundational primitive**, uncounted, where v5.1 had already put it.
+**Candidate pool this iteration:** 42 patterns from six disjoint expeditions, 27 expedition-level kills, collided in `03-the-collision.md`; merged against the permanent v5.1 corpus (21 core + 2 foundational; every v5.1 entry retained in the decomposed view — see Merge Ledger).
+**Curation denominator, stated honestly (Review 2's demand):** the permanent corpus is **111 pattern files, 5 of them laws** across core, archive, and awaiting tiers. The 17-entry core is the *counted, proof-owing* set, not the whole corpus. Nothing is hidden behind the word "draft."
+**Status of this document:** FINAL for iteration 6. Every score structure below is written in the dialect the engine actually accepts, re-verified against source on 2026-09-04 (`src/marianne/core/config/{job,execution,workspace,orchestration,spec}.py`, `src/marianne/execution/validation/engine.py`). Where a needed primitive does not exist, the pattern says so and routes to Awaiting Primitives — no exceptions this time, including the two fabrications the reviews missed (see Review Integration, systemic change 2).
 
 ---
 
 ## Review Integration
 
-Three adversarial reviews attacked `04-draft-corpus.md`. Review 1 (The Practitioner) verified every load-bearing YAML field against the engine source. Review 2 (The Skeptic) applied a structural-identity test: a pattern survives only if it states state variables, authority holder, communication medium, deterministic check, and failure transition. Review 3 (The Newcomer) asked whether someone who just ran `hello.yaml` could use the document. All three verdicts: **Needs revision.** Here is what changed.
+Three adversarial reviews attacked `04-draft-corpus.md`. Review 1 (The Practitioner) reviewed all 25 patterns individually, re-ran `mzt validate` across the proof estate, and returned **Flawed; needs major revision**. Review 2 (The Skeptic) applied the structural-identity test — a pattern survives only if its invariant and transition function survive complete removal of the metaphor — and returned **Needs revision**. Review 3 (The Newcomer) read the engine source and asked whether someone who just ran their first score could use the document; it returned **Needs revision** with the headline: "The pattern *ideas* are the strongest I've seen in this concert. The *score structures* are systematically un-loadable as written." Here is what changed, pattern by pattern, with the reviews that forced each decision.
 
-### Cut from core → Patterns Awaiting Primitives (2)
+### Cut from core → Patterns Awaiting Primitives (4)
 
-**Zeitgeber Entrainment** — cut by consensus. Review 1: "`ScheduleConfig` (orchestration.py:34) supports cron/interval/timezone/overlap/misfire/jitter. There is no offset-from-artifact scheduling." Review 3: "no such primitive exists. This is precisely the 'Awaiting Primitives' sin v4 was purged for, smuggled back into the core." The pattern collapses onto real primitives: a leased `schedule`, a heartbeat artifact, a staleness gate (`skip_when` command form), and skip-to-next-cue — never a catch-up burst. That collapsed form is documented under Awaiting Primitives with its different failure modes and costs stated, exactly as Review 1 required. The name and the biology lecture go with it.
+**Calling the Show** — all three reviews found the defining machinery inexpressible in the shown DAG. Review 1: "Move to Awaiting Primitives until an actual recurring cue state machine is shown... the DAG is four serial movements and models none of that." Review 2: "the displayed four-stage chain is not continuous, does not overlap standby N+1 with execution N, and cannot 'proceed around' a held dependency — `skipped_upstream` skips dependents; it is not a bypass lane." Review 3: "the pipelined cue structure cannot be expressed in the linear movement DAG shown." The overlap (standby for cue N+1 pipelined against execution of cue N) and the hold-and-proceed-around semantics require either a recurring per-cue state machine or cross-score cue pointers; neither exists. Moved to Awaiting with the buildable approximation stated: Standby–GO invoked once per cue inside a bounded self-chain, the cue ledger as a workspace artifact advanced by a CLI movement, and holds recorded as visible skips — the continuous form is the blocked part, not the cue discipline.
 
-**The Accountability Board** — cut from core by Review 1 ("no score-facing export of the claim table with PIDs exists or is named... Stage 3's reconciliation sweep has nothing to sweep"), reclassified by Review 3 as "substrate documentation dressed as score patterns." Review 2's structural reframing is adopted and preserved: the pattern is a **registry-plus-probe loop** — claimed resources periodically reconciled against physical handles and semantic completion predicates — and its three conflated concerns (human roll call, process-table reconciliation, semantic result custody) are now separated. It lives in two places: the substrate-documentation section (the engine's own claim custody, stated as the law the substrate already earned in blood), and Awaiting Primitives (the score-facing sweep, blocked on claim-table export). The authorable approximation — a CLI process-probe PAR over physical handles — is documented. Its five-failure-class table survives inside The Black-Box Ledger, where Review 3 asked for it.
+**Relieving the Watch** — Reviews 1 and 2 killed the structure; Review 3 dissented and the dissent is recorded here, not buried. Review 1: "the deck log is supposedly maintained continuously, but it is appended once after the work movement; a crash during work loses exactly the state the pattern claims to preserve... Cut or move to Awaiting Primitives." Review 2: "Marianne cannot recover an LLM's unexternalized mid-attempt state from that. Without a write-ahead protocol, transactional checkpoints, or a runtime hook, this is Self-Stabilizing Custody plus a diary." Review 3 called it "the crash-recovery pattern every long-running user needs, and the deck-log is concrete." Adjudication: the majority carries it, because the pattern's central claim — any-instant relief — is exactly the part mid-movement crashes falsify. Moved to Awaiting, blocked on mid-sheet checkpointing (a write-ahead hook or transactional sheet checkpoints). The expressible half ships in the Awaiting entry: the deck log as an append-only JSONL the working sheet writes *as it proceeds* (not at movement end), movement-boundary reconciliation gates joining log claims to disk facts, and `mzt recover` rehearsed as the spine. When the checkpoint primitive lands, this re-enters core with Review 3's endorsement already on record.
 
-### Reclassified (4)
+**The Strike Clock** — Review 1: "Marianne timeouts fail sheets; they do not branch into pre-armed alternate work... Strengthen substantially or archive." Review 2: "the example declares no wall-clock budget mechanism... no mechanism by which timeout selects a tier; normal timeout fails work rather than branching to a pre-armed product." Review 3, precisely: "no primitive selects a degradation tier on timeout. The Strike Clock's central claim — 'time-out selects a tier instead of triggering invention' — has no carrier. By the draft's own rule... Strike Clock and ATO violate that rule silently." The draft's own standing rule was its own indictment. Moved to Awaiting, blocked on a timeout→tier transition. What survives, per Review 3: the inverted-DAG teardown order, per-movement budgets via `instrument_config.timeout_seconds` (and the *scheduled-run* wall clock `max_wall_seconds`, job.py:907 — which exists but bounds a whole scheduled run and selects nothing), pack-for-next-run, and the curfew report as the successor's first input. The tier-arithmetic is the blocked half.
 
-**Fan-out + Synthesis** → *Foundational Primitive*. Review 2: "It should be treated as a primitive, not a peer of the more specific mechanisms." It keeps full treatment (it is iteration 1–4 load-bearing and iteration-5-confirmed — all six expeditions were forbidden from returning it, and the ban is the confirmation), but it no longer sits beside Replication Licensing pretending to be the same kind of thing. Its "composes with everything" claim is replaced by the composition contracts (below).
+**Put-In** — Reviews 1 and 2 killed the mechanism; Review 3 dissented, again recorded. Review 1: "no old/new instrument assignment, no actual shadow execution, no separate workspace, and no demonstrated runtime fallback remap... Move to Awaiting Primitives until a real two-job handoff and rollback trial exist." Review 2: "Retaining files is not retaining an executable fallback route... the actual transfer primitive is missing." Review 3: "the model-deprecation answer, with a real diff gate" — one of the strongest. Adjudication: the kill turns on a real absence — seat remap at runtime. `fan_out` and instrument assignment expand at parse time (already recorded in awaiting.md under Physarum); isolation is job-level, so the shadow run is expressible as a *second job*, but flipping the live seat mid-concert is not expressible at all. Moved to Awaiting with the buildable approximation: track-sheet compile from incumbent artifacts, shadow run as an isolated job producing artifacts alongside (never over) the incumbent's, structured diff gate with `--require-bijection`, and the cutover as a *versioned score edit* — the incumbent written into the next score version's fallback chain, which is the honest, available form of "the old chair stays warm."
 
-**The Tool Chain** → *The Etiquette Law*. Review 2: "It is a substrate rule... It belongs in glossary or law, not beside Replication Licensing and Fencing Token." The content survives in full — the 74 independent empty-fallback-chain attestations remain the strongest empirical result in the corpus — as the corpus's first law, stated once, that every gate in every pattern cites.
+### Cut → archive / demoted (3)
 
-**Fork-Evident History** → *core, reframed as the substrate layer*. Review 2: "Fork-evidence is the substrate; errata and proof sidecars are payloads." Review 3: "Admits 'the simplest robust form is `git` itself.' Then the pattern is: use git." Kept (Review 1 ranked it fourth-strongest, composable in minutes), but its prose is demoted to the substrate role, its git-canonical implementation is named outright, and its payload patterns (Errata Ledger, Proof-Carrying Artifact sidecars) now inline the supersession discipline they ride on — Review 3's fold, executed without deletion.
+**Command by Negation** — unanimous. Review 1: "an operating posture, not yet a score pattern... Cut it from core until delivery receipts and a negative-broadcast acknowledgement join exist." Review 2: "There is no positive transition system here... Fold the cost discipline into Mission Command or the Declared Window." Review 3: "the pattern lives in settings, not structure... demote to an idiom under Mission Command / context economics." Demoted to an **idiom** recorded under Mission Command and the Declared Window: `cross_sheet: {auto_capture_stdout: false, lookback_sheets: <small>, max_output_chars: <small>}` plus intent-forward prelude and terminal validations. One correction to the draft baked into the idiom: the draft wrote `lookback_sheets: 0` intending *zero context* — in the engine, **0 means ALL completed sheets** (workspace.py:346). Context austerity uses a small positive bound, never 0.
 
-**Metered Merge** — *absorption reversed*. The draft absorbed Metered Merge into Hutchinson's Warning; Review 2 reversed it: "Metered Merge has a specific rate-control equation and queue-spill behavior; Hutchinson is delayed-feedback damping. They are related but not safely identical." Metered Merge returns to the archive with its ALINEA equation (`admit = k + gain × (target − measured)`, clamped), queue-spill override, and pretimed degradation intact, and the seam stated in both directions. Consequence for the grammar: C7 (lagged feedback oscillates) now honestly carries **one core pattern** — the defect Review 1 found in the draft ("C7 is a part of speech with one word") is not papered over: C7 is flagged as the thinnest convergence, with Metered Merge (archive) as its second family member, and v6 must either find a third carrier or demote C7 to a law of controller design.
+**The ATO Cycle** — Review 1: "The defining property is three overlapping generations, but the score shows one serial cycle and configures scheduled overlap to `skip`... Cut the current form." Review 2: "The score's `overlap: skip` prohibits overlapping scheduled jobs and shows only one serial cycle... Cut or redesign around physically concurrent cycle identities and atomic rollover." The frozen-manifest half is the Freeze law under cadence pressure; the rolled-backlog half is Positive Transfer; the identity — overlapping generations — needs concurrent cycle instances, which `overlap: skip` (correctly, for single-workspace safety) forbids. Archived with the redesign condition stated: separate workspaces per cycle generation, `overlap` policy decided per-pair, atomic cut→backlog bijection. Not Awaiting: nothing here is blocked on an engine primitive; it is blocked on a design that has not been written.
 
-### Strengthened (every survivor, with the review that forced it)
+**Cluster Lead** — Review 1: "Member discovery, report freshness, identity, and needs-register completeness are unspecified... This is a weekly report generator, not yet coordination without command." Review 2: "Keep only if 'coverage unknown' is represented per missing member/region, not as a blanket phrase that greens the report" — the draft's `content_regex: "coverage unknown|owned by:"` passes on one lucky phrase. Review 3: "real-world true, structurally thin: a schema, an ingest, a gap report. Archive with the 'coverage unknown' honesty clause quoted into the law on truth decay." Archived exactly so. The honesty clause is promoted into the corpus (below, in The Declared Window and the C9 grammar row): **a coordination artifact whose inputs are incomplete publishes the incompleteness — "coverage unknown" per unreported member/region — never a manufactured success.** The 3W reporting schema and `csv_unique_key` duplication check are real and noted in the archive entry for reuse.
 
-- **Proof-Carrying Artifact** — the strongest concept, previously hobbled by an impossible verify stage. Now: the canonical **proof form** is primary; **pedigree** and **claim** are named sub-forms with *different admission checks* (Review 2: "pedigree does not prove admissibility; it only traces origin"); the data-driven `instances: "{{ claims }}"` fabrication is gone — fan-out is static (`fan_out: {3: 10}` worst-case bound, Review 1); the produce stage's prompt now *instructs* writing `evidence/produce.json`, and the verdicts directory is created by the extract stage (Review 1's dangling-validation finding); the phantom scripts are named entries in the Script Library with interface contracts (Reviews 1 and 3).
-- **Positive Transfer** — overlap write rule added (Review 2: "outgoing retains operational authority; incoming may inspect and acknowledge only"); the sender-outlives-its-offer precondition, which Review 3 found unverified ("a finished Marianne sheet is gone"), is answered structurally: ownership is a property of the ledger, not the liveness of the executor — the offer holds in workspace state, the hold is bounded by `max_wall_seconds`/lease semantics, `on_failure` escalates unaccepted offers, and the release write is made by the sender score's next invocation or a deterministic gate. The ledger tolerates `offered`-without-`release` indefinitely without ever having zero owners.
-- **The MIST Card** — status: **approximation**. Review 1 found the feeding mechanism fabricated ("There are no retry hooks in the substrate"). Scope narrowed honestly: the card governs *score-authored* retry and recovery chains, where the retry path can be wrapped in a deterministic shell that appends the ledger row — conductor-internal retries are out of scope until per-attempt hooks exist. The fingerprint function Review 2 and Review 3 both demanded is now defined (below).
-- **The Errata Ledger** — atomic pair commit and the propagation watermark are now the load-bearing mechanism (Review 2's condition for survival); the serialization Review 3 found "asserted, not wired" is wired: ONE deterministic writer movement, a gate that fails the cycle on ledger-written-but-canon-unwritten, and the hash-join validation that makes the pair unable to diverge.
-- **Standby–GO** — full runnable YAML in the real dialect with the arm-gate as a CLI movement (Review 3); structure restated without theatre color: two-phase cueing, arm with complete ack set, one irreversible addressed fire (Review 2); `skip_when` corrected to command form (Review 3's finding that the draft assumed a buffer-name expression).
-- **The Attested Merge Gate** — the per-sheet `isolation: git-worktree` fabrication removed (Review 1: isolation is job-level; job.py:937 warns `parallel.enabled` + `isolation.enabled` is a hazard). Restated on job-level chaining (N isolated jobs, one merge job) or shared-workspace instance-tagged namespaces, with the deterministic sweep as the real gate. The Prefabrication obsolescence clause Review 2 asked for is explicit: Prefabrication without attestation, grounded sweep, and single merge authority is obsolete.
-- **Join-Semilattice Merge** — per-sheet isolation claim removed; the instance-tagged namespace scheme is what makes concurrent numbering collision-free by construction (Review 1). The idempotence probe (join twice, `diff` empty) survives as the corpus's best property-checking validation.
-- **Behavioral Pre-Mortem** — the dry-render is no longer phantom: `mzt validate` performs three validation layers and renders the DAG visualization; the pattern's render stage is that command plus a programmatic JobConfig render (Review 3's "name the actual dry-render command"). A typed graph schema and a mandatory counterexample artifact on violation are required (Review 2).
-- **First Article Characterization** — the manifest-runner idiom is named explicitly: one deterministic runner script loops over keyed manifest checks internally, because 200 instances × N keyed checks is not a static validation list (Review 1). Inhomogeneous populations are now a hard exclusion, not a warning (Review 2).
-- **The Skeptical Oracle** — the two-AI-family interpretation stage is demoted to an optional consumer, not part of the oracle proper (Review 2: "The pattern should stop at proposal plus deterministic reconstruction plus quarantine"); the reproduction pointer is a schema, not prose; a single-family degraded mode is defined so the pattern does not price out a free-local run (Review 3) — N runs of one family with disjoint question ownership, honestly labeled weaker independence.
-- **Canon of Phases** — kept (Review 1 found it buildable; Reviews 2 and 3 wanted it demoted unless independence was proven). The independence argument is now stated against its parts: Positive Transfer is a pairwise executor handoff with an overlap dialogue; Canon of Phases is *scheduled rotation of an unbounded stream* by interchangeable workers where the packet is the only inter-phase channel and the overlap dialogue does not exist. The deployment topology Review 1 asked for is written down: three *deployments* of one score — distinct IANA timezone, distinct workspace, same packet path — not three instances of one job.
-- **Negative-Treatment Watch** — the claim graph with source anchors and dependent edges is required, because without dependent edges the pattern cannot enumerate blast radius (Review 2); the flag-rate trip is enforced by the deterministic sweep script comparing counts, not by `circuit_breaker`, which accepts failure counts only (Review 1).
-- **The Fencing Token** — "receives the token via runtime variables" replaced with the real mechanism: the grant movement writes the token to a workspace file; the work template cites it; artifacts embed `token: NNN` (Review 1). The seam against Replication Licensing, which Review 3 flagged under the draft's own don't-duplicate law, is stated in both bodies: fencing defends *ordering* on a shared mutable surface (many writes, reject stale); licensing defends *exactly-once side-effect authorization* per cycle (single-use consumption, never-started vs started-died).
-- **The Black-Box Ledger** — fate separation is explicit (Review 2: "the recorder must not share fate with the thing logging"): the conductor outlives the sheets and is the independent power bus; workspace state is the crash-protected medium and workspace archival the secondary recorder; the honest limits (`auto_capture_stdout` alone is not a flight recorder; bounded overwrite is a feature) are stated. The engine-supplied half is acknowledged (Review 3): the durable `on_failure` hook assembles the packet — the score author wires capture and the correlated readout, and benefits from the rest.
-- **Flight Rules** — the grep grounding validation is shown concretely (a fabricated rule citation fails the run); deterministic rule selection for high-risk incident classes, with the AI handler confined to signature proposal (Review 2).
-- **Self-Stabilizing Custody** — monotone local correction rules required (two corrections must not delegitimize each other); a convergence test (kill-injection at each physical interruption point) specified; pairing with the Fencing Token mandatory wherever side effects exist (Review 2).
-- **Hutchinson's Warning** — narrowed to what Review 2 called its real identity: *damped delayed-feedback control with asymmetric shed/restore*. The `circuit_breaker` misattribution Review 1 found in three patterns is fixed here and everywhere: the breaker accepts **sheet-failure counts**; spend ceilings belong to `cost_limits` (which pauses the job — a different, and correct, observable); the rung ladder is score-level routing that reads a written `capacity-state.yaml`, and the rung is declared in that file — which the prompt cites — not in prompt text (Review 1: "the rung declared in prompt should be a written file the prompt cites"). A worked example with real numbers replaces the control-theory essay (Review 3).
-- **Replication Licensing** — unchanged in mechanism (Review 1 ranked it first: fully expressible today, `mv`-as-consumption with the both-ways file assertion, owning exactly-once-under-crash outright), with the Fencing Token seam stated per Review 3.
-- **Designation Is Authorization** — the distinction Review 2 demanded is load-bearing: conductor-mediated designation scopes **context and attachment** (what enters the sheet's world: spec corpora via `spec_tags`, techniques, cadenza directories); it is *not* OS-level capability confinement of filesystem/tool access. Prompt-injection defense by absence-of-naming is context scoping; true confinement needs engine/runtime work, and the pattern now says so.
-- **Immune Checkpoint** — the >80%-rejection recalibration rule is enforced by a deterministic count gate comparing actionable vs tolerated findings, not `circuit_breaker` (Review 1); framed in plain structural language first — *a precision gate on the critic* — with the immunology as illustration, not argument (Review 2: "the mechanism is stronger than the metaphor").
+### Split (1)
+
+**Test Screening to Picture Lock** — Review 2: "two patterns stapled together: unprimed external evaluation followed by the Freeze... Split the falsifier from the lock and prove each." Executed. The lock half (hash-frozen cut, finishing fan-out keyed to the digest, drift gate) **is** The Freeze law's iterative form and lives there — one lock primitive, not two. The surviving pattern is renamed **The Unprimed Falsifier**: evaluation by recipients who receive *only the artifact* — never the makers' intent — returning typed, located evidence. Review 1's strengthening conditions (physical context isolation, structured reaction cards, evidence-density math, executable recut loop) and Review 3's demand for a priming-absence check that actually runs are implemented in the structure below.
+
+### Narrowed (2)
+
+**Typed Force** — Review 1 wanted the umbrella cut: "too broad to be a law... Retain the fan-in typing rule and precedent semantics separately." Review 2 kept it but demanded the split that saves it: "Separate syntactic typing from the authority that assigns a type." The law survives **narrowed to one discipline with the authority inside it**: (1) type at creation, (2) the type is assigned by a *named authority* carried as a provenance field — a gate can check syntax and provenance, never truth, and the law no longer pretends otherwise, (3) the type selects the enforcement rule, (4) retyping is visible. Its former umbrella is delegated to the pattern forms that earned it: binding/persuasive force → The Precedent Bench; fan-in aggregation headers → The Dropped Axiom; evidence admissibility → Proof-Carrying Artifact (v5.1); allocation provenance → archive. Review 3's enum mismatch (the typecheck whitelist didn't contain Condorcet's demotion ladder) is fixed by making the demotion ladder the shared enum across both patterns.
+
+**Fan-out + Synthesis** — Reviews 1 and 2, unanimously: "This is a primitive, not a differentiated corpus pattern" / "a primitive DAG shape... Keep it as syntax and remove it from the pattern count." The draft had re-promoted it to counted core; it returns to foundational primitive, as v5.1 had already ruled. Its two iteration-6 clauses (the typing clause, the window clause) survive as named contracts attached at the merge — The Dropped Axiom's header and The Declared Window's manifest — not as reasons to re-count the primitive.
+
+### Strengthened (every survivor, with the reviews that forced it)
+
+- **The Etiquette Law** — "the moment a check can be a command, it must be a command" was too absolute (Reviews 1 and 2). The criterion is now stated: a check moves to a deterministic stage when it can be made *replayable, externally checkable, and bounded* — and Review 1's second clause is added to the law: **a deterministic gate must be small, independently testable, and exercised against a reachable negative control** — a gate that cannot fail is a receipt.
+- **The Validity Window** — the transition table Reviews 1 and 2 demanded: states `{stamped, valid, expired, regenerated, degraded}`, the precedence between elapsed TTL, minimum age, and accumulated maturity stated, regeneration executed inside the gate movement's single CLI transaction (expiry fails forward to a *new* window id, never re-presents the same bytes), and the adjacency rule: the gate runs in the movement immediately before the consumer, and the consumer must cite the window id it was admitted under.
+- **The Freeze** — the pin is now expressible: `file_sha256` cannot pin a runtime-written digest (it requires a literal 64-hex at authorship, execution.py:668-680), so the lock movement writes `frozen.sha256` and every consumer-side check is `sha256sum -c` via `command_succeeds` (Review 3's fix). Delivery is by **required cadenza** on each specialist sheet — the frozen artifact physically cannot be absent (Reviews 1 and 2). The distinctions from Prefabrication, Fork-Evident History, and Attested Merge Gate are stated in the body (Review 1).
+- **The Write-Time Record** — the atomic transaction Reviews 1 and 2 required: intent row, effect, and receipt commit inside **one CLI process** keyed by a stable `effect_id`; a crash leaves an open row that the audit *fails* on (fail-closed), and a re-run refuses double-execution by id. Line-count decorations are gone; the audit is a three-way join (row ↔ receipt ↔ settlement) with empty residue.
+- **Monitor Mix** — per-instance delivery is real: cadenzas key on the expanded sheet number and the file path carries `{{ instance }}`, so each fan-out voice receives exactly its mix, `required: true` (Reviews 1 and 2). The line check validates every mix against the prescription's channel list and char budgets *before* the performers run, and outputs must cite the mix id they performed from.
+- **Condorcet's Premise** — routing fixed to expanded sheet numbers via `per_sheet_instruments` (Review 3); the calibration ground truth is a pre-authored fixture in the score directory, not runtime invention (Reviews 1 and 3); the estimator is defined and bounded — mean pairwise error co-occurrence ρ̄ over calibration items, design effect n/(1+(n−1)ρ̄) as an equicorrelation *upper bound*, with the full co-occurrence matrix riding the manifest as data (Review 2); and the family census is **provenance evidence, not independence** — instrument-name inequality proves nothing on this host, and measured error behavior is the only admissible basis for the aggregation rule (Review 1).
+- **The Declared Window** — the word ban is dead (Reviews 1 and 2: "easy to evade," "a lexical heuristic"). The contract is now a structured claim ledger: the synthesizer emits `claims.jsonl` rows `{claim_id, text, class ∈ {in-window, total-seen, refused}, window_id}`; a CLI movement writes the window manifest from the run's actual `cross_sheet` configuration and prior artifacts; the join gate asserts every global-quantifier claim in the prose has a ledger row and the counts reconcile (`exact_in_window + refused = claims_emitted`). The corpus-level honesty rule from Cluster Lead is quoted into this pattern.
+- **The Gas-Free Certificate** — Review 1's finding was the most dangerous in the set: "the destructive AI sheet is told to run the permit check as its first action, but the validation occurs after the sheet, so destruction can precede or ignore the check... otherwise this pattern teaches false safety." Fixed at the root: **destruction is a command, so the whole pattern is CLI-native.** The destroy movement is `instrument: cli` running one wrapper that checks the permit (digest match + freshness) and executes the destruction in the same transaction; a failed check refuses, exit non-zero, nothing destroyed. The AI plans; the wrapper presses the button. Independence is authored provenance — a separately-committed `certifier/` directory with its own digest recorded in the permit — not a pathname (Review 2).
+- **Top-Down Demolition Order** — the strongest pattern by all three reviews ("genuinely distinct," "survives complete removal of the ship-breaking story," "a genuine correction to naive saga thinking"). Strengthened per Review 1: the serialized driver is real — a bounded self-chain (`concert` + `on_success: run_job`) re-invoking the score per removal step, each step's CLI wrapper sweeping consumers-of-current-step (`--expect-empty`) before and re-deriving the leaf set after; the plan is JSON checked by jq, never prose greps; the order re-derivation lives in a separately-authored `verify/` directory.
+- **Rent-Then-Commit** — the routing state machine now exists in the real dialect: the ladder decision is written by a CLI movement, and the two lanes are **sheets gated by `skip_when` commands** — the cheap lane's sheets skip when `decision.lane != "rent"`, the strong lane's when `!= "buy"`; no dynamic instrument assignment is claimed. The self-chain is the real `concert`/`on_success` form (see systemic change 2), `capture_files` carries the decision into executors, and executors cite the ladder position (Reviews 1 and 3). The deterministic 2-competitive bound is proven; the randomized 1.582 variant is recorded as archive-color requiring its distribution assumptions stated (Review 2).
+- **Vintage Overlay** — survived Review 3's cut motion 2–1, and the merge critique is answered structurally: the overlay *files* are authored artifacts, so they are pinned with literal `file_sha256` digests; the condition-map lookup is **total with refusal** — an unknown condition vector exits non-zero rather than defaulting (Reviews 1 and 2); the manifest reaches consumers as a required cadenza (data, not dynamic `spec_tags` — Review 2's correction that runtime-measured conditions cannot re-route already-resolved spec tags); and the vintage record (conditions + digests + overlay ids) is the Write-Time Record's run-level instance.
+- **The Economic Injury Line** — "February" is now structural: the threshold inputs and table are **authored into the spec corpus before the season**, digest-pinned; the run's first movement only *verifies* the re-derivation against the pinned table (Reviews 1 and 2). `run_seed` is a declared prompt variable; the wasp clause is an executable tier ordering (broad-spectrum tier barred while the incremental tier's efficacy check passes); the no-action season is a real negative control — visibly skipped treatment sheets and a green exit (Review 1).
+- **The Precedent Bench** — narrowed to a typed append-only decision registry (Review 1: "narrow it to a typed append-only decision registry") with **one final adjudication authority** (Review 2): a single named bench seat decides; advisory seats may fan out but their aggregate is a Dropped Axiom-typed input, never an undisclosed vote. The precedent index reaches the brief and bench sheets by required cadenza keyed to their expanded sheet numbers (Review 1's placement fix); enrollment is one serialized CLI writer appending holding rows and supersession edges atomically; and the registration-time/runtime delivery distinction is stated as what it is — spec-corpus fragments inject as of registration, the cadenza injects the live index at runtime, and a score citing precedent that moved between the two is exactly what the cite-join gate catches.
+- **Demobilization Checkout** — four separate tables replace the conflated one (Review 1): `census.jsonl` (what exists), `dispositions.jsonl` (what the AI decided per resource id), `receipts.jsonl` (what the CLI did), and the settlement probe results — census maintenance begins at commissioning via the Write-Time Record (Review 2), and the seal movement runs the Gas-Free discipline before any destructive cleanup. The `on_success`/`on_failure` attachment is written in the real form: hooks live on the concert's terminal score, `run_job` to the demob score, mirror on failure with evidence-preservation disposition priority.
+- **The Dropped Axiom** — input typing is declared by the **producer**, not classified by the synthesizer (Review 1: "Make the input type explicit... do not force one omnibus table"): each panel-emitting stage writes `input_type ∈ {binary-verdict, ranking, interconnected-propositions, non-reconstructible-judgment}` on its output, the synthesizer applies exactly the lookup row for the declared type, and the typechecker enforces rule ↔ `axioms_dropped` bijection per row. Kept as a standalone within-stage pattern against Review 2's fold motion (Reviews 1 and 3 wanted the fan-in rule separate and immediate; the fold is recorded as the losing argument with its reason).
 
 ### Systemic changes
 
-1. **Every score structure rewritten in the real dialect.** Review 3's headline finding: "not one of the 25 'Marianne Score Structure' blocks is written in a schema Marianne accepts." The draft used a fictional `sheets:` list with `- name:`, `instances:`, sheet-level `capture_files`, and a data-driven lens. The real substrate — verified this iteration against `examples/getting-started/hello.yaml` and `src/marianne/core/config/` — is `movements:` + `sheet: {total_items, fan_out, dependencies}` + one Jinja template keyed `{% if stage == N %}` + `per_sheet_fallbacks`/`cadenzas` keyed by *expanded sheet number* + validations as a flat list with `condition: "stage == N"` and `{workspace}` format-string placeholders. The Real Dialect section below states the canonical skeleton once; every pattern's structure is now an excerpt from it.
-2. **Substrate Availability Matrix** — per pattern: real keys today / scripts required / engine work needed. Demanded by all three reviews (their single point of unanimous agreement). The five fabrications Review 1 caught would have been caught mechanically by this table; it is now impossible to ship a pattern without declaring its substrate reality.
-3. **Structural identity table for every convergence** (Review 2): state variables, authority holder, communication medium, deterministic check, failure transition, non-example. "Same move in four domains" is no longer enough.
-4. **One near-miss per core pattern** (Review 2's negative-example section): each pattern now names the thing that looks like it and fails the structural test.
-5. **Composition contracts** (Review 2: "'Composes with everything' is not useful"): four relations defined — layering, substitution, prerequisite, payload/substrate — and every `composes_with` entry in the new frontmatter uses one.
-6. **Problem→pattern selection table and pattern index** (Review 3): the missing on-ramp, rebuilt for the v5.1 core and joined to the v4 selection guide.
-7. **The Script Library promoted to a core deliverable** (Reviews 1 and 3): twelve-plus patterns previously rested on user-supplied scripts that were "an unnamed file on the reader's machine" (Review 3). The library is now an inventory with interface contracts and a named owner for v6. It is the corpus's largest single debt and it is now visible in the core document, not an appendix of regrets.
-8. **Proof Program with dispositions** (all three reviews): the six legacy proof scores all prove v4 patterns — zero of the v5 core — cluster into two overrepresented shapes (security-audit ×2, codegen-with-gates ×3), every one resolves to a single instrument (vendor diversity has never been exercised by any proof in corpus history), one still recommends the retired gemini-cli, and one is a documented-flawed proof left standing. Each now has an explicit disposition (repair, re-instrument, or archive) and the v6 proof queue is prioritized. Proof debt is a **blocking requirement for v6**, not an open question (Review 1).
-9. **Instrument freshness dating** (Reviews 1 and 3): instrument recommendations now carry a freshness date and a standing rule — an undated recommendation rots. Current as of 2026-09-03: opus / codex-cli / glm (paid Z.AI coding-plan profile) / free OpenRouter / local Ollama. gemini-cli is retired product-wide.
-10. **The draft's own arithmetic fixed, and recorded** (Review 1: "a corpus whose Open Question 2 is about catching misnumbering misnumbers its own ledger in its closing sentence"): the draft claimed "18 absorbed-with-seam or archived iteration-5 candidates dispositioned"; the Merge Ledger contains 6 absorbed + 18 archived = **24**. This document's Merge Ledger is corrected and the error is recorded here rather than silently patched — the corpus applies its own Errata Ledger discipline to itself. C7's single-carrier count and Zeitgeber's "fourth temporal primitive" (against C6's list of six) are corrected with it.
-11. **Expedition mythology removed from pattern bodies** (Review 3: "process archaeology leaking into user docs"). The Dancer/Reasoner/collision narrative lives in Review Integration and the Merge Ledger — the provenance record — not inside the patterns a newcomer reads to get work done.
-12. **Human-in-the-loop vocabulary promoted to a named v6 requirement** (Review 1): escalation-to-human is the terminal state inside at least four patterns and no pattern governs the seam. Recorded as open question 1 with the v4 Andon Cord named as the archive ancestor.
-13. **Self-application commitment** (Review 1): this document's corrections are recorded as errata (item 10); the next iteration must run Fork-Evident History over its own versions — the sibling-citation misnumbering found by luck in the collision must become structurally impossible.
+1. **Every score structure rewritten in the real dialect — and this time verified against source, not against memory of v5.1.** The v5.1 final shipped a Real Dialect section and the v6 draft violated it anyway; the reviews caught the violations (movement-level `fan_out`, expanded `total_items`, top-level `cadenzas`/`instrument_map`, `spec_tags` under `spec:`, digest-free `file_sha256`, `max_wall_seconds` as a movement curfew). All are fixed. Two of v5.1's own Real Dialect claims were also wrong and are corrected here: `spec_tags` is a **`sheet:` field**, not a `spec:` field (job.py:246); `instrument_map` keys on **expanded sheet numbers** and rejects duplicate assignment (job.py:436-459) — movement-keyed maps with one sheet claimed twice fail at load.
+2. **Two fabrications the reviews did not name, found by this integration's own source pass.** (a) `lookback_sheets: 0` means **all completed sheets** (workspace.py:346) — the draft used it twice to mean *zero context*; every such use would have silently maximized context. (b) `on_success: {action: self, ...}` is not a shape the engine accepts — `on_success` is a list of typed hooks (`run_job` requiring `job_path`, `run_command`, `run_script`) under `concert: {enabled, max_chain_depth, inherit_workspace}` (orchestration.py:280-341). Self-chaining is real but only in that form; all self-chain structures below use it.
+3. **The curation denominator is stated in the header** (Review 2: "That makes the effective living core roughly 44 entries, not 25... it hides the denominator"). Core 17 / archive / awaiting are named tiers of one 111-file corpus, every file indexed in INDEX.md.
+4. **Bookkeeping corrected to disk** (Review 1: "Disk contains 13, not 14, proof-score YAMLs"; Review 3 confirmed): 13 YAMLs; both reviews independently ran `mzt validate` and agree — 7 pass (`cathedral-construction`, `firing-the-pass`, `join-semilattice-merge`, `live-relay`, `negative-treatment-watch`, `rashomon-gate`, `the-attested-merge-gate`), 6 fail (`dead-letter-quarantine`, `echelon-repair`, `prefabrication` — folded-command checks; `immune-cascade`, `shipyard-sequence`, `source-triangulation` — dead `../../workspaces/` parents). The corpus no longer counts a non-validating file as a live proof; dispositions are in the Proof Estate section.
+5. **Proof debt is reported as zero-for-six, not "targeted"** (Review 3: "'Proof debt is a blocking requirement, inherited' — then the draft is blocked, by its own rule"). The six queued proofs exist on disk as **zero executed scores**. The queue stands, each entry now carrying the minimal-discriminating-score constraint (Reviews 1 and 2: stop rewarding monument size; a proof must fail when the pattern is removed), and the blocked status is the honest current state.
+6. **The Script Library debt is named at its true size** (Review 3: "Open Question 7 says '~20'; I count roughly 50"). Every script referenced below is a named entry with an interface contract in the Script Library section; the corpus states plainly that these are contracts to implement, not shipped files. Patterns whose load-bearing structure reduces to an unshipped script say so in their `status:` field (`approximation` where the wrapper is the pattern).
+7. **The human-escalation seam is carried as an unowned terminal, third iteration running** (all three reviews). It is recorded in Open Questions with its instances (hold escalation, the impairment emergency, negation's surface order, waiver authority) and the v4 Andon Cord named as ancestor. No pattern below pretends to own it.
+8. **Divergences and dissents are preserved, not flattened.** Review 3's dissents on Relieving the Watch and Put-In are quoted in the Awaiting entries; the Vintage Overlay 2–1 and Dropped Axiom fold-motion votes are recorded with reasons. A corpus that erases its reviewers' minority reports is exactly the silent-supersession failure the Precedent Bench exists to prevent.
 
 ---
+## The Real Dialect (v6, re-verified 2026-09-04)
 
-## The Real Dialect
-
-The substrate as verified against the engine this iteration (`examples/getting-started/hello.yaml`, `src/marianne/core/config/{job,execution,workspace,orchestration,techniques,spec}.py`, `instruments/builtins/cli.yaml`). Every snippet in this corpus is an excerpt from this skeleton. A pattern that cannot be phrased here is not a pattern yet — it is Awaiting Primitives.
+The substrate as verified against engine source this iteration: `src/marianne/core/config/job.py` (MovementDef at :156, SheetConfig at :203, instrument_map validator at :436), `src/marianne/core/config/execution.py` (ValidationRule at :498), `src/marianne/core/config/workspace.py` (CrossSheetConfig at :323), `src/marianne/core/config/orchestration.py` (PostSuccessHookConfig/ConcertConfig at :280-341), `src/marianne/execution/validation/engine.py` (condition parser at :254), plus the seven passing proof scores as living usage. Every snippet in this corpus is an excerpt from this skeleton. A pattern that cannot be phrased here is not a pattern yet — it is Awaiting Primitives.
 
 ```yaml
 name: my-score
 description: "One line."
 
-instrument: opus                       # primary; see instruments: map below
+instrument: opus                       # primary; named alternates below
 instruments:
   cheap:  { profile: opencode, config: { model: "zai-coding-plan/glm-5.3-flash" } }
 instrument_fallbacks: [opus, cheap]    # [] on a deterministic stage = the etiquette does not degrade
 
-movements:
-  1: { name: produce }
-  2: { name: verify, instrument: cli } # movement-level instrument override
-  3: { name: consume }
+movements:                             # MovementDef is extra="forbid":
+  1: { name: produce }                 #   allowed keys are name, instrument,
+  2: { name: verify, instrument: cli,   #   instrument_config, voices, instrument_fallbacks.
+       instrument_fallbacks: [] }       #   fan_out here FAILS AT LOAD.
+  3: { name: panel, voices: 3 }         # voices = per-movement fan-out shorthand
+  4: { name: consume }
 
 sheet:
-  total_items: 3
-  fan_out: { 2: 6 }                    # STATIC at parse time — no data-driven width
-  dependencies: { 2: [1], 3: [2] }     # movement numbers
+  size: 1
+  total_items: 4                       # LOGICAL movements, pre-expansion
+  fan_out: { 3: 3 }                    # movement-number -> instance count; parse-time, static
+  dependencies: { 2: [1], 3: [2], 4: [3] }   # movement numbers
+  spec_tags: { 3: [flight-rules] }     # a SHEET field (movement-keyed), NOT under spec:
   per_sheet_fallbacks:
-    8: []                              # keyed by EXPANDED sheet number (see below)
+    8: []                              # keyed by EXPANDED sheet number
   cadenzas:
-    8:
-      - file: "{{ workspace }}/evidence/produce.json"
+    8:                                 # keyed by EXPANDED sheet number
+      - file: "{{ workspace }}/evidence/produce.json"   # Jinja in the prompt pipeline
         as: context
         required: true                 # fail closed when absent
+  per_sheet_instruments:               # expanded sheet numbers; one sheet, one instrument
+    5: claude-code
+    6: codex-cli
+    7: opencode
 
 spec:
   spec_dir: "{score_dir}/specs"        # corpus attached by reference
-  spec_tags: { 2: [flight-rules] }     # movement-keyed: undesignated specs are ABSENT, not hidden
+
+cross_sheet:
+  lookback_sheets: 5                   # NOTE: 0 means ALL completed sheets, not none
+  max_output_chars: 4000
+  capture_files: ["{{ workspace }}/decision.yaml"]   # Jinja here too
+
+concert:                               # self-chaining / job chaining lives HERE
+  enabled: true
+  max_chain_depth: 12
+  inherit_workspace: true
+on_success:                            # a LIST of typed hooks — {action: self} is not a shape
+  - type: run_job
+    job_path: "{score_dir}/my-score.yaml"
 
 prompt:
-  variables:
-    ceiling: 40
+  variables: { run_seed: 7 }
   template: |
     {% if stage == 1 %}
-    Do the work. Write {{ workspace }}/deliverable.md and evidence/produce.json.
+    Do the work. Write {{ workspace }}/deliverable.md.
     {% elif stage == 2 %}
-    python3 "{score_dir}/scripts/evidence-gate.py" "{{ workspace }}/evidence/"
+    bash "{score_dir}/scripts/gate.sh" "{{ workspace }}"
     {% elif stage == 3 %}
-    Work only from admitted artifacts. You are at rung {{ rung }}.
+    You are voice {{ instance }} of {{ voice_count }}.
+    {% else %}
+    Work only from admitted artifacts. Cite their paths.
     {% endif %}
 
-validations:                           # flat list; format-string paths; stage-scoped
+validations:                           # flat list; FORMAT-STRING paths ({workspace}); never Jinja
   - type: file_exists
     path: "{workspace}/deliverable.md"
     condition: "stage == 1"
   - type: command_succeeds
-    command: 'test -s "{workspace}/evidence/produce.json"'
-    condition: "stage == 1"
-  - type: content_regex
-    pattern: "ADMITTED|CUT"
-    path: "{workspace}/verdicts/overview.md"
+    command: 'bash {score_dir}/scripts/gate.sh {workspace} --check-only'
     condition: "stage == 2"
+  - type: content_contains
+    path: "{workspace}/verdict.md"
+    pattern: "ADMITTED"
+    sheet: 8                           # shorthand for condition: "sheet_num == 8"
+  - type: file_sha256
+    path: "{workspace}/pinned-input.yaml"
+    sha256: "<64-hex literal, known at authorship>"
+    condition: "stage == 1"
 ```
 
-**Sheet numbering** (the detail the draft got wrong everywhere): with `total_items: 3` and `fan_out: {2: 6}`, movement 1 is sheet 1, movement 2 expands to sheets 2–7, movement 3 is sheet 8. `per_sheet_fallbacks` and `cadenzas` key on the *expanded* sheet number; `spec_tags`, `skip_when`, `dependencies`, and `fan_out` key on the *movement* number.
+**Sheet numbering** (the detail the draft got wrong everywhere): with `total_items: 4` and `fan_out: {3: 3}`, movement 1 is sheet 1, movement 2 is sheet 2, movement 3 expands to sheets 3–5, movement 4 is sheet 6. `per_sheet_fallbacks`, `cadenzas`, `per_sheet_instruments`, `instrument_map`, **and `skip_when`** key on the *expanded* sheet number (skip_when is resolved against `sheet.num` at dispatch — adapter.py:2947; v5.1's claim that it keys on the movement number is corrected here); `spec_tags`, `dependencies`, and `fan_out` key on the *movement* number. `condition: "stage == N"` gates by movement number (all voices of that movement) and is the house style in the passing proof scores; `sheet: N` targets one expanded sheet.
 
-**Two templating systems, deliberately different:** the prompt template is Jinja (`{{ workspace }}`, `{% if stage == N %}`, `{{ instance }}`); validation paths and commands are format strings (`{workspace}`, `{instance}`). Mixing them is the most common first-score bug.
+**Two templating systems, deliberately different:** the prompt pipeline (templates, cadenza/prelude paths, capture_files) is Jinja `{{ }}`; the validation engine (paths, commands, working_directory, skip_when) is Python format `{}`. `{{ score_dir }}` in a template, `{workspace}` in a command. Mixing them is the most common first-score bug.
 
-**Verified real (safe to build on today):** `per_sheet_fallbacks` (empty chain = deterministic kernel), `skip_when` in **command form** (the old expression form was never evaluated and is rejected), `spec_dir`/`spec_tags`, `techniques` (kinds: `skill`/`mcp`/`protocol`, `required: true`), cadenzas as `{file|directory, as, required}`, `schedule` (exactly one of `cron`/`interval`, IANA `timezone`, `overlap`, `misfire`, `jitter_seconds` — the durable lease is what makes exactly-one-attempt-per-window true across conductor restarts), `max_wall_seconds`, the durable `on_failure` hook (atomic claim, restart reconciliation, same-ID protection, original-failure integrity), `capture_files`/`auto_capture_stdout`/`lookback_sheets`/`max_output_chars` under `cross_sheet`, `instrument_map` (instrument → movement numbers), `cost_limits` (pauses the job — distinct from the breaker), `circuit_breaker` (**trips on sheet-failure counts only** — never on spend, flag rates, or ratios), `parallel: {enabled, max_concurrent}`, `retry: {max_retries}`, `instrument: cli` (a real builtin that owns execution deterministically), the `skipped_upstream` template variable, and `mzt validate` (three-layer validation plus DAG visualization — the render surface Behavioral Pre-Mortem builds on).
+**Validation types available:** `file_exists`, `file_modified`, `content_contains`, `content_regex`, `command_succeeds`, `path_in_scope`, `field_match`, `file_sha256` (literal digest only — runtime pinning is `sha256sum -c` inside a `command_succeeds`), `csv_unique_key`. Conditions support `sheet_num ==/>=/<= N` and `and` conjunctions; a condition naming an unknown variable evaluates **false** (the validation silently never runs — write `sheet_num`, not a hoped-for variable).
 
-**Verified absent (do not write these; they are the draft's fabrications, now archived as such):** per-sheet `isolation: git-worktree` (isolation is **job-level**: one worktree per job; `parallel.enabled` + `isolation.enabled` together is warned against), data-driven fan-out width (`instances: "{{ claims }}"` — fan-out expands at parse time), retry hooks that feed user-visible ledgers per attempt, offset-from-heartbeat scheduling, and a score-facing export of the conductor's claim table.
+**Primitive coverage refresh (source-verified 2026-09-04):**
 
-**Instrument recommendations (freshness 2026-09-03):** opus / codex-cli / glm via the paid Z.AI coding-plan profile for vendor-diverse tiers; free OpenRouter and local Ollama for cost-zero tiers; `instrument: cli` for the etiquette. gemini-cli is retired product-wide and must not appear in new scores. *Standing rule: every instrument recommendation in this corpus carries a freshness date; an undated recommendation is an error.*
+| Primitive | Real dialect account |
+|---|---|
+| `prompt_extensions` | Score-level extensions append first, then expanded-sheet extensions; entries are inline text or `.md`/`.txt` directives. |
+| `interactive_mode` | `instrument_config.interactive` is tri-state; absent uses the verified profile default, explicit true/false forces driven/headless execution, with per-sheet nudge controls. |
+| `mcp_shared_pool` | The daemon multiplexes one configured process per MCP server over Unix sockets and exposes only MCP techniques active for the sheet. |
+| `bridge` | `bridge` accepts Ollama/MCP proxy and hybrid-routing config, but the conductor does not consume it: config-only, not a routing claim. |
+| `code_execution` | Opt-in code mode executes classified shell/Python/Node blocks with timeouts; `require_sandbox` fails closed without `bwrap`, otherwise fallback is unsandboxed and loud. |
+| `sheet_pacing` | `pause_between_sheets_seconds` delays later serial dispatch after a successful sheet; it is nonnegative score-level pacing. |
+| `relative_workspace_anchor` | A file-loaded relative `workspace` anchors to the score directory; string-loaded YAML anchors it to process CWD. |
+| `state_backends` | Scores model `json`/`sqlite` plus `state_path`; conductor runs remain SQLite-registry-authoritative and do not consume the per-score path. |
+| `entropy_response` | Learning config models low-entropy cooldown, budget boost, and quarantine revisit; live daemon health uses daemon-level settings, not this per-score block. |
+| `learning_auto_apply` | Structured trust/status/count controls supersede deprecated flat fields; live dispatch still injects generic pattern results rather than consuming them. |
+| `agent_card` | A score can publish an A2A discovery card and route in-process; inbox and registry state are memory-only, not restart-persistent. |
+| `runtime_variables` | Repeated `mzt run --var key=value` strings override prompt variables, later duplicates win, and the merged values persist across resume. |
+| `cli_pause` | `mzt pause` requests a sheet-boundary pause and may wait for acknowledgement; `--force` delegates to immediate cancel. |
+| `cli_resume` | `mzt resume` continues paused/failed/chain-held state; `--from-sheet` deliberately resets that sheet and every later sheet. |
+| `cli_modify` | `mzt modify` validates a replacement score, pauses a running job, swaps its config, and may resume it. |
+| `cli_cancel` | `mzt cancel` interrupts the active sheet and marks the job `CANCELLED`; it is not graceful boundary pause. |
+| `cli_clear` | `mzt clear` removes eligible terminal job state; it does not clear instrument rate limits. |
+| `conductor_lifecycle_cli` | `mzt start`, `stop`, `restart`, and `conductor-status` operate the single conductor daemon. |
+| `clear_rate_limits_cli` | `mzt clear-rate-limits` clears one/all instrument limit records and returns affected `WAITING` sheets to `PENDING`. |
+| `prompt_preflight` | Daemon-level token preflight warns or rejects at configured thresholds; zero disables a threshold and warning must remain below error. |
+| `self_healing` | After retry exhaustion a sheet enters the HEALING baton state: the healing coordinator diagnoses (context, diagnosis, remedies registry) and re-dispatches with a repaired prompt; the `--self-healing`/`--escalation` run paths select it. Conductor-amended row 2026-09-04 — the inventory's 21st primitive, added during gap-report review. |
 
----
+**Verified real, additions since v5.1:** `voices` as movement-level fan-out shorthand; `per_sheet_instruments` (expanded-sheet-keyed); `instrument_map` with the duplicate-assignment rejection; `skip_when` in command form (per movement, exit 0 = skip, fail-open on error); `concert`/`on_success` typed hooks (`run_job` + `job_path`, `run_command`, `run_script`, with `hold` semantics for pause-at-chain); job-level `max_wall_seconds` for *scheduled runs* (ge 60; bounds the run, selects nothing); `instrument_config.timeout_seconds` for per-movement budgets; `mzt validate` three-layer static validation.
 
-## The Grammar: Ten Convergences (C1–C10)
+**Verified absent (do not write these):** `fan_out` or any key besides the five MovementDef fields under `movements:`; digest-free `file_sha256`; runtime digest discovery; movement-level wall clocks; any timeout that *selects* work instead of failing it; runtime instrument reassignment; mid-sheet checkpoints; `{score_dir}` inside validation commands under `mzt recover` (the recovery path builds a reduced context — prefer `{workspace}`-relative script paths or copy scripts into the workspace at commissioning).
 
-Each convergence is the same structural move in four or more genuinely independent materials, mined without cross-communication. Review 2's structural-identity test is now part of the definition: a convergence must state its state variables, authority holder, medium, deterministic check, and failure transition, and must name a non-example.
-
-| # | Move | One-line statement | Core carriers |
-|---|------|--------------------|---------------|
-| C1 | Admissibility over correctness | Not "is this output right" but "may this output enter the record" — pedigree decides usability | Proof-Carrying Artifact, Skeptical Oracle, Flight Rules |
-| C2 | Custody is a state machine | `offered → accepted → released`, never a gap; sender holds through overlap; deadline is a place, not a number | Positive Transfer, Black-Box Ledger |
-| C3 | Permission is a physical object | Authority travels, expires, or is consumed — never a sentiment the prompt asserts | Replication Licensing, Designation Is Authorization, Fencing Token |
-| C4 | History is append-only | Corrections supersede, never rewrite; a shrinking journal is a rewritten journal | Fork-Evident History, Errata Ledger |
-| C5 | The etiquette is deterministic | The protocol layer is non-LLM with an empty fallback chain; the performance layer is not | The Etiquette Law (formerly The Tool Chain), every gate in every pattern |
-| C6 | Time is five primitives | Dependency order ≠ stagger ≠ leased recurrence ≠ acknowledged handoff ≠ deadline-first | Fencing Token, Canon of Phases (Zeitgeber's phase lock: awaiting) |
-| C7 | Lagged feedback oscillates | Damp the trend, shed fast, restore slow; asymmetric degradation ladders | Hutchinson's Warning (core) + Metered Merge (archive) — *thinnest convergence; see Open Questions* |
-| C8 | Independence is constructed | Sample count is not independence; isolation, vendor diversity, or disjoint question ownership is | Skeptical Oracle, First Article Characterization, Join-Semilattice Merge |
-| C9 | Truth decays | Admission is not permanence; validity is leased and renewed against current sources | Negative-Treatment Watch, Flight Rules (effectivity pinning) |
-| C10 | Failure degrades in character | Specify in advance what the system stops into — a rehearsed posture, never scatter | Standby–GO (hold), Hutchinson's Warning (ladder) |
-
-### Structural identity per convergence (Review 2's demand)
-
-| C | State variables | Authority holder | Medium | Deterministic check | Failure transition | Non-example |
-|---|-----------------|------------------|--------|--------------------|--------------------|-------------|
-| C1 | claim + evidence bundle | the checker (small, auditable) | sidecar artifact | re-hash / re-run / cite-by-digest | inadmissible → excluded, not downweighted | a confidence score attached to a claim |
-| C2 | item custody state | current owner (ledger-recorded) | ledger file | state-machine gate (timestamps ordered, no regressions) | unaccepted → held + escalated, never dropped | an FYI handoff note |
-| C3 | token/license counter | serialization point (file or counter) | physical file (mv-able) | token compare / both-ways file assert | stale/expired → rejected at the boundary | "you are authorized" in a prompt |
-| C4 | journal digest chain | nobody (algebra) | append-only journal | chain recompute + prefix check | edit → chain break at edit point, visible | timestamps with an append promise |
-| C5 | gate exit codes | the deterministic instrument | exit code + typed report | the gate *is* the check | instrument down → score stops (no fallback) | an LLM asked "did the tests pass?" |
-| C6 | schedule/lease/token clock | the conductor's scheduler | lease record | lease renewal per cycle | lease lapse → skip (overlap: skip), never double-fire | hoping two crons don't overlap |
-| C7 | budget/occupancy trend (EMA) | the router (reads written state) | capacity-state file | EMA threshold + asymmetry assert | cross → shed now; restore only after M windows | instantaneous spend checks |
-| C8 | sample provenance | the composer (before the run) | instrument_map / prompt scoping | disjointness is verifiable in the config | independence unproven → claims labeled weaker | asking the same model three times |
-| C9 | claim validity lease | the recurring audit | source digests | re-fetch/re-hash vs anchored digest | stale → quarantined + dependents enumerated | a nightly "sources changed" email |
-| C10 | degradation rung | the router (written state only) | capacity-state file + declared rung | rung-transition asymmetry assert | pressure → rehearsed posture (hold/ladder/skip) | try/catch that empties the output |
+**Instrument recommendations (freshness 2026-09-04):** opus / codex-cli / opencode (GLM-5.3-flash via the paid Z.AI coding-plan profile) for vendor-diverse tiers; ollama for cost-zero tiers; `instrument: cli` for the etiquette. gemini-cli remains retired. Diversity claims pass only through the family census with `family_source` provenance from a live `mzt config` probe — instrument-name inequality proves nothing on this host, where claude-code and opencode both default through GLM/Z.AI-family routes.
 
 ---
 
-## The Six Generators
+## The Grammar: v5.1's C1–C10 stand; iteration-6 carriers update four rows
 
-Six physical pressures that generate every universal move, subsuming v4's Ten Forces (mapping in parentheses).
+The ten convergences and their structural-identity discipline are unchanged from v5.1 (state variables, authority, medium, deterministic check, failure transition, non-example — see the v5.1 final, preserved in git history and the decomposed view). Iteration-6 additions that survived review:
 
-| Generator | The pressure | Generates | v4 forces subsumed |
-|-----------|--------------|-----------|--------------------|
-| **G1. Irreversibility** | Some moments cannot be taken back; asymmetric error cost forces admission control before the boundary | C1, waiver discipline, arm-before-fire | Exponential Defect Cost, Progressive Commitment |
-| **G2. The unreliable narrator** | Producers hallucinate, flatter, err, or lie; truth cannot be adjudicated claim-by-claim | C1, C5 (tiny kernel), C8, grounding validations | Information Asymmetry, Structured Disagreement |
-| **G3. Mortal executors** | Every worker ends — shift, process, context window, lease — and the work must not | C2, C6, fencing, black-box ledgers, succession, roll calls | Partial Failure |
-| **G4. Shared finite budgets** | Money, wall-clock, context, attention: finite, shared, contested, telemetry late | C7, degradation ladders, cost limits as first-class objects | Finite Resources, Producer-Consumer Mismatch |
-| **G5. Mutable truth** | The world moves under the corpus: sources rot, configs advance, errata land | C9, C4, re-tiering | Accumulated Signal |
-| **G6. Distributed ignorance** | No participant sees the whole; coordination must work anyway | C6 (observable phase), join-semilattices, self-stabilization, stigmergy | Convergence Imperative, Instrument-Task Fit |
+- **C8 (Independence is constructed)** now carries its arithmetic: Condorcet's Premise supplies the measured design effect and the demotion ladder. Independence claims pass only through the census; `family_source` is provenance, not proof.
+- **C9 (Truth decays)** is generalized by the Validity Window law: a validity interval measured from a creation event, whose crossing *is* an event with a defined handler. Cluster Lead's archived honesty rule is quoted into C9's carrier set: **incomplete inputs publish their incompleteness.**
+- **C10 (Failure degrades in character)** is armed at composition time where expressible (pre-computed thresholds, skip-gated lanes, pre-authorized tier orderings). The Strike Clock's timeout→tier transition — the strongest form — is Awaiting Primitives, and C10 now says so instead of implying it.
+- **C7 (Lagged feedback oscillates)** remains the thinnest convergence; its iteration-6 family members (Batch-Plant Stagger, Green Wave) stay archived. Recorded, not hidden.
 
-LLM orchestration is the intersection of all six at full intensity — hallucinating narrators (G2), dying contexts (G3), lagged shared budgets (G4), mutable sources (G5), no global view (G6) — and, uniquely among the domains studied, it *acts* on the world, importing G1's irreversibility into a medium that otherwise feels frictionless.
+The five iteration-6 convergences recorded but not minted in the draft (pre-paid judgment, the unprimed falsifier, artifacts-not-messages, ending-as-phase, two-axes-of-order) keep that status. The Unprimed Falsifier's carrier survived review as a core pattern; pre-paid judgment survives inside the Economic Injury Line and Rent-Then-Commit; two-axes-of-order survives inside Top-Down Demolition's contrast row. None is minted as a law — the minting criterion (a second iteration independently re-deriving it) remains unmet.
+
+**Generators.** Iteration 6 proposed eight generators against v5's six; the reconciliation in the draft stands (G7 unknown horizon, G8 blind maker are the additions), and the corpus's working vocabulary for pattern frontmatter remains the ten forces and eleven generators of `forces.md`. Mapping for the new core: the unknown-horizon generator (G7) expresses as **Finite Resources + Threshold-Triggered Switch** (Rent-Then-Commit, Economic Injury Line); the blind maker (G8) expresses as **Structured Disagreement + Verify through Diverse Observers** (The Unprimed Falsifier). A future iteration may formalize G7/G8 into forces.md; this document does not edit the force table.
 
 ---
-
-## Composition Contracts
-
-Review 2: "'Composes with everything' is not useful." Every `composes_with` entry in this corpus declares one of four relations:
-
-1. **Layering** — A wraps B: B runs inside A's envelope (B's stages are A's payload).
-2. **Substitution** — A replaces one of B's components with a stricter one (a judge becomes a join; a self-report becomes a gate).
-3. **Prerequisite** — A's output is B's admission condition (B may not start until A's artifact passes).
-4. **Payload/substrate** — A carries B's artifacts as content over B's verification structure (sidecars over a digest chain; corrections over fork-evidence).
-
----
-
 # Laws & Foundational Primitives
+
+*Five laws. A law is shared arithmetic and transition rules that multiple patterns specialize while guarding different acts. A law differs from a schema discipline (Review 2's test): removing it must change behavior in more than one pattern; otherwise it is a field.*
 
 ## The Etiquette Law (formerly The Tool Chain)
 
+```yaml
 ---
 name: "The Etiquette Law"
 scale: foundational
 status: working
 forces: ["Instrument-Task Fit", "Accumulated Signal"]
-generators: ["G2 The Unreliable Narrator"]
+generators: ["Verify through Diverse Observers"]
 problem: "Deterministic protocol checks are given to LLM instruments that can hallucinate them, making the coordination layer no more reliable than the performers it coordinates."
 signals:
   - "any check whose result could be a shell exit code"
   - "a gate described in prose inside a prompt"
   - "a fallback from a deterministic instrument to an LLM"
 stages:
-  - name: etiquette-gate
+  - name: "etiquette-gate"
     sheets: 1
     instrument_guidance: "instrument: cli — deterministic by construction; this stage must never think"
     fallback_friendly: false
-    purpose: "Own the protocol decision (admit/reject) as a command with an empty fallback chain."
-  - name: performance
+    purpose: "Own the protocol decision (admit/reject) as a command with an empty fallback chain, self-tested against a reachable negative control."
+  - name: "performance"
     sheets: 1
-    instrument_guidance: "any AI instrument matched to the work's grain"
+    instrument_guidance: "opus, codex-cli, or opencode — matched to the work's judgment grain"
     fallback_friendly: true
     purpose: "Do the judgment work the gate admitted."
 dependencies:
-  performance: [etiquette-gate]
+  performance: ["etiquette-gate"]
 composes_with:
   - pattern: "Every core pattern"
     how: "prerequisite — every gate in this corpus is an Etiquette Law stage"
 ---
+```
 
-**Status:** Working. **Source:** v4 iterations 2–4; confirmed iteration 5 — 74 independent empty-fallback-chain attestations across the six expeditions; prior art CI/CD.
+**Source:** v4 iterations 2–4; confirmed iteration 5 (74 attestations) and iteration 6 (every deterministic movement in all 42 candidates carried an empty fallback chain, without coordination).
 
-**Core Dynamic.** The deterministic part is always the etiquette, never the music. The protocol layer — cues, gates, ledgers, meters — goes to non-LLM instruments with empty fallback chains, not because AI instruments are unreliable, but because the etiquette must be *more reliable than the performers*, and the cheapest way to make something reliable is to make it not need to think. Three different things are routinely conflated and must not be: *tool use inside an LLM sheet*, *a deterministic validation command*, and *a non-LLM instrument that owns execution* (`instrument: cli`). The etiquette always belongs to the third. The de Bruijn criterion names the audit condition: the checker must be small enough to audit by reading.
+### Core Dynamic
 
-**When to use:** always — this is the substrate of every other pattern. The moment a check can be a command, it must be a command.
+The deterministic part is always the etiquette, never the music. The protocol layer — cues, gates, ledgers, meters, permits, tallies — goes to non-LLM instruments with empty fallback chains, not because AI instruments are unreliable, but because the etiquette must be *more reliable than the performers*, and the cheapest way to make something reliable is to make it not need to think. Three things must not be conflated: tool use inside an LLM sheet, a deterministic validation command, and a non-LLM instrument that owns execution (`instrument: cli`). The etiquette always belongs to the third. The de Bruijn criterion names the audit condition: the checker must be small enough to audit by reading.
 
-**When NOT to use:** the work itself is judgment (do not "optimize" tone into a linter). A deterministic stage given a fallback to an LLM is the anti-pattern this law exists to name — a fallback for a clock is a second clock, and two clocks are the desynchronization you built the law to prevent.
+**The criterion, stated (Reviews 1 and 2):** a check moves to a deterministic stage when it can be made *replayable, externally checkable, and bounded* — not "always, the moment it can be a command." Process startup cost, dependency weight, and privilege boundaries are real reasons an inline tool call inside a thinking sheet can be the safer choice; the law governs where *authority over the decision* lives, and that answer is: with a command whose exit code anyone can re-derive.
 
-**Marianne Score Structure**
+**The second clause (Review 1):** a deterministic gate must be **small, independently testable, and exercised against a reachable negative control**. A gate that cannot fail is a receipt, not a gate. The structure below carries the self-test as a load-bearing movement, not an aspiration: one fixture that must pass and one corruption that must fail, executed before anything is admitted.
+
+### When to Use / When NOT to Use
+
+Use: wherever a decision can be expressed as a command with an exit status — admission, freshness, counting, ordering, digests, presence.
+
+Not: the work itself is judgment (do not "optimize" tone into a linter). The anti-pattern the law exists to name: a deterministic stage given a fallback to an LLM — a fallback for a clock is a second clock, and two clocks are the desynchronization you built the law to prevent.
+
+### Marianne Score Structure
 
 ```yaml
 movements:
-  1: { name: gate, instrument: cli }
-  2: { name: ai-review }
+  1: { name: gates, instrument: cli, instrument_fallbacks: [] }
+  2: { name: review }
 
 sheet:
+  size: 1
   total_items: 2
   dependencies: { 2: [1] }
   per_sheet_fallbacks:
@@ -262,7349 +279,2135 @@ prompt:
   template: |
     {% if stage == 1 %}
     bash "{score_dir}/scripts/run-gates.sh" "{{ workspace }}" --lint --schema --tests
+    The script runs its own teeth first: one known-good fixture must pass,
+    one corrupted fixture must fail. Its exit code is the whole decision.
     {% elif stage == 2 %}
     Review only what the gate admitted. Cite gate outputs by path.
     {% endif %}
 
 validations:
   - type: command_succeeds
-    command: 'test -s "{workspace}/gate-report.json"'
+    command: 'bash {score_dir}/scripts/run-gates.sh {workspace} --self-test'
     condition: "stage == 1"
-  - type: content_regex
-    pattern: "gate-report.json"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/run-gates.sh {workspace} --check-only'
+    condition: "stage == 1"
+  - type: content_contains
     path: "{workspace}/review.md"
+    pattern: "gate-report"
     condition: "stage == 2"
 ```
 
-**Near-miss:** an `agentai` sheet asked "run the linter and report whether it passed" — tool *use* inside a thinking instrument; the exit code became a sentence, and sentences hallucinate.
+### Example
 
-**Example.** A documentation pipeline: markdown lint, link check, and schema validation as `instrument: cli` movements with empty fallback chains; the AI reviewer consumes only the typed gate report — its judgment is spent on meaning, not on re-deriving what a script already decided.
+A documentation pipeline: markdown lint, link check, and schema validation as one `instrument: cli` movement with an empty fallback chain and a self-test; the AI reviewer consumes only the typed gate report — its judgment is spent on meaning, not on re-deriving what a script already decided.
+
+### Composes With
+
+Prerequisite — every gate in every pattern in this corpus is an Etiquette Law stage.
 
 ---
 
-## Fan-out + Synthesis (Foundational Primitive)
+## Fan-out + Synthesis (Foundational Primitive — uncounted)
 
+```yaml
 ---
 name: "Fan-out + Synthesis"
 scale: foundational
 status: working
-forces: ["Information Asymmetry", "Finite Resources"]
-generators: ["G6 Distributed Ignorance"]
+forces: ["Information Asymmetry", "Structured Disagreement"]
+generators: ["Frame Multiplication"]
 problem: "Work that could be parallelized is done sequentially, or parallel outputs remain fragmented without meaningful integration."
 signals:
   - "problem decomposes into independent sub-problems"
   - "sub-problems can be worked simultaneously"
   - "diverse perspectives must be integrated, not concatenated"
 stages:
-  - name: prepare
+  - name: "prepare"
     sheets: 1
-    instrument_guidance: "matched to decomposition difficulty; a cheap instrument suffices for simple scoping"
+    instrument_guidance: "any — defines scope and partitions"
     fallback_friendly: true
-    purpose: "Define scope and shared context."
-  - name: analyze
-    sheets: fan_out(6)
-    instrument_guidance: "capability must match analysis grain; diverse instruments only if independence is the goal (else interchangeable)"
+    purpose: "Define the scope and write the partition map."
+  - name: "analyze"
+    sheets: "fan_out(6)"
+    instrument_guidance: "opus/codex-cli/opencode per partition; assign via per_sheet_instruments on expanded numbers"
     fallback_friendly: true
-    purpose: "Work independent facets in parallel."
-  - name: synthesize
+    purpose: "Work one partition; write an instance-tagged artifact."
+  - name: "synthesize"
     sheets: 1
-    instrument_guidance: "stronger than the producers — integration is higher-order work; a cheap fallback risks concatenation"
+    instrument_guidance: "strong reasoner — must carry a typed merge header"
     fallback_friendly: false
-    purpose: "Integrate parallel outputs, addressing cross-cutting themes."
+    purpose: "Merge with a declared aggregation header and window manifest."
 dependencies:
-  analyze: [prepare]
-  synthesize: [analyze]
+  analyze: ["prepare"]
+  synthesize: ["analyze"]
 composes_with:
+  - pattern: "The Dropped Axiom"
+    how: "the merge header grows the typing clause — every fan-in declares its aggregation rule"
+  - pattern: "The Declared Window"
+    how: "the window clause — synthesis over bounded lookback emits a window manifest"
   - pattern: "Join-Semilattice Merge"
-    how: "substitution — replaces the judge-synthesis with an algebraic join when facts are additive"
-  - pattern: "Attested Merge Gate"
-    how: "substitution — replaces trust-the-merge with contracted, attested, swept merging"
-  - pattern: "Skeptical Oracle"
-    how: "substitution — replaces trust-the-findings with deterministic reconstruction"
-  - pattern: "Proof-Carrying Artifact"
-    how: "layering — wraps the fan-out so synthesis consumes only admitted evidence"
+    how: "substitution — when facts are additive, replace judgment-merge with the algebraic join"
 ---
+```
 
-**Status:** Working. **Source:** ubiquitous; iterations 1–4, confirmed iteration 5 (all six expeditions were forbidden from returning it; the ban is the confirmation — every voice had to position its discoveries against this move, and all six reported the territory around it as saturated). Prior art: MapReduce.
+**Status:** foundational primitive, uncounted in the core (Reviews 1 and 2; v5.1 had already ruled this and the draft's re-promotion is reversed). Prior art MapReduce; confirmed iteration 6 by the ban — the brief again forbade returning it, and all 42 candidates positioned against it.
 
-**Core Dynamic.** Split work into parallel independent streams, merge in a synthesis stage. The boundary condition the corpus earned in iteration 5 stands: fan-out answers *who does what in what order* — and the perpendicular questions (who is authorized, what evidence traveled, who owns failure, when to stop) are not answerable inside it. Every communication and adaptation pattern in this corpus is a wrapper around this move, not a replacement for it.
+### Core Dynamic
 
-**When to use:** the problem decomposes into independent sub-problems with a meaningful merge, and the merge can be trusted or made trustworthy.
+Split work into parallel independent streams, merge in a synthesis stage. The primitive carries two named contracts grown this iteration, both attached **at the merge**, neither a reason to re-count the primitive: the **typing clause** — the synthesis output header carries `{aggregation_rule, axioms_dropped, declared_authority}` (The Dropped Axiom's contract), and the **window clause** — a synthesis reading bounded lookback emits a window manifest joinable to its claims (The Declared Window's contract). "Composes with everything" is retired; the composition contracts in the v5.1 final govern.
 
-**When NOT to use:** sub-problems share mutable state (isolated writers + a merge authority); synthesis is trivial concatenation (a pure join, no judge); fan-out width of 1 suffices; or the outputs must *agree* rather than integrate.
-
-**Marianne Score Structure**
+### Marianne Score Structure
 
 ```yaml
 movements:
   1: { name: prepare }
-  2: { name: analyze }
+  2: { name: analyze, voices: 6 }
   3: { name: synthesize }
 
 sheet:
-  total_items: 3
+  size: 1
+  total_items: 3                    # three movements; expansion yields 8 sheets
   fan_out: { 2: 6 }
   dependencies: { 2: [1], 3: [2] }
+  per_sheet_fallbacks:
+    8: []                           # movement 3 = sheet 8; the merge does not degrade
 
 prompt:
   template: |
     {% if stage == 1 %}
-    Define scope. Write {{ workspace }}/scope.md and stop.
+    Define scope. Write {{ workspace }}/scope.md and the partition map.
     {% elif stage == 2 %}
-    Analyze module {{ instance }}. Write {{ workspace }}/analysis-{{ instance }}.md and stop.
-    {% elif stage == 3 %}
-    Read all analysis files. Produce a unified review addressing cross-cutting concerns.
+    Analyze partition {{ instance }} of {{ voice_count }}. Write
+    {{ workspace }}/analysis-{{ instance }}.md with an input_type header row.
+    {% else %}
+    Read all analysis files. Your output header MUST carry aggregation_rule,
+    axioms_dropped, declared_authority. Write {{ workspace }}/synthesis.md.
     {% endif %}
 
 validations:
-  - type: file_exists
-    path: "{workspace}/scope.md"
-    condition: "stage == 1"
-  - type: file_exists
-    path: "{workspace}/analysis-{instance}.md"
-    condition: "stage == 2"
   - type: command_succeeds
-    # Quorum floor 4-of-6 is a DECLARED degradation decision: two dead analysts
-    # must not kill the synthesis, but the synthesis must know what it is missing.
-    command: 'test $(ls {workspace}/analysis-*.md | wc -l) -ge 4'
+    command: 'test $(ls {workspace}/analysis-*.md | wc -l) -eq 6'
+    condition: "stage == 2"
+  - type: content_contains
+    path: "{workspace}/synthesis.md"
+    pattern: "aggregation_rule:"
     condition: "stage == 3"
 ```
 
-**Near-miss:** six analysts all reading each other's outputs "for coherence" — independence destroyed before the merge; you paid for a fan-out and got one committee with six names.
+Note what the review forced: the fan-out completeness check asserts **exactly six** files once, after movement 2's sheets have run — not "at least four" mid-fan-out, which fails the first several sheets (Review 1's finding that validations run per expanded sheet).
 
-**Example.** Six-region market analysis: one sheet per region, one synthesis, wrapped in Proof-Carrying Artifact sidecars so the synthesis consumes only admitted evidence.
+---
+
+## The Validity Window
+
+```yaml
+---
+name: "The Validity Window"
+scale: foundational
+status: working
+forces: ["Information Asymmetry", "Accumulated Signal"]
+generators: ["Threshold-Triggered Switch"]
+problem: "Pipelines hold expirable state — tokens, permits, freshness-bound context, generated datasets — and silently reuse it after it expires."
+signals:
+  - "state whose safety or truth depends on when it was created"
+  - "a TTL, freshness bound, or maturity threshold mentioned only in prose"
+  - "retry or resume paths that re-present old artifacts"
+stages:
+  - name: "stamp"
+    sheets: 1
+    instrument_guidance: "instrument: cli — the creation event writes the clock; nothing else may"
+    fallback_friendly: false
+    purpose: "Write {window_id, subject_digest, issued_at, expires_at, handler} atomically."
+  - name: "probe"
+    sheets: 1
+    instrument_guidance: "instrument: cli — measures monotone accumulation when readiness is not wall-clock"
+    fallback_friendly: false
+    purpose: "Append measured maturity units to the accumulation ledger."
+  - name: "gate"
+    sheets: 1
+    instrument_guidance: "instrument: cli — the two-sided window arithmetic in one transaction"
+    fallback_friendly: false
+    purpose: "Decide valid | expired→regenerate | degraded, adjacent to the consumer."
+  - name: "consume"
+    sheets: 1
+    instrument_guidance: "any — works under the window the gate admitted"
+    fallback_friendly: true
+    purpose: "Consume the artifact, citing the window id in the output header."
+dependencies:
+  probe: ["stamp"]
+  gate: ["stamp", "probe"]
+  consume: ["gate"]
+composes_with:
+  - pattern: "The Gas-Free Certificate"
+    how: "the destructive-boundary specialization — independence and digest binding added"
+  - pattern: "The Declared Window"
+    how: "the epistemic specialization — the window bounds claims, not safety"
+  - pattern: "Effectivity Blocks"
+    how: "generalizes it — config validity is one carrier of the window arithmetic"
+---
+```
+
+**Source:** minted iteration 6 from convergence C9's carriers (Builder, Reasoner, Commander, Gardener); survived all three reviews with the transition table demanded by Reviews 1 and 2 added.
+
+### Core Dynamic
+
+A validity interval measured from a creation event, whose crossing forces regeneration or degradation — never silent reuse. The arithmetic is one discipline across carriers: a creation event stamps a clock; crossing the clock is an *event with a defined handler*; the handler regenerates or degrades. **The transition table (Reviews 1 and 2):**
+
+| State | Entry condition | Handler |
+|---|---|---|
+| `stamped` | creation event wrote `{window_id, subject_digest, issued_at, expires_at, handler}` | artifact usable only via `valid` |
+| `valid` | now ∈ [issued_at + min_age, expires_at) **and** maturity ≥ floor | consumer admitted; consumer must cite `window_id` |
+| `expired` | now ≥ expires_at, or maturity probe red under min-age backstop | **fail forward to regeneration**: a NEW window id, never re-presentation of the same bytes |
+| `regenerated` | gate re-stamped within its own transaction | old id lands on a revocation list; any input containing it fails the join |
+| `degraded` | handler declares degradation instead | tier label written to the window report; the run proceeds at declared lower force |
+
+**Precedence (Review 1):** minimum age gates entry, expiry gates exit, accumulated maturity is a *parallel* readiness channel measured by monotone accumulation (not every day is a day) with the minimum-age backstop surviving a green probe. **Adjacency (Review 1):** the gate movement runs immediately before the consumer — never validated a sheet after consumption — and the consumer cites the window id, so a stale id appearing in any consumer input is a join failure, not a prose hope.
+
+### Marianne Score Structure
+
+```yaml
+movements:
+  1: { name: stamp, instrument: cli, instrument_fallbacks: [] }
+  2: { name: probe, instrument: cli, instrument_fallbacks: [] }
+  3: { name: gate, instrument: cli, instrument_fallbacks: [] }
+  4: { name: consume }
+
+sheet:
+  size: 1
+  total_items: 4
+  dependencies: { 2: [1], 3: [1, 2], 4: [3] }
+  per_sheet_fallbacks:
+    1: []
+    2: []
+    3: []
+
+prompt:
+  variables: { ttl_minutes: 90, min_age_seconds: 30 }
+  template: |
+    {% if stage == 1 %}
+    bash "{score_dir}/scripts/window.sh" stamp --subject "{{ workspace }}/artifact.bin" \
+      --ttl-minutes {{ ttl_minutes }} --min-age {{ min_age_seconds }} --emit "{{ workspace }}/window.json"
+    {% elif stage == 2 %}
+    bash "{score_dir}/scripts/window.sh" probe --maturity-ledger "{{ workspace }}/maturity.jsonl" --append
+    {% elif stage == 3 %}
+    bash "{score_dir}/scripts/window.sh" gate "{{ workspace }}/window.json" \
+      --maturity "{{ workspace }}/maturity.jsonl" --regenerate-on-expiry
+    {% else %}
+    Consume the artifact. Your output header MUST cite window_id from
+    {{ workspace }}/window.json. Report generation is forbidden without it.
+    {% endif %}
+
+validations:
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/window.sh --self-test'   # stale fixture must fail; green-under-min-age must fail
+    condition: "stage == 3"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/window.sh gate {workspace}/window.json --check-only'
+    condition: "stage == 4"
+  - type: content_contains
+    path: "{workspace}/output.md"
+    pattern: "window_id:"
+    condition: "stage == 4"
+```
+
+The negative controls run in `--self-test`: a stale window must fail the gate and produce a new id; a green probe under minimum age must fail. The stale id must never appear in a consumer input — the join is `window.sh audit`'s job in any downstream score.
+
+### Example
+
+A long migration pipeline using 60-minute cloud tokens: each stage batch-refreshes and stamps; the probe actually authenticates a synthetic request; the gate passes only inside the window. When stage four overruns, the gate routes to re-batch inside its own transaction instead of letting stage five discover a 401 mid-flight.
+
+---
+
+## The Freeze (Lock-as-Interface)
+
+```yaml
+---
+name: "The Freeze"
+scale: foundational
+status: working
+forces: ["Exponential Defect Cost", "Producer-Consumer Mismatch"]
+generators: ["Contract at Interfaces"]
+problem: "Downstream work starts against upstream structure that is still moving, so finishers build on a version that stops existing."
+signals:
+  - "parallel specialists blocked on a structure still under negotiation"
+  - "re-deciding structure later costs multiples of deciding it now"
+  - "post-freeze edits arriving silently instead of as visible amendments"
+stages:
+  - name: "propose"
+    sheets: "fan_out(3)"
+    instrument_guidance: "any — pitches complete structures with stable element ids"
+    fallback_friendly: true
+    purpose: "Propose complete candidate structures with stable BEAT-xx identifiers."
+  - name: "lock"
+    sheets: 1
+    instrument_guidance: "instrument: cli — the appointed convergence authority's decision, executed deterministically"
+    fallback_friendly: false
+    purpose: "Write frozen structure + digest; one hash becomes the interface."
+  - name: "specialize"
+    sheets: "fan_out(3)"
+    instrument_guidance: "any — each receives the frozen artifact by required cadenza"
+    fallback_friendly: true
+    purpose: "Draft against the frozen structure, citing its digest."
+  - name: "join-gate"
+    sheets: 1
+    instrument_guidance: "instrument: cli — sha256sum -c plus citation join"
+    fallback_friendly: false
+    purpose: "Reject any successor built on a different hash."
+dependencies:
+  lock: ["propose"]
+  specialize: ["lock"]
+  join-gate: ["specialize"]
+composes_with:
+  - pattern: "Fork-Evident History"
+    how: "payload/substrate — the lock's digest is the chain's head"
+  - pattern: "Prefabrication"
+    how: "contrast — authored-in-advance contract with no discovery room; the Freeze has discovery then authority-declared termination"
+  - pattern: "The Unprimed Falsifier"
+    how: "the falsifier's evidence loop terminates in this lock, not in convergence"
+---
+```
+
+**Source:** minted iteration 6 (convergence: iteration terminates by authority declaration, not convergence); survived review with the pin made expressible and the delivery made physical (Reviews 1, 2, 3).
+
+### Core Dynamic
+
+An artifact under negotiation becomes, by declaration, an **interface** — digest-named, delivered by required cadenza, consumed by parallel successors whose validity is a join against the digest. Transition rules: iteration terminates by *authority declaration* (an appointed convergence authority, not an elected one); the frozen thing is the spec that parallel specialization obeys; post-freeze change travels as visible amendment — a new digest that supersedes, never a silent edit of the frozen bytes. The reordering economics are the point: structure decided at the beat stage costs 10× less than at the prose stage.
+
+**The pin, made expressible (Review 3):** `file_sha256` cannot verify a digest discovered at runtime — it requires a literal 64-hex at authorship. The lock movement writes `frozen.sha256`; every consumer-side check is `sha256sum -c` inside a `command_succeeds`. **The delivery, made physical (Reviews 1 and 2):** the frozen artifact reaches each specialist as a **required cadenza keyed to its expanded sheet number** — absent file, failed sheet, no specialist improvises against a structure it never received.
+
+### Marianne Score Structure
+
+```yaml
+movements:
+  1: { name: propose, voices: 3 }
+  2: { name: lock, instrument: cli, instrument_fallbacks: [] }
+  3: { name: specialize, voices: 3 }
+  4: { name: join-gate, instrument: cli, instrument_fallbacks: [] }
+
+sheet:
+  size: 1
+  total_items: 4                     # expansion: 1-3 propose, 4 lock, 5-7 specialize, 8 join
+  fan_out: { 1: 3, 3: 3 }
+  dependencies: { 2: [1], 3: [2], 4: [3] }
+  cadenzas:
+    5:
+      - file: "{{ workspace }}/frozen/structure.yaml"
+        as: context
+        required: true
+    6:
+      - file: "{{ workspace }}/frozen/structure.yaml"
+        as: context
+        required: true
+    7:
+      - file: "{{ workspace }}/frozen/structure.yaml"
+        as: context
+        required: true
+  per_sheet_fallbacks:
+    4: []
+    8: []
+
+prompt:
+  template: |
+    {% if stage == 1 %}
+    Propose a complete structure with stable BEAT-xx identifiers for your pitch.
+    Write {{ workspace }}/pitch-{{ instance }}.yaml.
+    {% elif stage == 2 %}
+    bash "{score_dir}/scripts/lock.sh" --pitches "{{ workspace }}/pitch-*.yaml" \
+      --emit "{{ workspace }}/frozen/structure.yaml" --digest "{{ workspace }}/frozen.sha256"
+    {% elif stage == 3 %}
+    Draft your section against the frozen structure you received. Cite its digest
+    (from frozen.sha256) in your output header. Write {{ workspace }}/draft-{{ instance }}.md.
+    {% else %}
+    bash "{score_dir}/scripts/freeze-join.sh" "{{ workspace }}/draft-*.md" --against "{{ workspace }}/frozen.sha256"
+    {% endif %}
+
+validations:
+  - type: command_succeeds
+    command: 'cd {workspace} && sha256sum -c frozen.sha256'
+    condition: "stage == 3"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/freeze-join.sh {workspace}/draft-1.md {workspace}/draft-2.md {workspace}/draft-3.md --against {workspace}/frozen.sha256'
+    condition: "stage == 4"
+  - type: content_contains
+    path: "{workspace}/draft-1.md"
+    pattern: "structure-digest:"
+    condition: "stage == 3"
+```
+
+The join gate rejects any successor built on a different hash — drift, not opinion, kills the stale finisher. A late scoped-delta pass (the Punch-Up form) re-enters through a new lock: add-only over the frozen spine, with the gate proving the structure delta is zero and the prose delta positive.
+
+### Example
+
+A six-chapter onboarding guide: three pitching sheets propose incompatible orderings; the lock freezes one beat shape; three drafting sheets write against it, each receiving it by cadenza; the gate rejects any chapter whose headings drift from the locked sequence. A readability pass lands as an amendment with a new digest, visibly superseding.
+
+---
+
+## Typed Force (narrowed)
+
+```yaml
+---
+name: "Typed Force"
+scale: foundational
+status: working
+forces: ["Structured Disagreement", "Information Asymmetry"]
+generators: ["Contract at Interfaces"]
+problem: "Authority-carrying and claim-carrying objects flow through pipelines without a type a gate can join on, so binding decisions and persuasive suggestions enforce identically."
+signals:
+  - "downstream consumers behave differently depending on what kind of thing this is, but the kind is not a field"
+  - "a decision record indistinguishable from an observation"
+  - "an aggregation presented as neutral"
+stages:
+  - name: "emit-typed"
+    sheets: 1
+    instrument_guidance: "any — emits objects whose force field is assigned by a NAMED authority"
+    fallback_friendly: true
+    purpose: "Produce decision/claim objects carrying {force, assigned_by} at creation."
+  - name: "typecheck"
+    sheets: 1
+    instrument_guidance: "instrument: cli — joins on the type, never judges the type"
+    fallback_friendly: false
+    purpose: "Enforce type-selects-rule and visible retyping; reject untyped and unassigned rows."
+dependencies:
+  typecheck: ["emit-typed"]
+composes_with:
+  - pattern: "The Precedent Bench"
+    how: "its authority form — binding/persuasive force over decisions"
+  - pattern: "The Dropped Axiom"
+    how: "its fan-in form — aggregation headers over merges"
+  - pattern: "Proof-Carrying Artifact"
+    how: "its evidence form — admissibility typing over artifacts (v5.1)"
+---
+```
+
+**Source:** minted iteration 6; **narrowed by review** — Review 1's umbrella-cut is answered by delegation (below), Review 2's syntax/authority split is executed as the `assigned_by` provenance field.
+
+### Core Dynamic
+
+Untyped authority is vibes; untyped claims are furniture. The law is four transitions, no more: **(1) type at creation** — an object carries its force field when emitted, not when disputed; **(2) the type is assigned by a named authority** — `assigned_by` is a provenance field a gate can check; the gate checks syntax and provenance and *never* the truth of the assignment, which belongs to the assigning authority and is contested through that authority's own motion procedure; **(3) the type selects the enforcement rule** — bind/persuade, admit/quarantine, fund-acquisition-only, demote; **(4) retyping is visible** — supersession or demotion edges, never silent edits.
+
+What the draft's umbrella claimed and this narrowing delegates: legal force semantics → The Precedent Bench; fan-in aggregation typing → The Dropped Axiom; evidence admissibility → Proof-Carrying Artifact; allocation provenance → archive. The law is the shared discipline those patterns specialize.
+
+### Marianne Score Structure
+
+```yaml
+movements:
+  1: { name: emit-typed }
+  2: { name: typecheck, instrument: cli, instrument_fallbacks: [] }
+
+sheet:
+  size: 1
+  total_items: 2
+  dependencies: { 2: [1] }
+  per_sheet_fallbacks:
+    2: []
+
+prompt:
+  template: |
+    {% if stage == 1 %}
+    Produce the decision artifact {{ workspace }}/decision.jsonl. Every row MUST carry
+    force ∈ {binding, persuasive} and assigned_by: <authority-id>, set at creation.
+    Aggregations additionally carry {aggregation_rule, axioms_dropped, declared_authority}.
+    {% else %}
+    python3 "{score_dir}/scripts/force-typecheck.py" "{{ workspace }}/decision.jsonl"
+    {% endif %}
+
+validations:
+  - type: command_succeeds
+    command: 'python3 {score_dir}/scripts/force-typecheck.py {workspace}/decision.jsonl'
+    condition: "stage == 2"
+  - type: content_regex
+    pattern: "force: (binding|persuasive)"
+    path: "{workspace}/decision.jsonl"
+    condition: "stage == 2"
+  - type: content_contains
+    path: "{workspace}/decision.jsonl"
+    pattern: "assigned_by:"
+    condition: "stage == 2"
+```
+
+The typechecker enforces the bijection — rule ∈ the shared demotion ladder `{majority, weighted-correlation, editorial-with-dissents, refusal}` ⟺ the matching `axioms_dropped` declaration (Review 3's enum mismatch fixed by sharing one ladder with Condorcet's Premise) — and rejects any row whose `assigned_by` is empty or unknown.
+
+### Example
+
+A refactoring campaign's early scores decided "no new dependencies," "errors at exit 0 are still failing." Typed as holdings, they bind later scores until explicitly overruled; a later score wanting a new dependency files a typed motion — distinguish or overrule — and the citation gate catches an un-overruled contradiction deterministically.
+
+---
+
+## The Write-Time Record
+
+```yaml
+---
+name: "The Write-Time Record"
+scale: foundational
+status: working
+forces: ["Partial Failure", "Information Asymmetry"]
+generators: ["Accumulate Knowledge"]
+problem: "Obligations and provenance are reconstructed by archaeology at end-of-life, after the people and context that created them are gone."
+signals:
+  - "provisioning creates removal obligations nobody writes down"
+  - "a teardown plan that begins with 'figure out what we created'"
+  - "a manifest written from memory at the end of a campaign"
+stages:
+  - name: "plan-effects"
+    sheets: 1
+    instrument_guidance: "any — plans effects as typed rows with stable effect ids"
+    fallback_friendly: true
+    purpose: "Emit effects-plan.jsonl: {effect_id, kind, command, decommission_cmd}."
+  - name: "transact"
+    sheets: 1
+    instrument_guidance: "instrument: cli — ONE process writes intent row, executes effect, appends receipt"
+    fallback_friendly: false
+    purpose: "Atomic per-effect transaction; idempotent by effect_id; fail-closed on open rows."
+  - name: "audit"
+    sheets: 1
+    instrument_guidance: "instrument: cli — three-way join with empty residue"
+    fallback_friendly: false
+    purpose: "row ↔ receipt ↔ settlement join; open rows or unmatched receipts fail."
+dependencies:
+  transact: ["plan-effects"]
+  audit: ["transact"]
+composes_with:
+  - pattern: "Demobilization Checkout"
+    how: "its consumption side — the demob census reads the record as its work list"
+  - pattern: "Fork-Evident History"
+    how: "payload/substrate — the record rides the append-only chain"
+  - pattern: "Vintage Overlay"
+    how: "the vintage record is its run-level instance"
+---
+```
+
+**Source:** minted iteration 6; Reviews 1 and 2 demanded atomicity — the draft's three loosely sequenced stages allowed a row to exist while the effect failed, changed target, or ran twice. This structure closes that window.
+
+### Core Dynamic
+
+Obligations and provenance are recorded at the moment the obligation is created — not discovered by archaeology at the end. The ship carries its Inventory of Hazardous Materials from keel-laying, so the demolition contractor's work list is written by the builder years before the dismantler exists. **The atomicity rule (Reviews 1 and 2):** intent row, effect, and receipt commit inside **one CLI process**, keyed by a stable `effect_id`: the transact wrapper appends the intent row, executes the command, and appends the receipt — `{effect_id, exit_code, settled_at}` — in a single invocation. A crash between intent and receipt leaves an **open row**, and open rows fail the audit (fail-closed, never silently carried). A re-run with the same `effect_id` detects the prior state and refuses double-execution: unstarted rows re-run; started-unsettled rows stop for inspection; settled rows are joined, never repeated. Recovery semantics per transition, as Review 1 required.
+
+This is Legion's own first law — disk over memory — discovered independently by every mature coordination domain: the only honest moment to record a promise is the moment it is made, and a manifest written at end-of-life from memory is exactly the survivor-testimony failure the record exists to prevent.
+
+### Marianne Score Structure
+
+```yaml
+movements:
+  1: { name: plan-effects }
+  2: { name: transact, instrument: cli, instrument_fallbacks: [] }
+  3: { name: audit, instrument: cli, instrument_fallbacks: [] }
+
+sheet:
+  size: 1
+  total_items: 3
+  dependencies: { 2: [1], 3: [2] }
+  per_sheet_fallbacks:
+    2: []
+    3: []
+
+prompt:
+  template: |
+    {% if stage == 1 %}
+    Plan the effects. Write {{ workspace }}/effects-plan.jsonl, one row per effect:
+    {effect_id, kind, command, decommission_cmd}. effect_id is stable and unique.
+    {% elif stage == 2 %}
+    bash "{score_dir}/scripts/effects.sh" transact --plan "{{ workspace }}/effects-plan.jsonl" \
+      --ledger "{{ workspace }}/disposal-ledger.jsonl"
+    {% else %}
+    bash "{score_dir}/scripts/effects.sh" audit --ledger "{{ workspace }}/disposal-ledger.jsonl" --require-empty-residue
+    {% endif %}
+
+validations:
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/effects.sh --self-test'
+    condition: "stage == 2"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/effects.sh audit --ledger {workspace}/disposal-ledger.jsonl --require-empty-residue'
+    condition: "stage == 3"
+```
+
+The self-test is the negative control Review 1 required for every destructive pattern: a fixture row that fails mid-transaction must leave an open row that `audit` rejects, and a re-presented settled id must be refused.
+
+### Example
+
+A two-year research campaign provisions buckets, service accounts, webhooks, and model artifacts across four clouds, each through the transact wrapper. Funding ends: the decommission score reads the ledger as its sole work list — newest-first, by `effect_id` — drains, deletes, and revokes every row, and emits a completion certificate the day the grant closes. No console archaeology, no forgotten webhook.
 
 ---
 # Communication Patterns
 
-*v4 had one pattern at this scale — the declared critical deficit. Six enter v5.1. The group's discovery: shared files as a medium for **permission and phase** (who may act, on what, valid until when, superseded by whom), where v4's Stigmergic Workspace used them as a medium for content. Acknowledgement that lives in a prompt is vibes; acknowledgement that lives in a workspace file with a timestamp is a receipt.*
+*Three enter — the per-consumer projection, the measured jury, and the window-honesty contract. Calling the Show awaits primitives; Command by Negation is an idiom under Mission Command.*
 
-## Proof-Carrying Artifact
+## Monitor Mix
 
+```yaml
 ---
-name: "Proof-Carrying Artifact"
+name: "Monitor Mix"
 scale: communication
 status: working
-forces: ["Information Asymmetry", "Structured Disagreement", "Exponential Defect Cost"]
-generators: ["G2 The Unreliable Narrator", "G1 Irreversibility"]
-problem: "Consumers must either trust producer claims across a trust boundary or re-derive the work at full cost."
+forces: ["Information Asymmetry", "Finite Resources"]
+generators: ["Contract at Interfaces"]
+problem: "Many consumers need different slices of one shared accumulating state, and each currently receives either everything or someone else's slice."
 signals:
-  - "any handoff where the cost of being wrong exceeds the cost of checking"
-  - "claims like 'tests pass' or 'this number came from the source'"
-  - "a downstream sheet about to build on an upstream assertion"
+  - "one shared state, many consumers with genuinely different depth needs"
+  - "a summarizer drowning in function bodies; an implementer starved of them"
+  - "routing decisions made ad hoc per run instead of written down"
 stages:
-  - name: produce
+  - name: "channel-inventory"
     sheets: 1
-    instrument_guidance: "the expensive producer — any AI instrument matched to the work"
-    fallback_friendly: true
-    purpose: "Do the work AND write the admissibility evidence beside it."
-  - name: extract
-    sheets: 1
-    instrument_guidance: "instrument: cli — deterministic anchor extraction and directory preparation"
+    instrument_guidance: "instrument: cli — enumerate the channels; no opinions"
     fallback_friendly: false
-    purpose: "Build the typed claim ledger and the verdicts directory."
-  - name: verify
-    sheets: fan_out(10)
-    instrument_guidance: "vendor-diverse AI checkers, one claim each; static worst-case width (data-driven width does not exist in the substrate)"
-    fallback_friendly: true
-    purpose: "Verify one claim against its source anchor; verdict ADMITTED or CUT."
-  - name: admit
+    purpose: "Emit channels.yaml from the actual shared state."
+  - name: "assemble"
     sheets: 1
-    instrument_guidance: "instrument: cli — re-hash every digest; exit nonzero on mismatch"
+    instrument_guidance: "instrument: cli — applies the versioned mixdown prescription"
     fallback_friendly: false
-    purpose: "Mechanically refuse any artifact whose evidence does not re-hash."
-  - name: consume
+    purpose: "Project per-consumer mixes under char budgets; refuse union-over-source."
+  - name: "line-check"
     sheets: 1
-    instrument_guidance: "any AI instrument; receives only admitted evidence as a required cadenza"
+    instrument_guidance: "instrument: cli — per-consumer liveness and budget sweep"
+    fallback_friendly: false
+    purpose: "Every mix has every required channel within budget, before doors."
+  - name: "perform"
+    sheets: "fan_out(3)"
+    instrument_guidance: "per consumer role; each receives ONLY its mix by required cadenza"
     fallback_friendly: true
-    purpose: "Work only from admitted artifacts; DEBT-listed claims ship visibly unanchored."
+    purpose: "Perform the consumer role from the mix, citing its mix id."
 dependencies:
-  extract: [produce]
-  verify: [extract]
-  admit: [verify]
-  consume: [admit]
+  assemble: ["channel-inventory"]
+  line-check: ["assemble"]
+  perform: ["line-check"]
 composes_with:
-  - pattern: "Fork-Evident History"
-    how: "payload/substrate — sidecars become journal links over the digest chain"
-  - pattern: "Flight Rules"
-    how: "substitution — rule citations grounding-validated; a fabricated citation fails the run"
-  - pattern: "Skeptical Oracle"
-    how: "substitution — the oracle's reconstruction stage is this pattern applied to peer review"
-  - pattern: "Fan-out + Synthesis"
-    how: "layering — wraps the fan-out so synthesis consumes only admitted evidence"
+  - pattern: "Relay Zone"
+    how: "layering — route per consumer first, then compress a mix that would drown its consumer"
+  - pattern: "The Declared Window"
+    how: "the mix manifest is the delivery receipt the window contract joins against"
 ---
+```
 
-**Status:** Working. **Source:** proof-carrying code, LCF kernels (iteration 5, Reasoner expedition). Absorbs the Annotated Galley (claim form) and Traceability Chain (pedigree form), seams stated below per the merge law.
+**Source:** Expedition 3; survived review with delivery enforced and isolation made physical (Reviews 1 and 2).
 
-**Core Dynamic.** The producer does the expensive work and ships the artifact *with its admissibility evidence*; the consumer checks rather than trusts, and checking is orders of magnitude cheaper than producing. Trust shifts from the producer's identity or confidence to the checker's smallness (the de Bruijn criterion: the checker must be small enough to audit by reading). A claim without its evidence bundle is not *wrong* — it is *inadmissible*: it cannot even be considered. One mechanism, three forms, each with a **different admission check** (Review 2's split — they are not the same bundle):
+### Core Dynamic
 
-- **Proof form** (canonical): the bundle is `{command, exit_code, stdout_digest, input_digests[], outputs[]}` — the means of re-checking the property itself. *Admission check: re-run / re-hash.*
-- **Pedigree form** (absorbed Traceability Chain): the bundle is a provenance block — source hashes, upstream sheet IDs, spec versions, uncertainty statement. *Admission check: digest presence + spec-version match.* **Seam: pedigree answers where it came from; proof answers why it should be admitted. Pedigree alone never admits.**
-- **Claim form** (absorbed Annotated Galley): the bundle is an inline anchor — `[[C7: claim text | source: evidence/report.pdf#p12]]` — extracted into a typed claim ledger before verification. *Admission check: anchor extractable + source addressable.* A claim that cannot name its source does not get weakly verified; it is structurally inadmissible.
+One shared state, many ears, and no ear wants all of it. Same channels, different gains, different destinations — and the mixing decisions are *routing* decisions, made once, written down as a versioned prescription, and checked by a deterministic sweep before the run starts. Distinct from Relay Zone (compresses the stream's *size*) and Screening Cascade (filters items by escalation): Monitor Mix changes each consumer's **view**, and the mix is a first-class artifact. The line check — every channel in every mix, before doors — is a per-consumer liveness sweep: a consumer whose mix is dead does not perform.
 
-**When to use:** every handoff across a trust boundary — sheet to sheet, score to score via `on_success`, agent to human reviewer.
+**Delivery enforced (Reviews 1 and 2):** `spec_tags` cannot route a distinct file per fan-out instance, but **cadenzas keyed on expanded sheet numbers can** — each performer's cadenza injects exactly its mix, `required: true`, path templated on `{{ instance }}`. Consumers never read raw channels; the prescription's union-over-source refusal is checked in assembly (a prescription whose mixes exceed the source is amplification, not mixing — it exits non-zero).
 
-**When NOT to use:** properties not cheaply decidable — taste, tone, "is this a good design" has no checker, and pretending to verify it produces theater. When the checker grows as complex as the producer, the asymmetry that made the pattern worth having is gone. Ephemeral artifacts never re-consumed downstream. In the claim form: evaluative claims cannot anchor; private or perishable sources rot the anchor (needs Negative-Treatment Watch downstream).
-
-**Marianne Score Structure**
+### Marianne Score Structure
 
 ```yaml
 movements:
-  1: { name: produce }
-  2: { name: extract, instrument: cli }
-  3: { name: verify }
-  4: { name: admit, instrument: cli }
-  5: { name: consume }
+  1: { name: channel-inventory, instrument: cli, instrument_fallbacks: [] }
+  2: { name: assemble, instrument: cli, instrument_fallbacks: [] }
+  3: { name: line-check, instrument: cli, instrument_fallbacks: [] }
+  4: { name: perform, voices: 3 }
 
 sheet:
-  total_items: 5
-  fan_out: { 3: 10 }                  # STATIC worst-case width: one checker per claim,
-  dependencies: { 2: [1], 3: [2], 4: [3], 5: [4] }   # capped at 10; a bigger claim set
-  per_sheet_fallbacks:                # splits into batches of scores, not wider fan-out
-    2: []
-    4: []                             # extraction and admission never degrade
+  size: 1
+  total_items: 4                    # expansion: 1,2,3 then perform = sheets 4,5,6
+  fan_out: { 4: 3 }
+  dependencies: { 2: [1], 3: [2], 4: [3] }
   cadenzas:
-    10:
-      - file: "{{ workspace }}/claim-ledger.json"
+    4:
+      - file: "{{ workspace }}/mixes/consumer-{{ instance }}.md"
         as: context
-        required: true                # no verdict without the ledger in context
+        required: true
+    5:
+      - file: "{{ workspace }}/mixes/consumer-{{ instance }}.md"
+        as: context
+        required: true
+    6:
+      - file: "{{ workspace }}/mixes/consumer-{{ instance }}.md"
+        as: context
+        required: true
+  per_sheet_fallbacks:
+    1: []
+    2: []
+    3: []
 
 prompt:
-  variables:
-    claims: 10
   template: |
     {% if stage == 1 %}
-    Do the work. Write {{ workspace }}/deliverable.md. EVERY load-bearing claim carries
-    an inline anchor [[Cn: text | source: path#locator]]. Also write
-    {{ workspace }}/evidence/produce.json recording {command, exit_code, digests, outputs}.
+    bash "{score_dir}/scripts/mix.sh" channels --from "{{ workspace }}/shared/" --emit "{{ workspace }}/channels.yaml"
     {% elif stage == 2 %}
-    mkdir -p "{{ workspace }}/verdicts" && python3 "{score_dir}/scripts/anchor-extractor.py" \
-      "{{ workspace }}/deliverable.md" > "{{ workspace }}/claim-ledger.json"
+    bash "{score_dir}/scripts/mix.sh" assemble --channels "{{ workspace }}/channels.yaml" \
+      --prescription "{score_dir}/mixdown.yaml" --out "{{ workspace }}/mixes/"
     {% elif stage == 3 %}
-    Verify ONLY claim {{ instance }} against its source anchor in claim-ledger.json.
-    Verdict ADMITTED or CUT. Quote the claim verbatim and cite the anchor ID.
-    Write {{ workspace }}/verdicts/C{{ instance }}.md and stop.
-    {% elif stage == 4 %}
-    bash "{score_dir}/scripts/evidence-gate.sh" "{{ workspace }}/evidence/" \
-      "{{ workspace }}/claim-ledger.json" "{{ workspace }}/verdicts/"
-    {% elif stage == 5 %}
-    Work only from admitted artifacts. DEBT-listed claims ship visibly unanchored.
+    bash "{score_dir}/scripts/mix.sh" line-check --dir "{{ workspace }}/mixes/" --against "{score_dir}/mixdown.yaml"
+    {% else %}
+    You receive ONLY your mix file. Perform your consumer role from it.
+    Cite mix id and its channels in your output header.
     {% endif %}
 
 validations:
   - type: command_succeeds
-    command: 'test -s "{workspace}/evidence/produce.json"'      # the produce stage is INSTRUCTED to write it
-    condition: "stage == 1"
-  - type: command_succeeds
-    command: 'test -s "{workspace}/claim-ledger.json" && test -d "{workspace}/verdicts"'  # extract stage creates the dir
-    condition: "stage == 2"
-  - type: content_regex
-    pattern: "ADMITTED|CUT"
-    path: "{workspace}/verdicts/C{instance}.md"
+    command: 'bash {score_dir}/scripts/mix.sh line-check --dir {workspace}/mixes --against {score_dir}/mixdown.yaml'
     condition: "stage == 3"
-  - type: command_succeeds
-    command: 'bash {score_dir}/scripts/evidence-gate.sh --check "{workspace}/evidence/"'  # re-hash; nonzero on mismatch
+  - type: content_contains
+    path: "{workspace}/consumer-outputs/out-1.md"
+    pattern: "mix:"
     condition: "stage == 4"
 ```
 
-**Near-miss:** attaching a confidence score to each claim — pedigree theater; confidence is not a checker, and 0.9 twice is not evidence once.
+The negative control is a line-check fixture: a mix missing a required channel must fail the sweep before any performer runs.
 
-**Example.** A contract-review pipeline: every extracted clause claim ("the liability cap is $1M") ships with file path + byte-range digest; the synthesis stage mechanically refuses claims whose digests do not re-hash against the corpus it was given. The paralegal-level claim never enters the memo unverified — not because the extractor is trusted, but because unverified claims are inadmissible.
+### Example
 
----
-
-## Positive Transfer
+An incident postmortem: one timeline, three readers. The executive mix: impact counts, deltas, recovery timestamps. The engineer's mix: full command logs and stack traces. Compliance: the custody sequence with seal references. Same channels, three mixes under budget — and the line check guarantees nobody performs without their required channels.
 
 ---
-name: "Positive Transfer"
-scale: communication
-status: working
-forces: ["Partial Failure", "Information Asymmetry"]
-generators: ["G3 Mortal Executors"]
-problem: "Work moving between executors passes through moments with no owner, and a failed handoff silently drops custody."
-signals:
-  - "work crossing a trust boundary — different instruments, scores, or teams"
-  - "the cost of a moment without an owner exceeds the cost of a moment with two"
-  - "shift boundaries, score-to-score chains, escalation from worker to human"
-stages:
-  - name: offer
-    sheets: 1
-    instrument_guidance: "the sender — any AI instrument; must prepare the offer while CONTINUING to own the item"
-    fallback_friendly: true
-    purpose: "Write handoff-{id}.json in state offered; retain ownership."
-  - name: accept
-    sheets: 1
-    instrument_guidance: "the receiver — different instrument or score; writes acceptance, may inspect but NOT mutate until release"
-    fallback_friendly: true
-    purpose: "Positively accept; keyed to the handoff's identity so a duplicate cue is a no-op."
-  - name: gate
-    sheets: 1
-    instrument_guidance: "instrument: cli — the ledger state machine IS the pattern's enforcement"
-    fallback_friendly: false
-    purpose: "Assert release > acceptance > offer, no regressions, no released-without-accepted."
-dependencies:
-  accept: [offer]
-  gate: [accept]
-composes_with:
-  - pattern: "Canon of Phases"
-    how: "layering — the rotation's boundary contains this dialogue compressed"
-  - pattern: "Black-Box Ledger"
-    how: "prerequisite — unaccepted offers feed the failure packet"
----
 
-**Status:** Working. **Source:** FAA JO 7110.65 radar handoff; AORN relief counts; follow-the-sun handoff.
-
-**Core Dynamic.** A relay baton is a bad idea: there is a measurable moment when neither runner owns it. Positive transfer refuses that moment structurally. The sender *offers*; the receiver must positively *accept*; until acceptance completes, the sender still owns the item and still works it. The item always has at least one owner and, during overlap, exactly two. The deadline is a place, not a number — the sector boundary the aircraft reaches on its own schedule. When the cue is lost entirely, the system holds the last acknowledged state conservatively and degrades loudly rather than guessing. Acceptance is keyed to the handoff's identity, so a duplicated cue is a no-op.
-
-**The overlap write rule (Review 2):** during `offered`/`accepted` overlap, **the outgoing owner retains operational authority; the incoming owner may inspect and acknowledge only** — or both write to separate ledger fields. "Exactly two owners" with two writers is a corruption window, not a safety property.
-
-**The sender-survives precondition, answered structurally (Review 3):** a finished sheet is gone, but ownership is a property of the *ledger*, not the liveness of the executor. The offer lives in workspace state; the hold is bounded by `max_wall_seconds` and the leased schedule; a hold timeout routes to `on_failure` escalation; and the release write is made by the sender score's next invocation (self-chain) or by a deterministic gate observing acceptance. The ledger tolerates `offered`-without-`release` indefinitely without ever having zero owners — that is the point.
-
-**When to use:** whenever work moves between executors that are not the same trust domain and the cost of a moment without an owner exceeds the cost of a moment with two.
-
-**When NOT to use:** both parties share one mutable state and see each other's writes directly — the dialogue becomes theater. The sender cannot hold in any sense (ephemeral workspace, no escalation route) — positive acceptance degrades back to baton-throwing.
-
-**Marianne Score Structure**
+## Condorcet's Premise (Independence Audit)
 
 ```yaml
+---
+name: "Condorcet's Premise"
+scale: communication
+status: working
+forces: ["Structured Disagreement"]
+generators: ["Verify through Diverse Observers"]
+problem: "Voting authority is assumed from panel size, but correlated panels ratify errors with majority confidence instead of averaging them out."
+signals:
+  - "a fan-in that will vote, over claims that cannot be mechanically reconstructed"
+  - "a 'vendor-diverse' claim never family-probed"
+  - "n reviewers from what turns out to be one model family"
+stages:
+  - name: "calibrate"
+    sheets: "fan_out(3)"
+    instrument_guidance: "three instruments on three expanded sheets via per_sheet_instruments; one per vendor family"
+    fallback_friendly: true
+    purpose: "Answer pre-authored calibration items with known ground truth."
+  - name: "census"
+    sheets: 1
+    instrument_guidance: "instrument: cli — computes the co-occurrence matrix, design effect, family census, and demotion"
+    fallback_friendly: false
+    purpose: "Emit panel-manifest.yaml: {rho_bar, n_eff, family_census[], aggregation_rule_demoted_to}."
+  - name: "panel"
+    sheets: "fan_out(3)"
+    instrument_guidance: "same three instruments, same assignment rule as calibration"
+    fallback_friendly: true
+    purpose: "Work the real task under the demoted aggregation rule."
+  - name: "audit"
+    sheets: 1
+    instrument_guidance: "instrument: cli — joins the verdict's cited rule against the manifest"
+    fallback_friendly: false
+    purpose: "No vote ships before its own audit passes."
+dependencies:
+  census: ["calibrate"]
+  panel: ["census"]
+  audit: ["panel"]
+composes_with:
+  - pattern: "The Skeptical Oracle"
+    how: "complement — reconstruct when possible; audit the jury when not"
+  - pattern: "Rashomon Gate"
+    how: "layering — frames are jurors; the gate's synthesis demotes by measured dependence"
+  - pattern: "The Dropped Axiom"
+    how: "the demotion ladder is Typed Force's shared enum"
+---
+```
+
+**Source:** Expedition 4; survived review with the estimator defined and bounded, the calibration sourced, and the routing made loadable (Reviews 1, 2, 3).
+
+### Core Dynamic
+
+The jury theorem is a contract with two clauses and people only ever read one: majority voting converges on truth as the panel grows **if** each juror is better than a coin flip **and** their errors are independent. The second clause is load-bearing — correlated voters do not average out their errors, they *ratify* them with the confidence of a majority. AI ensembles fail exactly here: same vendor family, same training blind spots, same prompt scaffold — prompt correlation is juror correlation.
+
+**The estimator, defined and bounded (Review 2):** over K calibration items with known answers, compute the full pairwise error co-occurrence matrix M (i,j) = P(jurors i and j both wrong); report ρ̄ = mean of off-diagonal entries and the design effect n/(1+(n−1)ρ̄) as an **equicorrelation upper bound** — a heterogeneous matrix is not safely reducible to one number, so M rides the manifest as data and the bound is labeled an approximation. Missing answers count as errors (declared, not silent). **Calibration sourcing (Reviews 1 and 3):** the fixture is pre-authored in the score directory with ground truth recorded at authorship — seeded items whose answers the run cannot influence. **Family diversity is provenance, not independence (Review 1):** `family_source` stamped from a live `mzt config` probe tells you the census; only measured error behavior tells you the dependence. The demotion ladder — majority → weighted-correlation → editorial-with-dissents → refusal — is selected by the measured bound, and the audit joins the verdict's *cited* rule against the manifest's *demoted* rule. A silent majority over a correlated panel is the failure; the demotion is not.
+
+### Marianne Score Structure
+
+```yaml
+instruments:
+  a: { profile: claude-code }
+  b: { profile: codex-cli }
+  c: { profile: opencode, config: { model: "zai-coding-plan/glm-5.3-flash" } }
+
 movements:
-  1: { name: work-and-offer }
-  2: { name: receive-and-accept }
-  3: { name: handoff-gate, instrument: cli }
+  1: { name: calibrate, voices: 3 }
+  2: { name: census, instrument: cli, instrument_fallbacks: [] }
+  3: { name: panel, voices: 3 }
+  4: { name: audit, instrument: cli, instrument_fallbacks: [] }
 
 sheet:
-  total_items: 3
-  dependencies: { 2: [1], 3: [2] }
+  size: 1
+  total_items: 4                    # expansion: calibrate 1-3, census 4, panel 5-7, audit 8
+  fan_out: { 1: 3, 3: 3 }
+  dependencies: { 2: [1], 3: [2], 4: [3] }
+  per_sheet_instruments:            # expanded-sheet-keyed; one sheet, one instrument
+    1: a
+    2: b
+    3: c
+    5: a
+    6: b
+    7: c
   per_sheet_fallbacks:
-    3: []
-
-cross_sheet:
-  capture_files: ["handoff-*.json"]     # the ledger is the only inter-stage channel
+    4: []
+    8: []
 
 prompt:
   template: |
     {% if stage == 1 %}
-    Work the item. Then write {{ workspace }}/handoff-item17.json:
-    {id, state: offered, payload, offered_utc}. You RETAIN ownership until acceptance
-    is observed. Do not delete or mutate the payload after offering.
+    Answer the calibration items at "{score_dir}/calibration/items.jsonl". Write
+    {{ workspace }}/calibration/answers-{{ instance }}.jsonl. Ground truth is NOT
+    available to you; answer honestly and briefly.
     {% elif stage == 2 %}
-    Read {{ workspace }}/handoff-item17.json. You may INSPECT the payload but may NOT
-    mutate it until release. If you take the item, append {state: accepted, accepted_utc}
-    to the same file.
+    bash "{score_dir}/scripts/census.sh" --answers "{{ workspace }}/calibration/" \
+      --ground-truth "{score_dir}/calibration/ground-truth.jsonl" \
+      --emit "{{ workspace }}/panel-manifest.yaml"
     {% elif stage == 3 %}
-    bash "{score_dir}/scripts/handoff-gate.sh" "{{ workspace }}/handoff-item17.json"
+    Work the panel task. The aggregation rule recorded in
+    {{ workspace }}/panel-manifest.yaml governs your merge; cite it.
+    {% else %}
+    bash "{score_dir}/scripts/demote.sh" --manifest "{{ workspace }}/panel-manifest.yaml" \
+      --verdict "{{ workspace }}/verdict.md"
     {% endif %}
 
 validations:
   - type: command_succeeds
-    # fails unless: release_ts > acceptance_ts > offer_ts, no regressions,
-    # no released-without-accepted, exactly one acceptance row per handoff id
-    command: 'bash {score_dir}/scripts/handoff-gate.sh --state-machine "{workspace}/handoff-item17.json"'
-    condition: "stage == 3"
+    command: 'bash {score_dir}/scripts/census.sh --self-test'
+    condition: "stage == 2"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/demote.sh --manifest {workspace}/panel-manifest.yaml --verdict {workspace}/verdict.md'
+    condition: "stage == 4"
 ```
 
-**Near-miss:** an "FYI" handoff note — notification without acceptance is baton-throwing with paperwork.
+The self-test fixture is a synthetic three-juror panel with planted co-occurring errors: the census must demote it to editorial-with-dissents or refusal, and a verdict citing `majority` over it must fail the audit.
 
-**Example.** A drafting score produces an article; a separate compliance score must take it over. Without positive transfer, the article sits in a directory between jobs, owned by no one, silently rotting when compliance fails to launch. With the ledger, a failed compliance launch leaves the article in `offered`, the drafting score's hold timeout fires, and a human gets a custody report instead of a gap.
+### Example
+
+A hospital quality committee fans an incident summary to three external review services for severity verdicts. Two quietly run the same underlying model. The census on ten seeded incidents shows errors co-occurring at ρ̄ ≈ 0.5 — three letterheads, one review — and the aggregation is demoted to argued editorial with recorded dissents before anyone votes on anything real.
 
 ---
 
-## The MIST Card
-
----
-name: "The MIST Card"
-scale: communication
-status: approximation
-forces: ["Partial Failure", "Accumulated Signal"]
-generators: ["G3 Mortal Executors", "G2 The Unreliable Narrator"]
-problem: "A retry loop treats an arriving item as fresh and repeats an intervention that already failed, wasting the window or compounding damage."
-signals:
-  - "any score-authored retry, recovery chain, or multi-stage escalation"
-  - "the next handler must know what previous handlers already tried"
-  - "two attempts where one should do is itself a hunt signal"
-stages:
-  - name: ledger-writer
-    sheets: 1
-    instrument_guidance: "instrument: cli — a wrapper that appends the attempt row; conductor-internal retries CANNOT feed this (no per-attempt hooks exist)"
-    fallback_friendly: false
-    purpose: "Append every attempt row mechanically; agents never self-report from memory."
-  - name: recovery
-    sheets: 1
-    instrument_guidance: "any AI instrument; receives the ledger as a required cadenza"
-    fallback_friendly: true
-    purpose: "Propose a remedy WITH the treatment history in context."
-  - name: constraint-check
-    sheets: 1
-    instrument_guidance: "instrument: cli — fingerprint collision gate"
-    fallback_friendly: false
-    purpose: "Reject any remedy whose fingerprint matches a recorded failure."
-dependencies:
-  recovery: [ledger-writer]
-  constraint-check: [recovery]
-composes_with:
-  - pattern: "Black-Box Ledger"
-    how: "layering — the card rides the failure packet"
-  - pattern: "Flight Rules"
-    how: "prerequisite — a rule action colliding with a recorded failed remedy is a rule-delta signal"
-  - pattern: "Replication Licensing"
-    how: "prerequisite — recovery distinguishes never-started from started-died"
----
-
-**Status:** Approximation — the scope Review 1's engine audit forced. The draft claimed conductor retry hooks feed the ledger mechanically; **no such hooks exist** (the conductor retries internally via checkpoint/resume; nothing appends to a user-visible ledger per attempt). The pattern governs *score-authored* retry and recovery chains, where the retry path is a wrapper the score owns. Full mechanical feeding of conductor-level retries awaits per-attempt hooks (see Awaiting Primitives).
-
-**Core Dynamic.** When work moves through a chain of handlers, the item's **treatment history** must travel with it — and the history is not narrative, it is **constraint**. The next handler is not free to act as if the item were fresh: the failed remedy from two attempts ago must not be re-applied. The card is append-only precisely because a rewrite destroys the constraints. The cardinal failure is "re-triage from scratch."
-
-**The fingerprint function (Reviews 2 and 3 both demanded it defined):**
-
-```
-fingerprint = sha256(
-  error_class                    # normalized: lowercase, strip vendor prefixes
-  | normalize(tool + args)       # sort flag-arguments alphabetically, collapse whitespace,
-                                 #   drop volatile tokens (timestamps, temp paths, retry counts)
-  | target_path                  # resolved absolute path, workspace-relative prefix stripped
-)
-```
-
-Normalization is the load-bearing half: it is chosen so "retry with a tweak" — same tool, reordered flags, cosmetic difference — **collides** with the recorded failure, while a genuinely different remedy (different tool, different target) does not.
-
-**When to use:** any score-authored retry loop, recovery chain, or multi-stage escalation where re-trying a failed remedy wastes the window or compounds the damage.
-
-**When NOT to use:** the record travels on a different channel than the item (the card left on the ambulance). Handlers disagree on schema — the fixed form is the point. Nobody is required to read it before acting (enforce with a `required: true` cadenza or do not bother).
-
-**Marianne Score Structure**
+## The Declared Window (Bounded-Context Honesty)
 
 ```yaml
-movements:
-  1: { name: attempt, instrument: cli }
-  2: { name: recovery }
-  3: { name: constraint-check, instrument: cli }
-
-sheet:
-  total_items: 3
-  dependencies: { 2: [1], 3: [2] }
-  per_sheet_fallbacks: { 1: [], 3: [] }
-  cadenzas:
-    2:
-      - file: "{{ workspace }}/mist-ledger.yaml"
-        as: context
-        required: true              # no remedy may be proposed without the history
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    bash "{score_dir}/scripts/attempt-wrapper.sh" "{{ workspace }}/item.json" \
-      -- your-command-here          # wrapper appends {item, error_class, remedy_fingerprint,
-    {% endif %}                     # timestamp, outcome} to mist-ledger.yaml, THEN execs
-    {% if stage == 2 %}             # the command and appends the result row
-    Item {{ id }} has failed handlers before you; the ledger above is CONSTRAINT, not
-    history. Propose the next remedy. A remedy whose fingerprint appears in the ledger
-    as failed WILL be rejected downstream — do not propose it.
-    {% elif stage == 3 %}
-    python3 "{score_dir}/scripts/fingerprint-collision.py" "{{ workspace }}/mist-ledger.yaml" \
-      "{{ workspace }}/proposed-remedy.json" --reject-on-collision
-    {% endif %}
-
-validations:
-  - type: content_regex
-    pattern: "fingerprint: [0-9a-f]{64}"
-    path: "{workspace}/mist-ledger.yaml"
-    condition: "stage == 1"          # a run that retried without a row is a masked retry
-  - type: command_succeeds
-    command: 'python3 {score_dir}/scripts/fingerprint-collision.py {workspace}/mist-ledger.yaml {workspace}/proposed-remedy.json --check'
-    condition: "stage == 3"
-```
-
-**Near-miss:** a free-text "lessons learned" section — narrative history does not constrain the next handler; only a keyed, fingerprinted, collision-checked ledger does.
-
-**Example.** A content-migration concert processing 4,000 documents: item #3171 failed twice on an OCR timeout, once on a schema mismatch. When the recovery score reaches it, its MIST row forbids the third OCR retry and routes to the manual-review instrument — without the card, the run burns the batch window on a third identical timeout.
-
 ---
-
-## Fork-Evident History
-
----
-name: "Fork-Evident History"
+name: "The Declared Window"
 scale: communication
 status: working
-forces: ["Structured Disagreement", "Accumulated Signal"]
-generators: ["G2 The Unreliable Narrator", "G5 Mutable Truth"]
-problem: "A retroactively edited history is undetectable, so downstream consumers cannot know they saw the same claims as everyone else."
+forces: ["Information Asymmetry"]
+generators: ["Accumulate Knowledge"]
+problem: "Synthesis sheets read bounded lookback over large runs and then make global claims their window cannot support."
 signals:
-  - "self-chaining scores where iteration N+1 must not silently weaken iteration N"
-  - "long concerts whose claims are consumed by multiple downstream parties"
-  - "corrections-heavy domains where the honest correction cites what it supersedes"
+  - "streak/trend/consensus language in late sheets ('consistently', 'across the run', 'no objections')"
+  - "a truncation whose consumers quote 'the' upstream output"
+  - "an honest approximation available but a silent exact-looking guess chosen instead"
 stages:
-  - name: link
-    sheets: 1
-    instrument_guidance: "any AI instrument — its evidence compiler appends one journal record per sheet"
+  - name: "work"
+    sheets: "fan_out(4)"
+    instrument_guidance: "any — writes instance-tagged artifacts"
     fallback_friendly: true
-    purpose: "Append {sheet, inputs, outputs, prev_digest} to the workspace journal."
-  - name: chain-and-verify
+    purpose: "Produce the artifacts the window will bound."
+  - name: "window-manifest"
     sheets: 1
-    instrument_guidance: "instrument: cli — journal-keeper/recompute; or use git outright"
+    instrument_guidance: "instrument: cli — writes the manifest from the run's ACTUAL cross_sheet config and artifacts"
     fallback_friendly: false
-    purpose: "Compute the running digest; verify prefix property and append-only length."
+    purpose: "Emit {window_span, exact_in_window, total_items_seen, window: full|partial}."
+  - name: "bounded-synthesis"
+    sheets: 1
+    instrument_guidance: "strong reasoner — every claim tagged, structured ledger emitted"
+    fallback_friendly: false
+    purpose: "Synthesize with a structured claim ledger joinable to the manifest."
+  - name: "join-gate"
+    sheets: 1
+    instrument_guidance: "instrument: cli — ledger arithmetic and span join"
+    fallback_friendly: false
+    purpose: "exact_in_window + refused = claims_emitted; every global claim has a row."
 dependencies:
-  chain-and-verify: [link]
+  window-manifest: ["work"]
+  bounded-synthesis: ["work", "window-manifest"]
+  join-gate: ["bounded-synthesis"]
 composes_with:
-  - pattern: "The Errata Ledger"
-    how: "payload/substrate — corrections are payloads over this chain (the chain verifies; the ledger corrects)"
-  - pattern: "Proof-Carrying Artifact"
-    how: "payload/substrate — sidecars are the per-entry links"
-  - pattern: "Self-Stabilizing Custody"
-    how: "prerequisite — legitimacy predicates read the journal"
----
-
-**Status:** Working. **Source:** Lamport/Pease signed messages; Raft log-matching; Certificate Transparency; in-toto. **Reframed per Reviews 2 and 3:** this is the *substrate* layer — fork-evidence is what corrections and proof sidecars ride on, not a sibling of them.
-
-**Core Dynamic.** Signatures and digest chains convert equivocation from undetectable to detectable: a liar must now tell the *same* lie to everyone, and any two observers can mechanically compare notes. A hash chain fixes history — each entry commits to its predecessor's digest — so a retroactive edit breaks the chain at exactly the edit point, and prefix checks expose forks. Corrections enter as *supersession* entries citing the digest of what they replace; a shrinking journal is a rewritten journal. **The simplest robust form is `git` itself:** the commit DAG is already fork-evident and verifiable by any clone — when your workspace is a git repo, `git log --oneline` + `git diff` is the journal-keeper, and this pattern costs one disciplined habit (commit at every sheet boundary, never rewrite history) rather than a script.
-
-**When to use:** self-chaining scores; multi-consumer concerts; corrections-heavy domains.
-
-**When NOT to use:** short single-shot runs with no re-consumption. Histories that must be legitimately rewritten — deletion rights require envelope-key shredding, not history edits. Anywhere nobody will ever verify: unwatched chains are ceremony.
-
-**Marianne Score Structure**
-
-```yaml
-movements:
-  1: { name: work }
-  2: { name: journal-verify, instrument: cli }
-
-sheet:
-  total_items: 2
-  dependencies: { 2: [1] }
-  per_sheet_fallbacks: { 2: [] }
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    Do the work. Then append one record to {{ workspace }}/journal.jsonl:
-    {sheet, inputs, outputs, prev_digest} where prev_digest is the sha256 of the last line.
-    {% elif stage == 2 %}
-    python3 "{score_dir}/scripts/journal-verify.py" "{{ workspace }}/journal.jsonl" \
-      --recompute --assert-append-only --require-supersedes-on-corrections
-    {% endif %}
-
-validations:
-  - type: command_succeeds
-    command: 'python3 {score_dir}/scripts/journal-verify.py {workspace}/journal.jsonl --check'
-    condition: "stage == 2"
-  - type: content_regex
-    pattern: "supersedes: [0-9a-f]{64}"      # every correction entry cites its victim
-    path: "{workspace}/journal.jsonl"
-    condition: "stage == 2"
-```
-
-**Near-miss:** timestamps and an append promise — chronological ordering without digest commitment detects nothing; the edit is still invisible.
-
-**Example.** A multi-day competitive-analysis concert: day-3 correction of a day-1 market-size figure enters as a supersession citing the original entry's digest; the client's auditor later proves no day-1 claim was quietly altered to flatter the narrative.
-
----
-
-## The Errata Ledger
-
----
-name: "The Errata Ledger"
-scale: communication
-status: working
-forces: ["Accumulated Signal", "Producer-Consumer Mismatch"]
-generators: ["G5 Mutable Truth"]
-problem: "A correction that silently rewrites the text lies about its own history, and a correction notice nobody consumes leaves derived copies wrong."
-signals:
-  - "a canonical document with derived translations, summaries, or extracts"
-  - "syndicated anything"
-  - "a downstream copy that would otherwise drift from corrected truth"
-stages:
-  - name: intake
-    sheets: 1
-    instrument_guidance: "any AI instrument — assembles {claim_id, error, new_text, authority}"
-    fallback_friendly: true
-    purpose: "Stage the correction for atomic commit."
-  - name: atomic-commit
-    sheets: 1
-    instrument_guidance: "instrument: cli — THE single serialized writer; writes corrected canon AND ledger row in one movement"
-    fallback_friendly: false
-    purpose: "Commit the pair together; the hash-join makes divergence impossible."
-  - name: propagate
-    sheets: 1
-    instrument_guidance: "any AI instrument or CLI regenerator — consumes entries newer than its watermark"
-    fallback_friendly: true
-    purpose: "Update derived copies; advance the watermark."
-dependencies:
-  atomic-commit: [intake]
-  propagate: [atomic-commit]
-composes_with:
-  - pattern: "Fork-Evident History"
-    how: "payload/substrate — chaining beneath the published corrections"
-  - pattern: "Negative-Treatment Watch"
-    how: "prerequisite — decay detection feeds corrections"
-  - pattern: "Proof-Carrying Artifact"
-    how: "substitution — the hash-join is a grounding check applied to the pair"
----
-
-**Status:** Working. **Source:** NYT/NPR/AP corrections practice; NLM citable errata. **Kept per Review 2's condition:** the atomic pair commit and the propagation watermark are now stated as *the* load-bearing mechanism (without them this is Fork-Evident History plus a correction payload). **Serialization wired per Review 3:** one deterministic writer movement owns the commit — not an assertion.
-
-**Core Dynamic.** A correction must be two things at once — a change to the living text and a durable record of the change. Only the first is the silent rewrite; only the second is the errata nobody reads while the text stays wrong. The pattern is the *atomic pair*: fix and notice commit together, and the notice — not the fix — is what propagates downstream, because derived copies hold state the fix cannot reach directly.
-
-**When to use:** multi-consumer corpora: canonical documents with derived translations, summaries, extracts; syndicated anything.
-
-**When NOT to use:** consumers ignore the ledger — an advisory watermark is a seam, not a mechanism (this needs acknowledged-handoff grammar or a deterministic join). Corrections so frequent they flood the ledger (batch per release, not per typo). Adversarial environments where notices get scrubbed — there the ledger needs digest chaining beneath it.
-
-**Marianne Score Structure**
-
-```yaml
-movements:
-  1: { name: intake }
-  2: { name: atomic-commit, instrument: cli }
-  3: { name: propagate }
-
-sheet:
-  total_items: 3
-  dependencies: { 2: [1], 3: [2] }
-  per_sheet_fallbacks: { 2: [] }      # the serialized writer never degrades
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    Stage the correction to {{ workspace }}/pending-correction.json:
-    {claim_id, error, new_text, authority}. Do NOT touch the canon.
-    {% elif stage == 2 %}
-    python3 "{score_dir}/scripts/errata-commit.py" "{{ workspace }}" \
-      --canon spec.md --ledger ledger/corrections.jsonl
-      # writes BOTH in one movement: corrected canon file AND appends
-      # {id, claim_id, prior_hash, new_hash, date, note}; exits nonzero if either half fails
-    {% elif stage == 3 %}
-    Consume {{ workspace }}/ledger/corrections.jsonl entries newer than your watermark
-    in watermark.json. Regenerate affected derived copies. Advance the watermark.
-    {% endif %}
-
-validations:
-  - type: command_succeeds
-    # the deterministic hash-join: the entry's new_hash MUST equal sha256 of the corrected file
-    command: 'python3 {score_dir}/scripts/errata-commit.py --verify-join "{workspace}"'
-    condition: "stage == 2"
-  - type: file_exists
-    path: "{workspace}/watermark.json"
-    condition: "stage == 3"           # a consumer that ran without a watermark is a fabrication
-```
-
-**Failure wiring:** a cycle ending ledger-written-but-canon-unwritten is a failed state — `on_failure` custody holds the half-committed pair for repair rather than retry-blind (the commit script's nonzero exit is what makes the half-state visible).
-
-**Near-miss:** a CHANGELOG.md nobody's build consumes — the notice without the propagation watermark is a diary, not a mechanism.
-
-**Example.** A product's canonical spec sheet with generated PDF, web page, and partner-portal extracts: a dimensional error corrected once in canon, and the ledger entry drives regeneration of every extract whose watermark predates it — no extract silently retains the wrong number.
-
----
-
-## Standby–GO
-
----
-name: "Standby–GO"
-scale: communication
-status: working
-forces: ["Progressive Commitment", "Exponential Defect Cost"]
-generators: ["G1 Irreversibility"]
-problem: "A one-phase cue discovers receiver readiness at the moment of irreversible execution."
-signals:
-  - "preparation must overlap live performance and the switch must be atomic"
-  - "content freeze to publish cutover; staging to production rotation; cache rebuild under traffic"
-  - "build buffer B while buffer A serves"
-stages:
-  - name: serve-A
-    sheets: 1
-    instrument_guidance: "the live consumer — pinned to the buffer named by current"
-    fallback_friendly: true
-    purpose: "Keep serving from frozen buffer A."
-  - name: prep-B
-    sheets: fan_out(4)
-    instrument_guidance: "N departments, any instruments; each builds into buffer-B/ and writes ready-{dept}.json"
-    fallback_friendly: true
-    purpose: "Build the replacement in parallel; each completion is an ack."
-  - name: arm-gate
-    sheets: 1
-    instrument_guidance: "instrument: cli — verifies the COMPLETE ack set and every B-artifact validating"
-    fallback_friendly: false
-    purpose: "Write armed-{cue}.json only when every department has armed."
-  - name: go
-    sheets: 1
-    instrument_guidance: "instrument: cli — the atomic switchover; refuses unless armed, refuses on duplicate cue"
-    fallback_friendly: false
-    purpose: "Flip the current pointer in one mv-class operation; log GO {cue}."
-dependencies:
-  prep-B: [serve-A]
-  arm-gate: [prep-B]
-  go: [arm-gate]
-composes_with:
-  - pattern: "First Article Characterization"
-    how: "prerequisite — characterize buffer B before arming"
+  - pattern: "The Black-Box Ledger"
+    how: "bounded capture is the window; the manifest is the claim contract over that bound"
   - pattern: "Hutchinson's Warning"
-    how: "substitution — the hold is degradation rung zero"
+    how: "complement — density control vs claim honesty: the two halves of bounded context"
 ---
+```
 
-**Status:** Working. **Source:** stage-management calling discipline; cue lights; scene-change double buffers. **Structure per Review 2** (theatre color demoted): two-phase cueing — arm with complete ack set, then one irreversible addressed fire.
+**Source:** Expedition 4; survived review with the word ban replaced by a structured claim ledger (Reviews 1 and 2).
 
-**Core Dynamic.** The arm (standby) is collective and acknowledged: it does not proceed until every department that must move has said so. The fire (GO) is individual, unacknowledged, and irreversible — all uncertainty is spent during the arm so the trigger can be instant. A missing acknowledgement does not fire a partial cue: the system *holds* — the current scene keeps running, degraded but alive — until the ack set completes or the hold escalates. A GO cannot be duplicated because it is addressed: the cue log already contains GO 45; a second GO 45 halts rather than re-executes.
+### Core Dynamic
 
-**When to use:** anywhere preparation must overlap live performance and the switch must be atomic.
+`lookback_sheets` and `max_output_chars` are not hygiene; they are a sliding window over an unbounded artifact stream, and every downstream sheet consuming bounded context stands where the streaming engineers stood — except the engineers knew it. The epistemic rule: from a window you may make **windowed claims** (exact within the window, or approximated with a declared ε) and **counted-total claims** (I saw K items, I read W), but not **global claims** — "all prior findings agree," "no earlier stage contradicts this" — because the window's boundary is also the boundary of your knowledge. **The correction the reviews forced:** a prose word-ban ("all", "never") is easy to evade and produces false positives; the contract is now a **structured claim ledger** — the synthesizer emits `claims.jsonl` rows `{claim_id, text, class ∈ {in-window, total-seen, refused}, window_id}` — and a CLI movement writes the window manifest from the run's *actual* configuration and artifacts, so the manifest is a delivery fact, not a belief. The join gate asserts the arithmetic (`exact_in_window + refused = claims_emitted`) and that every global-quantifier sentence in the synthesis has a ledger row with an honest class. An honest (1±ε) answer with ε in the output is a *stronger* artifact than a silent exact-looking guess.
 
-**When NOT to use:** the switch is cheap and reversible — the ceremony is overhead; just swap. Departments cannot report readiness truthfully: an arm answered by reflex spends the safety margin on a lie.
+**The corpus honesty rule (from Cluster Lead's archive, promoted per Review 3):** a coordination artifact whose inputs are incomplete publishes the incompleteness — "coverage unknown," "prior weeks unqueried" — never a manufactured success.
 
-**Marianne Score Structure**
+One engine fact baked in: `lookback_sheets: 0` means **all** completed sheets, not none — context austerity uses a small positive bound, and the manifest states which.
+
+### Marianne Score Structure
 
 ```yaml
+cross_sheet:
+  lookback_sheets: 5
+  max_output_chars: 4000
+
 movements:
-  1: { name: serve-A }
-  2: { name: prep-B }
-  3: { name: arm-gate, instrument: cli }
-  4: { name: go, instrument: cli }
-  5: { name: serve-B }
+  1: { name: work, voices: 4 }
+  2: { name: window-manifest, instrument: cli, instrument_fallbacks: [] }
+  3: { name: bounded-synthesis }
+  4: { name: join-gate, instrument: cli, instrument_fallbacks: [] }
 
 sheet:
-  total_items: 5
-  fan_out: { 2: 4 }                        # four departments: extraction, assets, links, index
-  dependencies: { 2: [1], 3: [2], 4: [3], 5: [4] }
-  per_sheet_fallbacks: { 3: [], 4: [] }    # the gates never degrade
-  skip_when:
-    5: { command: 'test "$(readlink {workspace}/current)" != "{workspace}/buffer-B"' }
-                                           # the consumer cannot race ahead of the pointer
-                                           # (skip_when takes a COMMAND — the expression form
-                                           # was never evaluated and is rejected by the engine)
+  size: 1
+  total_items: 4                    # expansion: work 1-4, manifest 5, synthesis 6, gate 7
+  fan_out: { 1: 4 }
+  dependencies: { 2: [1], 3: [1, 2], 4: [3] }
+  per_sheet_fallbacks:
+    5: []
+    6: []
+    7: []
 
 prompt:
   template: |
     {% if stage == 1 %}
-    Serve from {{ workspace }}/buffer-A (now frozen). Report health.
+    Work your slice. Write {{ workspace }}/work-{{ instance }}.md.
     {% elif stage == 2 %}
-    Department {{ instance }}: build your artifact into {{ workspace }}/buffer-B/dep{{ instance }}/.
-    On completion write {{ workspace }}/buffer-B/ready-{{ instance }}.json. If you cannot complete,
-    write nothing — a missing ack holds the cue.
+    bash "{score_dir}/scripts/window.sh" manifest --lookback 5 --workspace "{{ workspace }}" \
+      --emit "{{ workspace }}/window-manifest.yaml"
     {% elif stage == 3 %}
-    bash "{score_dir}/scripts/arm-gate.sh" "{{ workspace }}/buffer-B" --cue 45 \
-      --require-ready 4 --validate-artifacts
-    {% elif stage == 4 %}
-    bash "{score_dir}/scripts/go.sh" "{{ workspace }}" --cue 45 \
-      # refuses unless armed-45.json exists with the full ack list;
-      # refuses if GO 45 already appears in cue-log.jsonl; else: mv current.next current
-    {% elif stage == 5 %}
-    Serve from {{ workspace }}/buffer-B (now frozen). Report health.
+    Synthesize from the visible window. Write {{ workspace }}/synthesis.md AND
+    {{ workspace }}/claims.jsonl — one row per claim: {claim_id, text,
+    class: in-window|total-seen|refused, window_id}. Tag every global claim honestly.
+    {% else %}
+    bash "{score_dir}/scripts/claims.sh" join --manifest "{{ workspace }}/window-manifest.yaml" \
+      --claims "{{ workspace }}/claims.jsonl" --prose "{{ workspace }}/synthesis.md"
     {% endif %}
 
 validations:
   - type: command_succeeds
-    command: 'test "$(ls {workspace}/buffer-B/ready-*.json | wc -l)" -eq 4'
+    command: 'bash {score_dir}/scripts/claims.sh join --manifest {workspace}/window-manifest.yaml --claims {workspace}/claims.jsonl --prose {workspace}/synthesis.md'
+    condition: "stage == 4"
+  - type: content_contains
+    path: "{workspace}/synthesis.md"
+    pattern: "window:"
     condition: "stage == 3"
-  - type: file_exists
-    path: "{workspace}/armed-45.json"
-    condition: "stage == 3"
-  - type: command_succeeds
-    command: 'grep -c "GO 45" {workspace}/cue-log.jsonl | grep -qx 1'
-    condition: "stage == 4"                # the GO fired exactly once
 ```
 
-**Failure wiring:** hold timeout is `max_wall_seconds` on the arm gate — if the ack set never completes, the score fails *with A still serving*: degraded, safe, escalated.
+### Example
 
-**Near-miss:** a "ready?" poll in chat then a manual deploy — the arm without a deterministic ack gate is a shout with typing indicators.
-
-**Example.** A documentation site rebuild under live traffic. A failing link checker holds the GO (old site keeps serving); at hold timeout the operator learns which department never armed. No half-rebuilt site is ever served.
+A season-long advisory concert synthesizes weekly scouting reports; by week 20 the synthesis sheet sees only the last 5 sheets. When it writes "pest pressure has been consistently low," the ledger forces the sentence to carry its own boundary — "consistently low across the visible five weeks; prior weeks unqueried" — and the extension service publishes a claim it can actually defend.
 
 ---
 
 # Score-Level Patterns
 
-## The Attested Merge Gate
+*Two enter — the destructive-boundary permit and the structure-ordered removal. Relieving the Watch and the Strike Clock await primitives.*
 
+## The Gas-Free Certificate
+
+```yaml
 ---
-name: "The Attested Merge Gate"
+name: "The Gas-Free Certificate"
 scale: score-level
 status: working
-forces: ["Producer-Consumer Mismatch", "Exponential Defect Cost"]
-generators: ["G1 Irreversibility", "G6 Distributed Ignorance"]
-problem: "Parallel writers produce artifacts that must compose, and trusting their self-reports lets incompatible work merge."
+forces: ["Partial Failure", "Exponential Defect Cost"]
+generators: ["Gate on Environmental Readiness"]
+problem: "Destructive operations run on the strength of a check that passed earlier, against a world that has since moved."
 signals:
-  - "N different hands producing artifacts against a shared contract"
-  - "an interface writable before the work starts"
-  - "multi-module builds, multi-author documents, multi-vendor assembly"
+  - "rm, force-push, schema-drop, secret-revoke, teardown ahead"
+  - "'the check passed earlier' is load-bearing for something irreversible"
+  - "a retried or resumed run about to reuse yesterday's verification"
 stages:
-  - name: contract-freeze
+  - name: "certify"
     sheets: 1
-    instrument_guidance: "any AI instrument; output is the interface corpus pinned by manifest"
-    fallback_friendly: true
-    purpose: "Author and pin the interface contract in spec_dir."
-  - name: writers
-    sheets: fan_out(6)
-    instrument_guidance: "writers in instance-tagged namespaces (job-level worktree isolation is per-JOB, not per-sheet — see substrate matrix)"
-    fallback_friendly: true
-    purpose: "Build the slice; attest consumed spec hashes and output hashes."
-  - name: sweep
-    sheets: 1
-    instrument_guidance: "instrument: cli — executes the contract over actual bytes"
+    instrument_guidance: "instrument: cli, separately-committed certifier/ dir — independence is authored provenance"
     fallback_friendly: false
-    purpose: "Deterministic compatibility check; the merge is granted, never assumed."
-  - name: merge-authority
+    purpose: "Write permit {target_digest, issued_at, expires_at, certifier_digest}."
+  - name: "destroy"
     sheets: 1
-    instrument_guidance: "one AI sheet with serial ancestry; applies merges only where attestation AND sweep both pass"
-    fallback_friendly: true
-    purpose: "Merge or adjudicate; conflicts produce disposition records, never silent overwrites."
-  - name: post-merge-verify
-    sheets: 1
-    instrument_guidance: "instrument: cli — full-suite run plus release manifest"
+    instrument_guidance: "instrument: cli wrapper — permit check AND destruction in ONE transaction; AI plans, wrapper executes"
     fallback_friendly: false
-    purpose: "Bind merged content to branch attestations."
+    purpose: "Refuse on stale/mismatched permit; execute only inside the same process that checked."
+  - name: "record"
+    sheets: 1
+    instrument_guidance: "instrument: cli — ledger append, permit↔receipt join"
+    fallback_friendly: false
+    purpose: "The Write-Time Record's consumption side at the destructive boundary."
 dependencies:
-  writers: [contract-freeze]
-  sweep: [writers]
-  merge-authority: [sweep]
-  post-merge-verify: [merge-authority]
+  destroy: ["certify"]
+  record: ["destroy"]
 composes_with:
-  - pattern: "Join-Semilattice Merge"
-    how: "substitution — the algebraic alternative when facts are additive; skip the authority"
-  - pattern: "First Article Characterization"
-    how: "prerequisite — the manifest checks are the sweep's content"
-  - pattern: "Prefabrication (v4 archive)"
-    how: "substitution — obsolete unless it adds attestation, grounded sweep, and single merge authority"
----
-
-**Status:** Working. **Source:** aerospace ICDs; semiconductor IP-block assembly; signed-CI merge workflows. **Restated per Review 1** on real isolation: per-sheet `isolation: git-worktree` does not exist (isolation is job-level; `parallel.enabled` + `isolation.enabled` together is warned against as hazard #29). Two buildable forms replace the fabrication: **(a) job-level chaining** — N isolated *jobs* (one worktree each), one merge job; or **(b) shared-workspace namespace conventions** — writers in instance-tagged directories, the deterministic sweep as the real gate. Form (b) is shown here; form (a) is the concert-scale upgrade.
-
-**Core Dynamic.** Parallel writers are safe exactly to the degree that they never touch the same truth at the same time. An interface contract is frozen and pinned; each writer builds against its slice and *attests* — a manifest with identities and hashes of what it consumed and produced. Then the part fan-out architectures skip: **the merge is a separate act with a single owner**, and the integration authority does *not* trust the attestations — it runs a grounded compatibility check on the actual bytes. Ownership is answerable at every joint: the writer owned the branch, the checker owned the verdict, the authority owned the merge.
-
-**When to use:** any job where N different hands produce artifacts that must compose — different tasks, not copies of one task — against a contract writable before the work starts.
-
-**When NOT to use:** the interface cannot be frozen first (collapses into an expensive meeting). Writers share one mutable surface without namespace discipline (a race with paperwork). The compatibility check is an LLM's opinion — a gate described is not a gate executed.
-
-**Marianne Score Structure**
-
-```yaml
-spec:
-  spec_dir: "{score_dir}/specs"
-  spec_tags: { 2: [icd] }                  # writers receive only their interface slice
-
-movements:
-  1: { name: contract-freeze }
-  2: { name: writers }
-  3: { name: sweep, instrument: cli }
-  4: { name: merge-authority }
-  5: { name: post-merge-verify, instrument: cli }
-
-sheet:
-  total_items: 5
-  fan_out: { 2: 6 }
-  dependencies: { 2: [1], 3: [2], 4: [3], 5: [4] }
-  per_sheet_fallbacks: { 3: [], 5: [] }
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    Author the interface contract into {{ workspace }}/contract/. Pin identity by manifest
-    (sha256 per file). Write {{ workspace }}/contract/MANIFEST.json.
-    {% elif stage == 2 %}
-    Build module {{ instance }} against the tagged contract slice. Work ONLY in
-    {{ workspace }}/work/module-{{ instance }}/. Produce the artifact AND
-    {{ workspace }}/work/module-{{ instance }}/attestation.json:
-    {consumed_spec_hashes, output_files, output_hashes, conformance_claim}.
-    {% elif stage == 3 %}
-    bash "{score_dir}/scripts/compat-sweep.sh" "{{ workspace }}/work" \
-      --contract "{{ workspace }}/contract" --schema --typecheck --tests
-    {% elif stage == 4 %}
-    Admit ONLY branches where attestation AND sweep both passed (see {{ workspace }}/sweep-report.json).
-    Merge passing branches; conflicts route to a disposition record — never a silent overwrite.
-    Write {{ workspace }}/release-manifest.json binding merged content to branch attestations.
-    {% elif stage == 5 %}
-    bash "{score_dir}/scripts/full-suite.sh" "{{ workspace }}" --release-manifest release-manifest.json
-    {% endif %}
-
-validations:
-  - type: file_exists
-    path: "{workspace}/contract/MANIFEST.json"
-    condition: "stage == 1"
-  - type: file_exists
-    path: "{workspace}/work/module-{instance}/attestation.json"
-    condition: "stage == 2"
-  - type: command_succeeds
-    command: 'bash {score_dir}/scripts/compat-sweep.sh {workspace}/work --check-only'
-    condition: "stage == 3"
-```
-
-**Graceful degradation:** `skipped_upstream` at fan-in — one dead writer degrades the merge visibly instead of killing the audit trail.
-
-**Near-miss:** attestation manifests with no compatibility sweep — paperwork over bytes; the authority trusting exactly what it should run.
-
-**Example.** Localizing a technical manual into six languages: the terminology lock is the ICD; six translator sheets work in tagged namespaces, each attesting which term-base version it consumed; a deterministic terminology checker flags every drift; an editor sheet admits only passing chapters and adjudicates conflicts against the term base, producing a record of every override.
-
----
-
-## Join-Semilattice Merge
-
----
-name: "Join-Semilattice Merge"
-scale: score-level
-status: working
-forces: ["Structured Disagreement", "Finite Resources"]
-generators: ["G6 Distributed Ignorance"]
-problem: "The fan-in point is both a bottleneck and a trust point: merging concurrent writers requires arbitration that can destroy concurrent work."
-signals:
-  - "genuinely additive facts: findings keyed by ID, coverage observations, disjoint-segment translations"
-  - "isolated writers appending disjoint records"
-  - "concurrent updates delivered in any order, possibly duplicated"
-stages:
-  - name: writers
-    sheets: fan_out(5)
-    instrument_guidance: "any instruments; each emits records into an append-only, instance-tagged ID namespace"
-    fallback_friendly: true
-    purpose: "Append disjoint records — the instance tag makes concurrent numbering collision-free by construction."
-  - name: join
-    sheets: 1
-    instrument_guidance: "instrument: cli — jq -s union by ID, dedupe by content digest; no LLM participates in merging"
-    fallback_friendly: false
-    purpose: "Converge the lattice deterministically."
-  - name: synthesize
-    sheets: 1
-    instrument_guidance: "any AI instrument — tension/emergence work over the joined lattice, never a summary"
-    fallback_friendly: true
-    purpose: "Interpret the lattice; do not re-merge it."
-dependencies:
-  join: [writers]
-  synthesize: [join]
-composes_with:
-  - pattern: "Fan-out + Synthesis"
-    how: "substitution — the trust-free fan-in"
-  - pattern: "Attested Merge Gate"
-    how: "substitution — when a contract, not algebra, is what you have"
----
-
-**Status:** Working. **Source:** CRDTs; the CALM theorem. **Isolation claim corrected per Review 1:** per-sheet worktrees do not exist; the instance-tagged namespace (`findings/{instance}-{n}.json`) is what makes concurrent numbering collision-free by construction — and it renders per-sheet isolation mostly unnecessary.
-
-**Core Dynamic.** Convergence by *data-type construction*, not arbitration. When every writer's output is an append into an ID-keyed, monotone namespace and the merge function is a semilattice join (commutative, associative, idempotent), "conflict" is not suppressed or adjudicated — it is *undefined*. Any interleaving of concurrent updates, delivered in any order, possibly duplicated, converges to the same state without coordination. The fan-in stops being a bottleneck and a trust point simultaneously.
-
-**When to use:** genuinely additive facts — findings keyed by ID, coverage observations, translations of disjoint segments, tagged excerpts, sensor readings.
-
-**When NOT to use:** non-monotone semantics — veto, rejection, move operations, "take the latest prose" (last-writer-wins silently destroys concurrent work; it is amnesia, not convergence). Interacting facts (this finding contradicts that one) — a join can only collect both; adjudication needs the Skeptical Oracle. Deletion (needs tombstones; forward-only supersession avoids them).
-
-**Marianne Score Structure**
-
-```yaml
-movements:
-  1: { name: writers }
-  2: { name: join, instrument: cli }
-  3: { name: synthesize }
-
-sheet:
-  total_items: 3
-  fan_out: { 1: 5 }
-  dependencies: { 2: [1], 3: [2] }
-  per_sheet_fallbacks: { 2: [] }
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    Transcribe your disjoint source set. Append each observation as
-    {{ workspace }}/findings/{{ instance }}-<n>.json — instance-tagged, ID-keyed,
-    append-only. Never touch another instance's namespace.
-    {% elif stage == 2 %}
-    jq -s 'sort_by(.id) | group_by(.id) | map(.[0])' {{ workspace }}/findings/*.json \
-      > {{ workspace }}/joined.jsonl
-    {% elif stage == 3 %}
-    Read {{ workspace }}/joined.jsonl. Find tensions and emergent themes. Do NOT summarize —
-    the join already merged; you interpret.
-    {% endif %}
-
-validations:
-  - type: command_succeeds
-    # THE idempotence probe: run the join twice into scratch; diff must be empty.
-    # merge ∘ merge = merge, mechanically checked — a property check, not a process check.
-    command: 'bash {score_dir}/scripts/idempotence-probe.sh {workspace}/findings'
-    condition: "stage == 2"
-  - type: command_succeeds
-    command: 'test "$(cat {workspace}/findings/*.json | wc -l)" -ge 5'
-    condition: "stage == 1"
-```
-
-**Near-miss:** "merge with last-writer-wins" — amnesia marketed as convergence.
-
-**Example.** Five analysts each transcribe a disjoint source set into a shared observation lattice over a weekend, working offline in isolated checkouts; Monday's join converges all five branches with no coordination meeting, no merge conflicts, and no analyst blocked on another's schedule.
-
----
-
-## Behavioral Pre-Mortem
-
----
-name: "Behavioral Pre-Mortem"
-scale: score-level
-status: working
-forces: ["Exponential Defect Cost", "Partial Failure"]
-generators: ["G1 Irreversibility", "G4 Shared Finite Budgets"]
-problem: "Mechanism interactions — concurrency windows, skip/fallback interplay, self-chain livelock — are invisible in YAML source and kill in production."
-signals:
-  - "a DAG where mechanisms interact: concurrency caps meeting shared regions"
-  - "skip_when conditions interacting with fallback chains"
-  - "self-chain loop conditions that could livelock; recurring schedules whose leases could double-fire"
-stages:
-  - name: render
-    sheets: 1
-    instrument_guidance: "instrument: cli — mzt validate renders the DAG; a programmatic JobConfig render dumps the full graph"
-    fallback_friendly: false
-    purpose: "Render the execution graph itself — never a hand-written mirror."
-  - name: check
-    sheets: 1
-    instrument_guidance: "instrument: cli — typed invariant checker over the rendered graph"
-    fallback_friendly: false
-    purpose: "Check safety/liveness invariants; emit counterexample artifacts on violation."
-  - name: explain
-    sheets: 1
-    instrument_guidance: "any AI instrument — runs ONLY on violation"
-    fallback_friendly: true
-    purpose: "Turn the counterexample trace into a human-readable fix proposal."
-dependencies:
-  check: [render]
-  explain: [check]
-composes_with:
-  - pattern: "Self-Stabilizing Custody"
-    how: "substitution — the kill-injection probe is this pattern's runtime twin"
-  - pattern: "The Etiquette Law"
-    how: "prerequisite — 'deterministic stages have empty fallback chains' is itself a checked invariant"
----
-
-**Status:** Working. **Source:** TLA+/TLC at AWS. **The render is real and named (Review 3):** `mzt validate` performs three validation layers (YAML syntax, Pydantic schema, extended semantics) and renders the DAG visualization; a programmatic JobConfig dry-render is established substrate discipline for auditing concurrency and ancestry before releasing locks.
-
-**Core Dynamic.** The pattern's object is not the work product — it is the orchestration's own *behavior space*. Before anything runs, render the plan and check every reachable behavior against invariants. Safety violations (two writers to one path in overlapping windows; a fallback routing to an occupied executor) surface as counterexample traces — concrete interleavings that break the invariant; liveness violations (a self-chain livelock; a recurring schedule whose lease has no owner; an orphan stage nothing consumes) as fairness-cycle witnesses. The AWS lesson generalized: the bugs that kill are usually *design* bugs, and the cheapest place to find one is where fixing it costs a YAML edit, not a production incident.
-
-**Typed graph schema (Review 2's demand) and mandatory counterexample output:** the checker consumes `{nodes: {id, instrument, fallback_chain[], cadenza_dirs[], skip_when}, edges: {from, to, kind: dependency|fan_out|chain}, windows: {concurrency_cap, shared_regions[]}}`. On violation it MUST emit a counterexample artifact — the offending interleaving as an ordered event list — not a prose complaint. An invariant checker without counterexample output is a lint with ambitions.
-
-**When to use:** any DAG where mechanisms *interact*; any score expensive enough that a wasted run matters.
-
-**When NOT to use:** state explosion — the model must be bounded (finite workers, finite queue depths, bounded loop unrollings). Trivial pipelines with no interaction. Nondeterminism that lives outside the model (external APIs) — those need runtime patterns (fencing, self-stabilization), not pre-mortems.
-
-**Marianne Score Structure**
-
-```yaml
-movements:
-  1: { name: render, instrument: cli }
-  2: { name: check, instrument: cli }
-  3: { name: explain }
-
-sheet:
-  total_items: 3
-  dependencies: { 2: [1], 3: [2] }
-  per_sheet_fallbacks: { 1: [], 2: [] }
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    mzt validate "{score_dir}/this-score.yaml" --json > {{ workspace }}/graph-render.json
-    {% elif stage == 2 %}
-    python3 "{score_dir}/scripts/invariant-check.py" "{{ workspace }}/graph-render.json" \
-      --no-cycles --no-shared-region-two-writers \
-      --deterministic-stages-have-empty-fallbacks \
-      --ai-stages-have-nonempty-fallbacks \
-      --leases-name-an-owner --chains-reach-terminal --emit-counterexamples
-    {% elif stage == 3 %}
-    The checker found violations ({{ workspace }}/counterexamples.jsonl). For each, turn the
-    trace into a concrete YAML fix proposal. Cite the trace line by line.
-    {% endif %}
-
-validations:
-  - type: command_succeeds
-    command: 'test -s "{workspace}/graph-render.json"'
-    condition: "stage == 1"
-  - type: content_regex
-    # a render that silently dropped a sheet would otherwise check a phantom
-    pattern: "\"stage\""
-    path: "{workspace}/graph-render.json"
-    condition: "stage == 1"
-  - type: command_succeeds
-    command: 'python3 {score_dir}/scripts/invariant-check.py {workspace}/graph-render.json --check-only'
-    condition: "stage == 2"
-```
-
-**Near-miss:** a design-review meeting over the YAML source — checking a hand-written mirror of the graph, not the rendered graph; the mirror is where the bug isn't.
-
-**Example.** A data-migration concert with parallel loaders and per-loader fallbacks: the pre-mortem finds that under one `skip_when` combination, two fallback paths both route to the same writer in overlapping windows — a two-writer safety violation fixed by one dependency edge, discovered for the cost of a dry run instead of a corrupted staging table.
-
----
-
-## First Article Characterization
-
----
-name: "First Article Characterization"
-scale: score-level
-status: working
-forces: ["Exponential Defect Cost", "Instrument-Task Fit"]
-generators: ["G1 Irreversibility", "G4 Shared Finite Budgets"]
-problem: "Validating each item of a large homogeneous fan-out from first principles is unaffordable, and validating none is unacceptable."
-signals:
-  - "fan-out volume work under a new or changed configuration"
-  - "N report instances, N translations, N generated artifacts of one kind"
-  - "a genuine shared configuration across the population"
-stages:
-  - name: first-article
-    sheets: 1
-    instrument_guidance: "the production instrument — produces ONE instance under current configuration"
-    fallback_friendly: true
-    purpose: "Produce the unit that will become the reference."
-  - name: characterize
-    sheets: 1
-    instrument_guidance: "a DIFFERENT instrument family if available — an instrument calibrating itself is not calibration"
-    fallback_friendly: false
-    purpose: "Produce the characterization manifest: every expected property, keyed, each with its check."
-  - name: reference-freeze
-    sheets: 1
-    instrument_guidance: "instrument: cli — stamp the manifest with the configuration hash"
-    fallback_friendly: false
-    purpose: "Store the golden reference bound to the config it certified."
-  - name: volume
-    sheets: fan_out(200)
-    instrument_guidance: "any instruments; each instance validated by executing the manifest's checks"
-    fallback_friendly: true
-    purpose: "Grounded volume: validate against the reference, not from principles."
-dependencies:
-  characterize: [first-article]
-  reference-freeze: [characterize]
-  volume: [reference-freeze]
-composes_with:
-  - pattern: "Standby–GO"
-    how: "prerequisite — characterize buffer B, then arm"
-  - pattern: "Skeptical Oracle"
-    how: "layering — the characterization fan-out behind a trust fence"
-  - pattern: "Attested Merge Gate"
-    how: "prerequisite — the manifest checks are the sweep's content"
----
-
-**Status:** Working. **Source:** AS9102 First Article Inspection; golden units; pharmacopoeia reference standards. **The manifest-runner idiom is now named (Review 1):** 200 instances × N keyed checks is not a static validation list — the buildable form is ONE deterministic manifest-runner script that loops over the keyed checks internally per instance. The grounding property lives in that script; it is a named Script Library entry, not an opacity.
-
-**Core Dynamic.** Before volume production runs, the first unit under the new configuration is characterized *completely and independently* — every property keyed and numbered, each with the check that verifies it. **The characterized article becomes the law:** volume is not re-validated from first principles; it is validated against the reference, and disputes are settled against the retained golden unit, not re-derivation. When configuration changes, a *delta* characterizes only what changed.
-
-**Hard exclusions (Review 2 made them exclusions, not warnings):** instances that are not actually of one kind — grounding the many against a reference requires a *genuine shared configuration*, or the first article certifies a population of one. Reference rot — a golden unit whose underlying config silently changed poisons every validation that trusted it; the reference must be bound to its configuration manifest.
-
-**When to use:** fan-out volume work under a new or changed configuration where validating each from scratch is unaffordable but validating none is unacceptable.
-
-**Marianne Score Structure**
-
-```yaml
-movements:
-  1: { name: first-article }
-  2: { name: characterize }
-  3: { name: reference-freeze, instrument: cli }
-  4: { name: volume }
-
-sheet:
-  total_items: 4
-  fan_out: { 4: 200 }
-  dependencies: { 2: [1], 3: [2], 4: [3] }
-  per_sheet_fallbacks: { 3: [] }
-  skip_when:
-    2: { command: 'test "$(sha256sum {workspace}/config-fingerprint.json | cut -d" " -f1)" = "$(jq -r .config_hash {workspace}/reference/manifest.json 2>/dev/null || echo none)"' }
-                                         # unchanged config reuses the reference;
-                                         # changed config forces re-characterization
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    Produce ONE instance of the artifact under the current configuration.
-    {% elif stage == 2 %}
-    Characterize the first article COMPLETELY: every expected property in
-    {{ workspace }}/characterization.json as {key, property, check} — keyed like balloon numbers.
-    You are the independent measurer; a different instrument family from the producer.
-    {% elif stage == 3 %}
-    python3 "{score_dir}/scripts/reference-freeze.py" "{{ workspace }}" \
-      --config-fingerprint config-fingerprint.json --manifest characterization.json
-    {% elif stage == 4 %}
-    Produce instance {{ instance }}. Then run the manifest checks against your own output:
-    python3 "{score_dir}/scripts/manifest-runner.py" "{{ workspace }}/reference/manifest.json" \
-      "{{ workspace }}/out-{{ instance }}/" --emit-report
-    {% endif %}
-
-validations:
-  - type: file_exists
-    path: "{workspace}/reference/manifest.json"
-    condition: "stage == 3"
-  - type: command_succeeds
-    # the manifest-runner: the ONE deterministic loop over keyed checks per instance
-    command: 'python3 {score_dir}/scripts/manifest-runner.py {workspace}/reference/manifest.json {workspace}/out-{instance}/ --check-only'
-    condition: "stage == 4"
-```
-
-**Near-miss:** spot-checking 5% of volume randomly — sampling where a reference manifest would be total; you learn the population's mood, not its conformance.
-
-**Example.** Generating 200 localized versions of a product page: one version is deeply characterized (terminology, tone, layout, legal lines — each keyed); the manifest becomes the acceptance suite; the remaining 199 are validated by executing those keyed checks. Source copy changes → hash check forces delta characterization of exactly the changed lines.
-
----
-
-## The Skeptical Oracle
-
----
-name: "The Skeptical Oracle"
-scale: score-level
-status: working
-forces: ["Structured Disagreement", "Information Asymmetry"]
-generators: ["G2 The Unreliable Narrator", "G6 Distributed Ignorance"]
-problem: "Vendor-diverse advisors' findings cannot enter the record without importing their hallucinations."
-signals:
-  - "vendor-diverse review fan-outs"
-  - "LLM-judge ensembles judging anything mechanically reproducible"
-  - "you want the union of different models' coverage without inheriting any model's failures"
-stages:
-  - name: propose
-    sheets: fan_out(3)
-    instrument_guidance: "N heterogeneous instruments (opus / codex-cli / glm), each REQUIRED to attach a reproduction pointer to every finding"
-    fallback_friendly: true
-    purpose: "Propose findings with reproduction pointers — never conclusions."
-  - name: reconstruct
-    sheets: 1
-    instrument_guidance: "instrument: cli — runs every pointer; the test fails or the finding is dropped"
-    fallback_friendly: false
-    purpose: "Deterministic reconstruction into a typed verified-findings manifest."
-  - name: interpret
-    sheets: 1
-    instrument_guidance: "any AI family — interprets the VERIFIED manifest only; OPTIONAL consumer, not part of the oracle proper"
-    fallback_friendly: true
-    purpose: "Severity, narrative, ordering of verified facts — never generation of them."
-dependencies:
-  reconstruct: [propose]
-  interpret: [reconstruct]
-composes_with:
-  - pattern: "Proof-Carrying Artifact"
-    how: "substitution — the oracle is PCA applied to peer review"
-  - pattern: "Immune Checkpoint"
-    how: "layering — recall-side harvest here; precision-side gate there; the pair covers both directions of reviewer error"
----
-
-**Status:** Working. **Source:** Isabelle/Sledgehammer's untrusted provers. **Scope corrected per Review 2** (the interpretation stage is an optional consumer) **and Review 3** (the oracle must not price out a free-local run).
-
-**Core Dynamic.** N vendor-diverse advisors propose; a deterministic reconstructor disposes. Nothing any advisor says enters the record until it can be *reproduced* — re-derived by a cheap, mechanical process the advisors cannot influence. Heterogeneity is harvested, not trusted: the point of different model families is that they fail differently; the point of reconstruction is that their different failures never become the record's failures. Crucially this is *not* a vote or quorum: voting asks advisors to check each other (peer trust); reconstruction asks a deterministic instrument to check them all (no peer trust at all). Sledgehammer's own numbers set expectations: reconstruction fails about 5% of the time, and those proofs are simply not added.
-
-**The reproduction pointer is a schema, not prose (Review 3):** `{finding_id, kind: failing_test|lint_rule|grep_invariant|reproducer_script, ref: "tests/test_x.py::test_y" | "rule-id" | "pattern + path" | "scripts/repro-N.sh", expected: fail|violation}`. A finding without a pointer is not weakly verified — it is a lead.
-
-**The single-family degraded mode (Review 3):** when only one vendor is available (free-local runs), run N instances of that one family with **disjoint question ownership** — each instance reviews a disjoint slice, so independence of *coverage* is preserved even though independence of *failure* is not. The output is labeled `independence: question-disjoint-single-family` — honest about being the weaker claim. Do not silently relabel it vendor-diverse.
-
-**When to use:** vendor-diverse review fan-outs; ensembles judging anything mechanically reproducible.
-
-**When NOT to use:** claims that are not reconstructible — style judgments, strategy recommendations — where the deterministic reproducer cannot exist, and pretending to have one yields a filter that passes only trivia. Reconstruction as expensive as solving (keep the reconstruction path cheaper than the search). A single advisor (nothing to integrate; verify directly).
-
-**Marianne Score Structure**
-
-```yaml
-movements:
-  1: { name: propose }
-  2: { name: reconstruct, instrument: cli }
-  3: { name: interpret }
-
-sheet:
-  total_items: 3
-  fan_out: { 1: 3 }
-  dependencies: { 2: [1], 3: [2] }
-  per_sheet_fallbacks: { 2: [] }        # if the deterministic checker is down, the score stops
-
-instruments:
-  glm: { profile: opencode, config: { model: "zai-coding-plan/glm-5.3-flash" } }
-instrument_map:
-  opus: [1]                              # movement 1 instance routing via instruments +
-  codex-cli: [1]                         # fan-out; vendor diversity constructed in config,
-  glm: [1]                               # where it is inspectable
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    Review the subject. EVERY finding must carry a reproduction pointer:
-    {finding_id, kind: failing_test|lint_rule|grep_invariant|reproducer_script, ref, expected}.
-    Findings without pointers are leads, not findings.
-    {% elif stage == 2 %}
-    bash "{score_dir}/scripts/reproducer-harness.sh" "{{ workspace }}/findings" \
-      --run-all-pointers --emit "{{ workspace }}/verified-manifest.json" \
-      --quarantine "{{ workspace }}/leads-quarantine.jsonl"
-    {% elif stage == 3 %}
-    Interpret {{ workspace }}/verified-manifest.json: severity, narrative, ordering.
-    You are reading VERIFIED facts. Unverified leads in the quarantine file are
-    visible but never confusable with findings.
-    {% endif %}
-
-validations:
-  - type: command_succeeds
-    command: 'bash {score_dir}/scripts/reproducer-harness.sh {workspace}/findings --check-only'
-    condition: "stage == 2"
-  - type: content_regex
-    pattern: "repro_id: [A-Za-z0-9_-]+"     # a finding without a reproducer binding is inadmissible
-    path: "{workspace}/verified-manifest.json"
-    condition: "stage == 2"
-```
-
-**Near-miss:** a majority vote across three vendors — peer trust dressed as verification; two coordinated hallucinations outrank one truth.
-
-**Example.** Cross-model code review for a release gate: three families review the diff; only findings that trigger a failing test, a linter rule, or a grep-able invariant violation survive into the report; two other families rank the verified findings for release notes. Unverified hunches sit in a clearly labeled leads file — useful, honest, never confusable with findings.
-
----
-# Concert-Level Patterns
-
-## Negative-Treatment Watch
-
----
-name: "Negative-Treatment Watch"
-scale: concert-level
-status: working
-forces: ["Accumulated Signal", "Progressive Commitment"]
-generators: ["G5 Mutable Truth"]
-problem: "Admitted claims silently rot as their external sources move, and derived work keeps building on stale truth."
-signals:
-  - "long-lived corpora whose truth depends on mutable externals"
-  - "legal research, scientific claim bases, compliance baselines, dependency manifests, docs with code anchors"
-  - "a missed audit cycle must be visible, not silent"
-stages:
-  - name: sweep
-    sheets: 1
-    instrument_guidance: "instrument: cli — deterministic fetch/hash of every anchored source, hard-bounded per cycle"
-    fallback_friendly: false
-    purpose: "Detect source drift; count flag rate."
-  - name: adjudicate
-    sheets: 1
-    instrument_guidance: "any AI instrument — reviews ONLY flagged claims (few, cheap)"
-    fallback_friendly: true
-    purpose: "Does the negative treatment touch the issue our claim relies on?"
-  - name: quarantine
-    sheets: 1
-    instrument_guidance: "instrument: cli — moves flagged claims; enumerates dependents from the claim graph"
-    fallback_friendly: false
-    purpose: "Quarantine + blast-radius enumeration; hold auto-quarantine when flag rate exceeds threshold."
-dependencies:
-  adjudicate: [sweep]
-  quarantine: [adjudicate]
-composes_with:
-  - pattern: "The Errata Ledger"
-    how: "prerequisite — decay detection feeds corrections"
-  - pattern: "Flight Rules"
-    how: "substitution — effectivity pinning is the same lease applied to configuration"
-  - pattern: "Proof-Carrying Artifact"
-    how: "prerequisite — the anchors it audits are PCA claim-form bundles"
----
-
-**Status:** Working. **Source:** Shepard's/KeyCite citators; PubMed linked errata; CVE feeds. Runs on a leased `schedule`.
-
-**Core Dynamic.** Admission is not permanence. The brief is filed, the magazine printed, the claim enters canon — and the world keeps moving: courts overrule, journals retract, dependencies patch. The citator's move turns the citation graph into a *decay detector*: every admitted claim holds a **validity lease**, renewed by a recurring audit against the current state of its sources. Staleness is made loud instead of impossible — the flag, not the silence, is the product. Because citators demonstrably disagree (two independent authorities agreed on negative treatment in only 53 of the relationships each identified), the watch cross-checks rather than trusts one probe.
-
-**The claim graph (Review 2's requirement):** the ledger is not a flat list. Every claim carries `{id, source_anchor: {path, digest}, dependents: [claim-ids...]}` — source anchors so drift is mechanically detectable, dependent edges so blast radius is enumerable. Without dependent edges, quarantine is detection without consequence.
-
-**Mass invalidation is a different event from fifty independent ones:** when the flag rate exceeds threshold, the sweep script **holds auto-quarantine** and escalates to a re-tiering decision — mass invalidation means the premise changed, not fifty claims. (This hold is enforced by the deterministic sweep script comparing counts — Review 1's correction: `circuit_breaker` accepts sheet-failure counts only, and is wired for exactly that.)
-
-**When to use:** long-lived corpora whose truth depends on mutable externals.
-
-**When NOT to use:** sources are immutable or self-contained (nothing to watch). The schedule runs without a durable lease — a missed cycle must be *visible*, or staleness returns silently through the gap. Alert fatigue: if every cycle flags half the corpus, readers stop reading. One probe trusted alone.
-
-**Marianne Score Structure**
-
-```yaml
-schedule:
-  interval: 7d
-  timezone: "Europe/Amsterdam"
-  overlap: skip
-  misfire: skip
-
-movements:
-  1: { name: sweep, instrument: cli }
-  2: { name: adjudicate }
-  3: { name: quarantine, instrument: cli }
-
-sheet:
-  total_items: 3
-  dependencies: { 2: [1], 3: [2] }
-  per_sheet_fallbacks: { 1: [], 3: [] }
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    bash "{score_dir}/scripts/source-sweep.sh" "{{ workspace }}/claim-ledger.json" \
-      --refetch --rehash --flag-drift --flag-rate-hold-threshold 0.10 \
-      --max-wall 600
-    {% elif stage == 2 %}
-    Adjudicate ONLY the claims flagged in {{ workspace }}/flagged.json (they are few).
-    For each: does the negative treatment touch the issue our claim relies on?
-    Verdict QUARANTINE or RETAIN, with the touched issue named.
-    {% elif stage == 3 %}
-    bash "{score_dir}/scripts/quarantine.sh" "{{ workspace }}/claim-ledger.json" \
-      "{{ workspace }}/adjudications.json" --enumerate-dependents
-    {% endif %}
-
-validations:
-  - type: command_succeeds
-    command: 'test -s "{workspace}/sweep-report.json"'
-    condition: "stage == 1"
-  - type: file_exists
-    path: "{workspace}/lease-record.json"
-    condition: "stage == 1"            # a cycle that ran without touching leases is a fabrication
-  - type: content_regex
-    pattern: "dependent(s)?: \\[.+\\]|no dependents"
-    path: "{workspace}/quarantine-report.md"
-    condition: "stage == 3"            # every quarantined claim appears WITH its blast radius or its absence
-```
-
-**Near-miss:** a nightly "sources changed" digest email — detection without dependent enumeration or quarantine is weather reporting.
-
-**Example.** An internal API-docs corpus where every code sample anchors to a repository path and commit SHA: the weekly watch detects upstream API changes, quarantines samples whose anchors broke, and enumerates every tutorial page that embeds them.
-
----
-
-## Canon of Phases
-
----
-name: "Canon of Phases"
-scale: concert-level
-status: working
-forces: ["Partial Failure", "Finite Resources"]
-generators: ["G3 Mortal Executors", "G6 Distributed Ignorance"]
-problem: "A continuous stream of work outlives any single worker's endurance — context, budget, or lease — and restarts from zero at every boundary."
-signals:
-  - "an always-on triage queue, rolling literature watch, moderation across a day, long migrations in shifts"
-  - "the stream must never restart from zero"
-  - "no single score should run for a day straight"
-stages:
-  - name: accept
-    sheets: 1
-    instrument_guidance: "interchangeable with the other phases — the SAME part; instrument diversity is a DEFECT here"
-    fallback_friendly: true
-    purpose: "Read the latest handoff packet; verify beat continuity; write accepted-through. No packet and not rotation zero = STOP."
-  - name: work
-    sheets: 1
-    instrument_guidance: "same instrument as every other phase — interchangeability is the design"
-    fallback_friendly: true
-    purpose: "Process queue items from the packet's cursor to this phase's soft stop."
-  - name: hand-off
-    sheets: 1
-    instrument_guidance: "same instrument; writes the packet"
-    fallback_friendly: true
-    purpose: "Write open items, in-flight state, last beat, cursor, incident notes."
-dependencies:
-  work: [accept]
-  hand-off: [work]
-composes_with:
-  - pattern: "Positive Transfer"
-    how: "layering — the boundary contains the transfer dialogue compressed into one packet"
-  - pattern: "Replication Licensing"
-    how: "layering — the packet boundary carries license state"
----
-
-**Status:** Working. **Source:** canon/round form; follow-the-sun operations; nursing shift change. Resurrects v4's Stretto Entry from Awaiting Primitives — executable now precisely because leased recurrence, `overlap: skip`, and IANA timezones exist. **Kept per Review 1 (buildable) with the independence argument Review 2 demanded stated outright, and the deployment topology Review 1 asked for written down.**
-
-**Independence from its parts:** this is not merely Positive Transfer plus leased recurrence. Positive Transfer is a *pairwise executor handoff with an overlap dialogue* — two known counterparties negotiate at a boundary. Canon of Phases is *scheduled rotation of an unbounded stream* by *interchangeable* workers: phases never meet, there is no overlap dialogue, and the packet — not a conversation — is the entire inter-phase channel, deliberately, so the seam is inspectable. Uniquely, this pattern *forbids* instrument diversity: the canon's voices are the same part; divergence is a defect (the one sign-flip in the corpus — every other convergence harvests heterogeneity; the rotating stream needs interchangeability).
-
-**Deployment topology (Review 1):** three *deployments* of one score — each with its own IANA timezone, its own workspace, sharing one packet path — not three instances of one job. The score and its deployment are different objects; the regional fleet is the latter.
-
-**When to use:** continuous work with mortal workers.
-
-**When NOT to use:** the work is finite (a canon for a 40-minute task is two musicians for one chair). Phases cannot be made near-interchangeable — if phase 2's work is genuinely different work, this is a pipeline wearing a costume, and the pipeline should say so.
-
-**Marianne Score Structure**
-
-```yaml
-schedule:
-  cron: "0 */8 * * *"
-  timezone: "Europe/Amsterdam"       # per-deployment: the boundary lands at the LOCAL shift start
-  overlap: skip                      # the lease is the fence: the same phase cannot doubly instantiate
-  misfire: skip
-
-movements:
-  1: { name: accept }
-  2: { name: work }
-  3: { name: hand-off }
-
-sheet:
-  total_items: 3
-  dependencies: { 2: [1], 3: [2] }   # NO dependencies between phases — they are scheduled
-                                     # apart, not DAG-ordered; the packet is the only channel
-prompt:
-  template: |
-    {% if stage == 1 %}
-    Read {{ workspace }}/handoff-packet.json. Verify integrity: beat continuity, queue cursor.
-    If no packet exists and this is NOT rotation zero (see {{ workspace }}/rotation-state.json),
-    STOP — an undocumented empty queue is a lost cue, not a fresh start.
-    Else write accepted-through with your timestamp. Custody before work.
-    {% elif stage == 2 %}
-    Process queue items from the packet's cursor to your soft stop. Do not exceed the beat.
-    {% elif stage == 3 %}
-    Write {{ workspace }}/handoff-packet.json: open items, in-flight state, last beat,
-    cursor, incident notes. Append-only across rotations — a phase that rewound the cursor halts.
-    {% endif %}
-
-validations:
-  - type: command_succeeds
-    # custody before work: packet exists AND accepted-through predates this phase's results
-    command: 'bash {score_dir}/scripts/packet-gate.sh {workspace}/handoff-packet.json --accepted-before-results --monotonic-beat'
-    condition: "stage == 1"
-  - type: file_exists
-    path: "{workspace}/handoff-packet.json"
-    condition: "stage == 3"
-```
-
-**Near-miss:** a shared directory with no packet — phases that share a filesystem but not state restart the melody nightly and call it continuity.
-
-**Example.** Round-the-clock alert triage: phase EU works 08:00–16:00 Europe/Amsterdam, NA and APAC likewise — three deployments of one score, each leased 8h, each accepting the packet before working. A 03:00 incident is worked continuously, and the morning report is written by a phase that *knows what the night phase saw* — not by one that merely shares a directory with it.
-
----
-
-# Adaptation Patterns
-
-## The Fencing Token
-
----
-name: "The Fencing Token"
-scale: adaptation
-status: working
-forces: ["Partial Failure", "Progressive Commitment"]
-generators: ["G3 Mortal Executors", "G1 Irreversibility"]
-problem: "A paused or retried executor cannot observe its own expiry and silently overwrites newer work with older, slower work."
-signals:
-  - "a shared mutable surface two sequenced executors may touch"
-  - "workspace regions republished by a retry after timeout"
-  - "scheduled jobs whose lease lapsed while the job kept running"
-stages:
-  - name: grant
-    sheets: 1
-    instrument_guidance: "instrument: cli — atomically increments the counter and stamps run identity"
-    fallback_friendly: false
-    purpose: "Issue the monotonic token as a workspace file."
-  - name: guarded-work
-    sheets: 1
-    instrument_guidance: "any AI instrument; reads the token FILE and embeds it in every artifact manifest"
-    fallback_friendly: true
-    purpose: "Do the work with the token embedded in outputs."
-  - name: admit-gate
-    sheets: 1
-    instrument_guidance: "instrument: cli — compares embedded token against the current counter"
-    fallback_friendly: false
-    purpose: "Reject stale writes at the boundary."
-dependencies:
-  guarded-work: [grant]
-  admit-gate: [guarded-work]
-composes_with:
-  - pattern: "Self-Stabilizing Custody"
-    how: "layering — bounds the convergence window's misbehavior"
-  - pattern: "Replication Licensing"
-    how: "substitution — same family (physical authority), different primitive: ordering defense vs exactly-once consumption (seam stated in both)"
----
-
-**Status:** Working. **Source:** Kleppmann's distributed-locking analysis; ZooKeeper zxid; Chubby sequencers; K8s resourceVersion. **Restated per Review 1:** the token reaches the sheet as a **file the grant stage writes and the prompt cites** — not "runtime variables."
-
-**Core Dynamic.** A lease grants authority for *time*, not forever — and the holder is structurally incapable of knowing when its authority died, because a paused process cannot observe its own expiry. The fencing token moves the correctness burden from the holder (who cannot know) to the shared substrate (who can count): every grant carries a monotonically increasing number, and the storage all writers must touch *rejects any write bearing a token lower than the highest it has seen*. Zombies exist — GC pauses, rate-limit stalls, retries, context compaction — but zombie *writes* need not. The proof-theoretic move: make an unsound inference inadmissible rather than trying to prevent the prover from committing it.
-
-**The seam against Replication Licensing (Review 3's don't-duplicate demand, justified):** fencing defends *ordering* on a shared mutable surface — many writes may be attempted, stale ones are rejected; licensing defends *exactly-once side-effect authorization* per cycle — the authority is consumed by the act of beginning, and recovery can tell never-started from started-died. One counters zombies; the other counters re-execution. They compose; they are not the same word.
-
-**When to use:** any shared mutable surface two sequenced executors may touch. In AI orchestration, a holder paused while its replacement starts is the *normal* case, not the exception.
-
-**When NOT to use:** no shared point of serialization can check tokens (pure peer-to-peer side effects); no monotonic counter authority exists; work is read-only or commutative so a zombie write is harmless; single-writer serial stages whose DAG position already excludes overlap by construction.
-
-**Marianne Score Structure**
-
-```yaml
-movements:
-  1: { name: grant, instrument: cli }
-  2: { name: guarded-work }
-  3: { name: admit-gate, instrument: cli }
-
-sheet:
-  total_items: 3
-  dependencies: { 2: [1], 3: [2] }
-  per_sheet_fallbacks: { 1: [], 3: [] }
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    bash "{score_dir}/scripts/token-grant.sh" "{{ workspace }}/lease.token" --increment --stamp-run-id
-    {% elif stage == 2 %}
-    Your token is in {{ workspace }}/lease.token (written by the grant stage — read the FILE).
-    Embed "token: <number>" in every output manifest you write. Mutations without a token
-    are inadmissible downstream.
-    {% elif stage == 3 %}
-    bash "{score_dir}/scripts/token-admit.sh" "{{ workspace }}/lease.token" "{{ workspace }}/out/" \
-      --reject-stale    # exit nonzero on any artifact whose token < current counter
-    {% endif %}
-
-validations:
-  - type: content_regex
-    pattern: "token: [0-9]+"
-    path: "{workspace}/out/manifest.json"
-    condition: "stage == 2"
-  - type: command_succeeds
-    command: 'bash {score_dir}/scripts/token-admit.sh {workspace}/lease.token {workspace}/out --check-only'
-    condition: "stage == 3"
-```
-
-`max_wall_seconds` on the guarded-work movement acts as the lease TTL — expiry enforced by the envelope, staleness by the gate.
-
-**Near-miss:** checking "am I still the leader?" before writing — the holder cannot observe its own expiry; that inability is precisely the bug the token moves elsewhere.
-
-**Example.** A pricing-catalog pipeline: sheet A regenerates the catalog, stalls on a rate limit; the retry spawns A′ which republishes. When A wakes and writes, the publish directory's gate finds token 33 against current 34 and rejects A's copy — no silent overwrite of newer work by older, slower work.
-
----
-
-## The Black-Box Ledger
-
----
-name: "The Black-Box Ledger"
-scale: adaptation
-status: working
-forces: ["Partial Failure", "Accumulated Signal"]
-generators: ["G3 Mortal Executors", "G2 The Unreliable Narrator"]
-problem: "After the executor dies, what happened is knowable only from survivor testimony — reconstructed memory — unless a channel that does not share the executor's fate recorded it continuously."
-signals:
-  - "any long orchestration whose post-failure value depends on knowing what actually happened"
-  - "production incidents, adversarial review concerts, audit trails"
-  - "failure analysis must be grounded rather than narrated"
-stages:
-  - name: continuous-record
-    sheets: 1
-    instrument_guidance: "the work movements themselves — wired with auto_capture_stdout and named capture_files"
-    fallback_friendly: true
-    purpose: "Write all along, to media that survive the crash."
-  - name: correlated-readout
-    sheets: 1
-    instrument_guidance: "any AI instrument — reads the BUNDLED packet, never one channel"
-    fallback_friendly: true
-    purpose: "Interpret evidence read as a bundle, because evidence read alone lies."
-dependencies:
-  correlated-readout: [continuous-record]
-composes_with:
-  - pattern: "Flight Rules"
-    how: "prerequisite — the packet's failure signature feeds the rule matcher"
-  - pattern: "The MIST Card"
-    how: "layering — the card rides the packet"
-  - pattern: "Positive Transfer"
-    how: "prerequisite — unaccepted offers feed the failure packet"
----
-
-**Status:** Working. **Source:** ICAO Annex 13 recorder custody; incident scribe channels; WAL/journaling filesystems.
-
-**Core Dynamic.** After the executor dies, there are exactly two ways to know what happened: reconstruction from survivor testimony, or playback of a record written continuously by a channel that does not share the executor's fate. Every serious safety domain chose the second, in a specific shape: the recorder is not triggered by the crash — it writes all along, to crash-protected media, on power independent of what crashes; **survival is structural, not reactive** (Review 2's fate-separation demand, stated as a requirement: a log buffer inside the dying process shares fate and is a diary, not a recorder).
-
-**Fate separation, concretely:** the conductor outlives the sheets and is the independent power bus; workspace state is the crash-protected medium; workspace archival is the secondary recorder. The authorable half is the capture wiring and the correlated-readout discipline; the packet assembly is engine-supplied by the durable `on_failure` hook (Review 3's honesty: a score author benefits from it, they do not build it).
-
-**The correlation rule is the deep one:** evidence travels in bundles, and the bundle composition is mandated, because evidence read alone lies (flight-data readout without the cockpit-voice channel misleads, and voice without data misleads differently). And settlement must not launder the failure: **the original error travels verbatim.**
-
-This is the fifth failure class — terminal custody — completing the table:
-
-| Class | v4 pattern | What it owns | What it cannot answer |
-|---|---|---|---|
-| Task repair | Andon Cord | The moment of detection | Who holds the work while the human is en route |
-| Batch quarantine | Dead Letter Quarantine | The poisoned item | What happens downstream of the hole |
-| Infrastructure failover | Circuit Breaker | The route | What happens when there is no alternate path |
-| Side-effect compensation | Saga Compensation Chain | The undo | The evidence of what happened before the undo |
-| **Terminal custody** | **Black-Box Ledger (this)** | **The job itself, after the executor is gone** | — |
-
-**When to use:** any long orchestration whose post-failure value depends on knowing what actually happened.
-
-**When NOT to use:** the logger shares fate with the thing logging. The record is reconstructed afterward from memory — that is testimony, and testimony is what the recorder exists to replace. Volume drowns signal (bounded overwrite is a design feature — tune `max_output_chars`/`lookback_sheets`). Evidence is editable after the fact — a mutable black box is a diary.
-
-**Marianne Score Structure**
-
-```yaml
-cross_sheet:
-  auto_capture_stdout: true            # continuous write — every sheet, all along
-  max_output_chars: 4000               # bounded overwrite is a FEATURE
-  lookback_sheets: 5
-  capture_files: ["*-report.json", "*.jsonl"]
-
-movements:
-  1: { name: the-work }
-  2: { name: correlated-readout }
-
-sheet:
-  total_items: 2
-  dependencies: { 2: [1] }
-
-# on terminal failure, the durable on_failure hook assembles ONE evidence packet:
-# job identity, chain depth, per-sheet artifacts so far, cost spent, and the ORIGINAL
-# error verbatim — engine-supplied custody; the score's job is to have recorded.
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    Do the work. Write {{ workspace }}/*-report.json as you go — the recorder is
-    your ordinary output discipline, not an extra channel you remember at the end.
-    {% elif stage == 2 %}
-    Read the failure packet as a BUNDLE: logs + artifacts + config hash + instrument
-    identities. No channel alone. Ground every claim in the packet's bytes and cite
-    the packet path per claim.
-    {% endif %}
-
-validations:
-  - type: file_exists
-    path: "{workspace}/failure-packet/manifest.json"
-    condition: "stage == 2"
-  - type: command_succeeds
-    # the original error string is present UNMODIFIED — settlement does not launder failure
-    command: 'bash {score_dir}/scripts/packet-integrity.sh "{workspace}/failure-packet" --verbatim-error'
-    condition: "stage == 2"
-```
-
-**Near-miss:** stderr tee'd to a log file in the same process — the recorder shares fate with the crash, surviving nothing.
-
-**Example.** A nightly data-pipeline concert dies at 03:00 when an API credential expires mid-sheet. The on-duty engineer does not interview the half-finished agents — they open the packet: which sheets completed, what each wrote, the exact 401s in order, the config hash that was live. The evidence was assembled before anyone woke up.
-
----
-
-## Flight Rules
-
----
-name: "Flight Rules"
-scale: adaptation
-status: working
-forces: ["Exponential Defect Cost", "Accumulated Signal"]
-generators: ["G1 Irreversibility", "G5 Mutable Truth"]
-problem: "Under failure, deliberation is the enemy: the response is re-derived under duress instead of looked up from pre-negotiated, versioned condition-action bindings."
-signals:
-  - "the same failures recur and the correct response is knowable in advance"
-  - "incident response, failure recovery, go/no-go criteria"
-  - "a responder who reasons for ten minutes where reading for ten seconds would do"
-stages:
-  - name: rule-corpus
-    sheets: 1
-    instrument_guidance: "any AI instrument — authors one YAML per rule under change control"
-    fallback_friendly: true
-    purpose: "Maintain the rule corpus: id, machine-checkable condition, action, rationale, effectivity, revision history."
-  - name: handler
-    sheets: 1
-    instrument_guidance: "AI matching confined to signature PROPOSAL; deterministic selection for high-risk classes"
-    fallback_friendly: true
-    purpose: "Match the failure signature; execute; CITE rule IDs in output."
-  - name: change-board
-    sheets: 1
-    instrument_guidance: "instrument: cli — serialized board applies deltas as new versions"
-    fallback_friendly: false
-    purpose: "Rule deltas from every incident; never edit history."
-dependencies:
-  handler: [rule-corpus]
-  change-board: [handler]
-composes_with:
-  - pattern: "The Black-Box Ledger"
-    how: "prerequisite — the packet's failure signature feeds the matcher"
-  - pattern: "The MIST Card"
-    how: "prerequisite — a rule action colliding with a recorded failed remedy is a rule-delta signal"
-  - pattern: "After-Action Review (v4 archive)"
-    how: "prerequisite — the AAR's output artifact becomes the delta"
----
-
-**Status:** Working. **Source:** NASA flight rulebook; Apollo 12 "SCE to AUX"; launch commit criteria; nuclear symptom-based procedures.
-
-**Core Dynamic.** The move relocates the decision: **negotiate condition→action bindings while everyone is calm and informed, review them formally, version them — and at failure time look up rather than reason.** Authority flows from the rule's provenance (reviewed, signed, numbered), not from the responder's confidence. The rulebook is a living document under change control: the output of every After-Action Review is not a resolution, it is a **rule delta** through a board. Not an escalation ladder (the ladder routes *who* decides; the rule pre-decided *what*), not a gate (a gate checks work; a rule binds a response to a condition).
-
-**Deterministic selection (Review 2):** for high-risk incident classes, rule selection must be deterministic — the runtime path may use an AI handler to *propose* signatures, but the binding `condition → rule` is matched by the rule engine (machine-checkable conditions: error class, stage, retry count), never by judgment under duress.
-
-**When to use:** incident response, failure recovery, go/no-go criteria — anywhere the same failures recur and the correct response is knowable in advance.
-
-**When NOT to use:** rules are ambiguous or contradictory — two matched rules at failure time is worse than none (contradiction review at the change board is mandatory). Coverage gaps force improvisation anyway — every gap found in an incident must become a rule or it stays. The responder reasons past the rule — mitigate by making the rule's action deterministic where possible. Rules rot against a config that moved on — version-pin rules to the configuration they were written against.
-
-**Marianne Score Structure**
-
-```yaml
-spec:
-  spec_dir: "{score_dir}/rules"
-  spec_tags: { 2: [flight-rules] }        # only the applicable subset enters the responder's context
-
-movements:
-  1: { name: rule-corpus }
-  2: { name: handler }
-  3: { name: change-board, instrument: cli }
-
-sheet:
-  total_items: 3
-  dependencies: { 2: [1], 3: [2] }
-  per_sheet_fallbacks: { 3: [] }
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    Author rule YAML into {{ workspace }}/rules/: {id: FR-114, condition:
-    {error_class, stage, retry_count}, action: <deterministic command>, rationale,
-    effectivity: <config/score version>, revision}. One file per rule.
-    {% elif stage == 2 %}
-    The flight-rules corpus is in your context. Match the failure signature in
-    {{ workspace }}/failure-packet/ to rules. Execute the matched action. CITE rule IDs
-    verbatim in your output — a fabricated citation fails the run (see validations).
-    {% elif stage == 3 %}
-    bash "{score_dir}/scripts/rule-board.sh" "{{ workspace }}/rule-deltas/" \
-      --apply-as-new-versions --contradiction-review
-    {% endif %}
-
-validations:
-  # THE grounding validation, shown concretely (Review 3): every cited rule ID must
-  # exist verbatim in the rule corpus — a fabricated rule citation fails the run.
-  - type: command_succeeds
-    command: 'grep -hoE "FR-[0-9]+" {workspace}/handler-output.md | sort -u | while read id; do grep -rq "id: $id" {score_dir}/rules/ || exit 1; done'
-    condition: "stage == 2"
-  - type: content_regex
-    pattern: "FR-[0-9]+"
-    path: "{workspace}/handler-output.md"
-    condition: "stage == 2"
-  - type: command_succeeds
-    command: 'bash {score_dir}/scripts/rule-board.sh {workspace}/rule-deltas --check-only'
-    condition: "stage == 3"
-```
-
-**Near-miss:** a wiki page of best practices — unversioned, unmatched, uncited; prose where a rulebook should be.
-
-**Example.** An e-commerce release concert with pre-negotiated rollback rules: "if checkout conversion drops >15% for 10 minutes post-deploy → auto-rollback; if payments latency p99 > 2s → freeze rollout, escalate." The 3 AM responder executes FR-207; nobody debates thresholds at 3 AM.
-
----
-
-## Self-Stabilizing Custody
-
----
-name: "Self-Stabilizing Custody"
-scale: adaptation
-status: working
-forces: ["Partial Failure", "Convergence Imperative"]
-generators: ["G3 Mortal Executors", "G6 Distributed Ignorance"]
-problem: "Crash, corruption, and restart are treated as exceptional events requiring an exceptional recovery protocol, when they are just arbitrary states the ordinary rules should leave."
-signals:
-  - "conductor restarts mid-concert; workspaces resumed after host failure"
-  - "global rollback costs more than local re-derivation"
-  - "recovery from PARTIALLY corrupt state — where checkpoint-restore fails"
-stages:
-  - name: predicates
-    sheets: 1
-    instrument_guidance: "instrument: cli — each sheet's completion claim is script-checkable from disk"
-    fallback_friendly: false
-    purpose: "Define legitimacy: output artifact exists, digest matches journal, no later entry supersedes it."
-  - name: local-correction
-    sheets: 1
-    instrument_guidance: "the recovered sheets themselves — each re-derives ONLY its own legitimacy"
-    fallback_friendly: true
-    purpose: "Re-run if illegitimate; never reset a sibling."
-  - name: closure
-    sheets: 1
-    instrument_guidance: "instrument: cli — fan-in proceeds only over legitimately-done predecessors"
-    fallback_friendly: false
-    purpose: "Verify closure: every predecessor legitimate or visibly skipped."
-dependencies:
-  local-correction: [predicates]
-  closure: [local-correction]
-composes_with:
+  - pattern: "The Validity Window"
+    how: "the destructive-boundary specialization — window + independence + digest binding"
   - pattern: "The Fencing Token"
-    how: "layering — MANDATORY wherever side effects exist; bounds the convergence window's misbehavior"
-  - pattern: "The Black-Box Ledger"
-    how: "prerequisite — the journal legitimacy predicates read"
-  - pattern: "Behavioral Pre-Mortem"
-    how: "substitution — the kill-injection probe is the pre-mortem's runtime twin"
+    how: "substitution — pre-flight and cheap instead of rejection at the write boundary"
+  - pattern: "Standby–GO"
+    how: "contrast — the cue confirms receiver readiness; the permit confirms environment safety, and it decays"
 ---
-
-**Status:** Working. **Source:** Dijkstra 1974; Schneider 1993; routing reconvergence.
-
-**Core Dynamic.** Crash, corruption, and restart are not exceptional events requiring an exceptional recovery protocol — they are just "an arbitrary state," which is exactly what the system was designed to leave. The discipline is twofold: write the **legitimacy predicate** first (what counts as healthy, decidable from observable state — for orchestration, decidable *from disk*), then give each component a **local correction rule that moves only its own state toward the predicate**. Nobody performs a global rollback; nobody needs a coherent global snapshot to begin. Recovery is a *property of the ordinary rules*, so the system resumes correctly even when failure detection itself failed. This formalizes the substrate's standing law: scheduler state is a projection; occupancy is re-derived from physical evidence, never trusted from memory.
-
-**Monotone rules and the convergence test (Review 2):** corrections must be monotone — two local corrections must not make each other illegitimate (the metastable-failure guard). And convergence is *tested*, not asserted: a kill-injection probe at each physical interruption point asserts closure and convergence before the pattern is trusted.
-
-**The bounded-misbehavior caveat is constitutive:** self-stabilization *tolerates a bounded period of misbehavior during convergence* — an illegitimate component that can act on the world before correcting must be paired with the Fencing Token. This pairing is mandatory, not advisory, wherever side effects exist.
-
-**When to use:** conductor restarts mid-concert; workspaces resumed after host failure; any long score where global rollback costs more than local re-derivation; recovery from *partially* corrupt state.
-
-**When NOT to use:** predicates not locally decidable — if proving your own legitimacy requires a global snapshot, you have rebuilt the coordination you were avoiding. Correction rules that can oscillate under unfair scheduling (metastable failure; the fix is monotone rules).
-
-**Marianne Score Structure**
-
-```yaml
-movements:
-  1: { name: predicates, instrument: cli }
-  2: { name: local-correction }
-  3: { name: closure, instrument: cli }
-
-sheet:
-  total_items: 3
-  dependencies: { 2: [1], 3: [2] }
-  per_sheet_fallbacks: { 1: [], 3: [] }
-  skip_when:
-    2: { command: 'bash {score_dir}/scripts/legitimacy.sh {workspace} --sheet {{ instance }} --quiet' }
-                                          # already-legitimate sheets skip re-derivation
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    bash "{score_dir}/scripts/legitimacy.sh" "{{ workspace }}" --emit-predicates
-    {% elif stage == 2 %}
-    Re-derive ONLY your own legitimacy: your output artifact exists, its digest matches
-    the journal, no later entry supersedes it. If illegitimate, re-run your work.
-    NEVER reset or modify a sibling sheet's state.
-    {% elif stage == 3 %}
-    bash "{score_dir}/scripts/closure.sh" "{{ workspace }}" --require-legitimate-or-skipped
-    {% endif %}
-
-validations:
-  - type: command_succeeds
-    command: 'bash {score_dir}/scripts/closure.sh {workspace} --check-only'
-    condition: "stage == 3"
-  - type: file_exists
-    path: "{workspace}/recovery-ledger.json"
-    condition: "stage == 2"            # which sheets re-derived — auditable, not asserted
 ```
 
-**Near-miss:** global `rm -rf workspace; rerun` — rollback as recovery, discarding legitimate work at the cost the pattern exists to avoid.
+**Source:** Expedition 1; Review 1 called its draft form "dangerously ordered" — destruction could precede or ignore the check. The fix is structural: **destruction is a command, so the whole pattern is CLI-native.**
 
-**Example.** An overnight research concert is interrupted by an infrastructure restart at 3 AM: on resume, each in-flight sheet independently determines done/in-progress/not-started from its artifacts and the journal; no coordination phase, no operator triage, no global rollback — coherence is every sheet's local job.
+### Core Dynamic
 
----
+Before any torch touches steel near a tank, the yard obtains a certificate from a *competent person who is not the crew doing the burning* — and the certificate expires, and any interruption invalidates it, and resumption demands re-certification. Three load-bearing properties: **independence** (a separately-committed `certifier/` directory whose digest is recorded in the permit — independence is provenance, not a pathname); **freshness** (bounded validity from issuance — the Validity Window at its sharpest); **binding** (the permit names the exact target state by digest, so it cannot be replayed against different bytes). And the one the reviews forced: **check-and-act atomicity** — the destroy movement is a single CLI wrapper that verifies the permit (digest match, freshness) and executes the destruction in the same process; a failed check refuses with exit non-zero and nothing is destroyed. The AI sheet's role is upstream: planning what to destroy and why. It never presses the button, and no validation-after-the-fact pretends otherwise.
 
-## Hutchinson's Warning (Damped Load-Shedding)
+A retried or resumed run re-certifies, because interruption is itself evidence the world may have moved. A retry that reuses yesterday's gas-free check is the explosion.
 
----
-name: "Hutchinson's Warning"
-scale: adaptation
-status: working
-forces: ["Finite Resources", "Producer-Consumer Mismatch"]
-generators: ["G4 Shared Finite Budgets"]
-problem: "Negative feedback with lag oscillates: a controller fed by lagged telemetry throttles hard, bursts through, and throttles hard forever."
-signals:
-  - "a large multi-movement score with a genuinely shared budget — money, wall-clock, or context"
-  - "spend telemetry arrives with lag (batched billing, periodic usage polls) — which is everywhere"
-  - "feeding work into anything with a real capacity curve: paid APIs, human review, CI pools"
-stages:
-  - name: trend-probe
-    sheets: 1
-    instrument_guidance: "instrument: cli — computes the spend-rate EMA from the ledger"
-    fallback_friendly: false
-    purpose: "Emit capacity-state.yaml {ema, ceiling, rung} — the WRITTEN state the router and prompts cite."
-  - name: router
-    sheets: 1
-    instrument_guidance: "instrument: cli — chooses the rung; down-cross immediate, up-cross after M windows"
-    fallback_friendly: false
-    purpose: "Translate the damped trend into a declared degradation rung."
-  - name: work
-    sheets: 1
-    instrument_guidance: "rung-dependent: rung 0 full instruments; rung 1 instrument_map routes half the movements cheap; rung 2 scope reduction; rung 3 deferral"
-    fallback_friendly: true
-    purpose: "Execute under the chosen rung, DECLARED in the state file the prompt cites."
-  - name: settle
-    sheets: 1
-    instrument_guidance: "instrument: cli — appends actuals; the EMA is the only thing the next iteration reads"
-    fallback_friendly: false
-    purpose: "Close the loop on measured trend, never instantaneous reading."
-dependencies:
-  router: [trend-probe]
-  work: [router]
-  settle: [work]
-composes_with:
-  - pattern: "The Etiquette Law"
-    how: "layering — the rungs are instrument tiers on the chain"
-  - pattern: "Standby–GO"
-    how: "substitution — the hold is degradation rung zero"
----
-
-**Status:** Working. **Source:** Nicholson's 1954 blowfly cultures; the Hutchinson delay-logistic. **Narrowed per Review 2** to its structural identity: *damped delayed-feedback control with asymmetric shed/restore*. The Metered Merge absorption is **reversed** — its ALINEA equation lives in the archive as its own entry (same damping law, applied to admission flow instead of budget), and the seam is stated here and there.
-
-**Core Dynamic.** The deep result of density dependence is not "who gets cut when the food runs out" — that is triage, and v4 owns triage. The deep result is that **negative feedback with delay oscillates**, and the design problem is *damping*: feedback lag longer than the system's natural period generates oscillation (Nicholson's violent ~35-day cycles). Translated: under a hard budget ceiling, sheets are not killed in priority order by a judge stage — they degrade along a ladder each experiences locally, and the controller must measure spend as a **damped trend (EMA)**, never an instantaneous reading. The asymmetry is load-bearing: **shed fast (one measurement window), restore slow (several)** — a controller that restores as eagerly as it sheds is Nicholson's culture in YAML. And the most LLM-specific instance: **context is a habitat** — `lookback_sheets` and `max_output_chars` bound the population of artifacts competing for each consumer's attention, and when density exceeds capacity the failure is quiet: no sheet starves, every sheet gets measurably worse.
-
-**Control wiring, corrected per Review 1:** `circuit_breaker` accepts **sheet-failure counts only** — it is wired for exactly that. Spend ceilings live in `cost_limits`, which *pauses the job* — a different, correct, observable. The rung ladder is neither: it is score-level routing that reads the written `capacity-state.yaml`; the rung is declared in that file — which the prompt cites — so degradation is *declared*, not experienced as mysterious constraint.
-
-**When to use:** large multi-movement scores with a genuine shared budget; lagged telemetry; feeding anything with a real capacity curve.
-
-**When NOT to use:** the resource is not actually shared (per-sheet budgets have no density dependence; a controller there is ceremony). The shed ladder is symmetric (the failure mode restated). The consumer's capacity is constant and known (a static rate or plain stagger is the same thing with less machinery). No honest sensor — feedback on a lied-about occupancy is worse than open loop.
-
-**Marianne Score Structure**
+### Marianne Score Structure
 
 ```yaml
-cost_limits: { max_cost_usd: 40 }      # the ceiling — pauses the job when hit (its own observable)
-
 movements:
-  1: { name: trend-probe, instrument: cli }
-  2: { name: router, instrument: cli }
-  3: { name: work }
-  4: { name: settle, instrument: cli }
+  1: { name: plan-destruction }     # AI: what to destroy, why, with what command
+  2: { name: certify, instrument: cli, instrument_fallbacks: [] }
+  3: { name: destroy, instrument: cli, instrument_fallbacks: [] }
+  4: { name: record, instrument: cli, instrument_fallbacks: [] }
 
 sheet:
+  size: 1
   total_items: 4
   dependencies: { 2: [1], 3: [2], 4: [3] }
-  per_sheet_fallbacks: { 1: [], 2: [], 4: [] }
-
-instruments:
-  cheap: { profile: opencode, config: { model: "zai-coding-plan/glm-5.3-flash" } }
-instrument_map:
-  opus: [3]                             # rung 1 would rewrite this map to route half
-  cheap: [3]                            # the movements cheap — routing by WRITTEN state
+  per_sheet_fallbacks:
+    2: []
+    3: []
+    4: []
 
 prompt:
-  variables: { ceiling: 40, restore_windows: 3 }
+  variables: { ttl_minutes: 30 }
   template: |
     {% if stage == 1 %}
-    python3 "{score_dir}/scripts/ema-probe.py" "{{ workspace }}/spend-ledger.jsonl" \
-      --alpha 0.3 --ceiling {{ ceiling }} --emit "{{ workspace }}/capacity-state.yaml"
+    Plan the destruction. Write {{ workspace }}/plan.json: target path, the exact
+    destructive command, rollback posture. Do NOT execute anything.
     {% elif stage == 2 %}
-    bash "{score_dir}/scripts/rung-router.sh" "{{ workspace }}/capacity-state.yaml" \
-      --shed-immediate --restore-after {{ restore_windows }} --emit-rung
+    bash "{score_dir}/certifier/gas-free.sh" --plan "{{ workspace }}/plan.json" \
+      --ttl-minutes {{ ttl_minutes }} --emit "{{ workspace }}/permit.json"
     {% elif stage == 3 %}
-    You are running at rung {{ rung }} (see {{ workspace }}/capacity-state.yaml — read it):
-    0 full instruments, 1 cheap instrument for half the movements, 2 narrower scope,
-    3 deferral. The rung is DECLARED state, not a suggestion.
-    {% elif stage == 4 %}
-    bash "{score_dir}/scripts/settle.sh" "{{ workspace }}/spend-ledger.jsonl" \
-      --append-actuals --assert-under-ceiling
+    bash "{score_dir}/certifier/execute.sh" --permit "{{ workspace }}/permit.json" \
+      --plan "{{ workspace }}/plan.json"
+    {% else %}
+    bash "{score_dir}/scripts/ledger.sh" append-permit "{{ workspace }}/permit.json" \
+      --receipts "{{ workspace }}/receipts.jsonl"
     {% endif %}
 
 validations:
-  - type: file_exists
-    path: "{workspace}/capacity-state.yaml"
-    condition: "stage == 2"            # the router cannot run on unwritten state
   - type: command_succeeds
-    # THE validation that makes the damping real: down-cross immediate, up-cross after M windows
-    command: 'bash {score_dir}/scripts/rung-router.sh {workspace}/capacity-state.yaml --assert-asymmetry'
-    condition: "stage == 4"
+    command: 'bash {score_dir}/certifier/execute.sh --self-test'
+    condition: "stage == 3"
   - type: command_succeeds
-    command: 'bash {score_dir}/scripts/settle.sh {workspace}/spend-ledger.jsonl --check-only'
+    command: 'bash {score_dir}/scripts/ledger.sh append-permit {workspace}/permit.json --receipts {workspace}/receipts.jsonl --require-join'
     condition: "stage == 4"
 ```
 
-**Worked example with real numbers (Review 3's demand):** a 40-sheet documentation migration under `$40`. The ledger records actual spend per sheet; the EMA (α = 0.3) over the last 5 entries reads $0.82/sheet at sheet 20 — 0.82 × 40 = $32.8 projected, under the $34 shed threshold (0.85 × ceiling): rung 0. At sheet 25, lagged billing catches up: EMA jumps to $0.94/sheet → $37.6 projected → cross → rung 1 **immediately**: sheets 26+ route to the cheap instrument and a reduced `capture_files` list, declared in `capacity-state.yaml`. Occupancy falls; the EMA declines $0.94 → $0.88 → $0.81 over three windows; only when EMA < $28 (0.7 × ceiling) for **three consecutive windows** does the router restore rung 0. No sheet is executed against a wall; the habitat gets honestly poorer, then honestly richer — and the post-hoc assertion `total spend ≤ $40` is checked mechanically at settle.
-
-**Near-miss:** per-sheet budget checks against instantaneous spend — the lagged-telemetry oscillator with extra steps.
-
----
-
-# Iteration Patterns
-
-## Replication Licensing
-
----
-name: "Replication Licensing"
-scale: iteration
-status: working
-forces: ["Progressive Commitment", "Exponential Defect Cost"]
-generators: ["G1 Irreversibility", "G3 Mortal Executors"]
-problem: "A cycle counter cannot prevent a side-effectful cycle from happening twice, and naive retries duplicate deployments."
-signals:
-  - "any self-chaining or recurring score whose work stage has side effects that must be exactly-once per cycle"
-  - "deploys, sends, publishes, billing events, state migrations"
-  - "a conductor crash mid-stage would otherwise leave 'did the deploy happen?' answerable only by archaeology"
-stages:
-  - name: restriction-point
-    sheets: 1
-    instrument_guidance: "instrument: cli — verify inputs, prior completion, and NO unconsumed license; then issue"
-    fallback_friendly: false
-    purpose: "Issue licenses/cycle-{n}.json naming exactly what it authorizes, by hash."
-  - name: work
-    sheets: 1
-    instrument_guidance: "any AI instrument; its FIRST action is the mv that consumes the license"
-    fallback_friendly: true
-    purpose: "Consume the license by moving it; possession of the moved file is the proof of authorization."
-  - name: mitosis
-    sheets: 1
-    instrument_guidance: "instrument: cli — verification-only gate on the products"
-    fallback_friendly: false
-    purpose: "Check products complete and grounded; arm the next restriction point."
-dependencies:
-  work: [restriction-point]
-  mitosis: [work]
-composes_with:
-  - pattern: "The Fencing Token"
-    how: "substitution — same family (physical authority), different primitive: exactly-once consumption vs ordering defense (seam stated in both)"
-  - pattern: "Canon of Phases"
-    how: "layering — the packet boundary carries license state"
----
-
-**Status:** Working. **Source:** MCM2-7 licensing; geminin's steric blockade; the G1 restriction point. Ranked strongest pattern in the corpus by Review 1: fully expressible today, its atomic `mv`-as-consumption is a real mechanism with a real validation, and it covers a failure class (exactly-once under crash) nothing else owns.
-
-**Core Dynamic.** `max_chain_depth` counts cycles; it cannot prevent a cycle from *happening twice*. The cell solved duplication safety the way orchestration should: the right to do expensive, side-effectful work is a **single-use artifact** that (a) carries provenance — the license names exactly what it authorizes, by hash; (b) is atomically consumed by the act of beginning — the `mv` across a filesystem boundary is the firing; and (c) cannot be re-issued until a checkpoint has verified the products of the last cycle. The anti-relicensing guard is constitutive: refusal is the default state, and permission is the temporary, supervised exception. Crash between start and finish leaves a consumed license and no products — recovery can therefore *tell the difference* between "never started" and "started, died," which is precisely the ambiguity that makes naive retries duplicate deployments.
-
-**When to use:** any self-chaining or recurring score whose work stage has side effects that must be exactly-once per cycle.
-
-**When NOT to use:** purely idempotent work (regenerating a derived file that overwrites in place; a `file_modified` check suffices). License issuance and consumption not *atomically* ordered: issue-then-consume with any gap invites a second consumer to read a still-valid license — the consumption must be the `mv` the work stage itself performs as its first act.
-
-**Marianne Score Structure**
-
-```yaml
-schedule:
-  interval: 1d
-  timezone: "Europe/Amsterdam"
-  overlap: skip
-  misfire: skip
-
-movements:
-  1: { name: restriction-point, instrument: cli }
-  2: { name: work }
-  3: { name: mitosis, instrument: cli }
-
-sheet:
-  total_items: 3
-  dependencies: { 2: [1], 3: [2] }
-  per_sheet_fallbacks: { 1: [], 3: [] }
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    bash "{score_dir}/scripts/license-issue.sh" "{{ workspace }}" \
-      --verify-inputs --verify-prior-complete --refuse-if-unconsumed \
-      --emit licenses/cycle-{n}.json     # {cycle, input_sha256 map, issued_utc, consumer, expires_at}
-    {% elif stage == 2 %}
-    Your FIRST action: mv {{ workspace }}/licenses/cycle-*.json {{ workspace }}/consumed/
-    Then do the expensive work, writing outputs that reference the license's input hashes.
-    {% elif stage == 3 %}
-    bash "{score_dir}/scripts/mitosis.sh" "{{ workspace }}" \
-      --verify-products-grounded --emit-completion-marker
-    {% endif %}
-
-validations:
-  - type: command_succeeds
-    # the atomic move, asserted BOTH ways: consumed present AND licenses/ empty of it
-    command: 'test -n "$(ls {workspace}/consumed/cycle-*.json 2>/dev/null)" && test -z "$(ls {workspace}/licenses/cycle-*.json 2>/dev/null)"'
-    condition: "stage == 2"
-  - type: command_succeeds
-    command: 'bash {score_dir}/scripts/mitosis.sh {workspace} --check-only'
-    condition: "stage == 3"
-```
-
-**Failure wiring:** `mzt recover` finding a consumed license with no products enters resume-or-compensate, never re-license — the "no unconsumed license" check is constitutive and cannot be skipped by configuration.
-
-**Near-miss:** a `deployed.flag` file checked at start — presence-of-marker without atomic consumption re-licenses on every retry; the flag can be read by two consumers at once.
-
-**Example.** A nightly publishing pipeline: build → deploy → notify. The conductor crashes after deploy, before notify. Naive retry redeploys. Under licensing: the license was consumed by deploy; recovery finds consumed-license-without-completion-marker and resumes at notify — the restriction point physically cannot re-issue for cycle n until mitosis verified cycle n's products, and the next license carries n+1's input hashes, which the deploy target will not match if the content did not change.
-
----
-
-# Within-Stage & Instrument Strategy Patterns
-
-## Designation Is Authorization
-
----
-name: "Designation Is Authorization"
-scale: instrument-strategy
-status: working
-forces: ["Instrument-Task Fit", "Information Asymmetry"]
-generators: ["G2 The Unreliable Narrator"]
-problem: "Authority expressed as a list of rights the subject names lets authority leak through any confused intermediary."
-signals:
-  - "mixed-instrument fan-outs where sheets differ in trust"
-  - "a cheap summarizer touching sensitive context; tool attachment that must be scoped"
-  - "technique/skill injection that must not be ambient"
-stages:
-  - name: capability-manifest
-    sheets: 1
-    instrument_guidance: "any AI instrument — authors the per-sheet designation map (this is DESIGN, pre-run)"
-    fallback_friendly: true
-    purpose: "Declare per sheet: techniques attachments, cadenza directories (exactly one subtree each), spec_tags."
-  - name: scoped-execution
-    sheets: 1
-    instrument_guidance: "the designated sheets — running with only what was handed"
-    fallback_friendly: true
-    purpose: "Execute with designated context only: undesignated specs are ABSENT, not hidden."
-  - name: capability-audit
-    sheets: 1
-    instrument_guidance: "instrument: cli — dumps every sheet's effective capability set"
-    fallback_friendly: false
-    purpose: "Make designation inspectable for review."
-dependencies:
-  scoped-execution: [capability-manifest]
-  capability-audit: [scoped-execution]
-composes_with:
-  - pattern: "Proof-Carrying Artifact"
-    how: "layering — evidence bundles as designated context"
-  - pattern: "The Etiquette Law"
-    how: "layering — instruments as capability endpoints on the chain"
----
-
-**Status:** Working. **Source:** the object-capability model; the confused deputy. **The distinction Review 2 demanded is load-bearing:** conductor-mediated designation scopes **context and attachment** — which spec corpora enter the prompt (`spec_dir` + `spec_tags`: undesignated specs are absent, not hidden), which techniques attach (`skill`/`mcp`/`protocol`, optionally `required`), which cadenza directories are handed. It is **not OS-level capability confinement** of filesystem or tool access: a sheet can still `cat` anything its process can reach. Prompt-injection defense by absence-of-naming is context scoping — real and useful, and the *use* the control plane was built for — but true confinement (sandboxing the process itself) needs engine/runtime work and is recorded in Awaiting Primitives. The pattern's claims stop at the boundary it can enforce today.
-
-**Core Dynamic.** An ACL system says: the subject holds a list of rights and *names* objects to act on — the naming channel is ambient, so authority leaks through any confused intermediary. A capability system says: the only objects that exist for you are the ones you were handed; **designation and authority are the same event**. A sheet given exactly the `docs/` subtree and one read-only protocol technique cannot prompt-inject its way into deploy credentials — not because a rule forbade it, but because those names were never in its world.
-
-**When to use:** mixed-trust fan-outs; scoped tool attachment; non-ambient technique injection.
-
-**When NOT to use:** authority is genuinely global and stable (per-sheet capability sets cost more than the ambient risk). Revocation must propagate instantly through deep delegation chains. (And: you need confinement the conductor cannot mediate — see the boundary above.)
-
-**Marianne Score Structure**
-
-```yaml
-spec:
-  spec_dir: "{score_dir}/specs"
-  spec_tags: { 2: [public-api] }          # the untrusted sheet sees ONLY public-api specs
-
-movements:
-  1: { name: capability-manifest }
-  2: { name: scoped-execution }
-  3: { name: capability-audit, instrument: cli }
-
-sheet:
-  total_items: 3
-  dependencies: { 2: [1], 3: [2] }
-  per_sheet_fallbacks: { 3: [] }
-  cadenzas:
-    2:
-      - directory: "{score_dir}/context/docs-subtree"
-        as: context
-        required: true                   # exactly one subtree — fail closed when absent
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    Author {{ workspace }}/capability-map.yaml: per movement, the techniques attachments,
-    cadenza directory (exactly one subtree), and spec_tags. Least designation that suffices.
-    {% elif stage == 2 %}
-    You have been designated: the docs subtree (cadenza) and the public-api spec slice.
-    Work within it. Other specs are not hidden from you — they are absent from your world.
-    {% elif stage == 3 %}
-    python3 "{score_dir}/scripts/capability-render.py" "{score_dir}/this-score.yaml" \
-      --dump-effective-sets
-    {% endif %}
-
-validations:
-  - type: command_succeeds
-    # topology check: no two sheets' cadenza directories overlap unless a shared-artifact
-    # stage declares the intersection
-    command: 'python3 {score_dir}/scripts/capability-render.py {score_dir}/this-score.yaml --assert-no-undeclared-overlap'
-    condition: "stage == 3"
-```
-
-**Near-miss:** a prompt line "you may only read docs/" — an ACL spoken politely; every other name remains in the sheet's world, waiting for a confused deputy.
-
-**Example.** A security-audit score for a client codebase: an untrusted third-party-model sheet gets only the spec excerpts tagged `public-api` plus a read-only grep protocol; the fixer sheet gets repo-write. When the auditor sheet's prompt is later found to contain injected instructions from a scanned file, the blast radius is what it was designated — nothing.
-
----
-
-## Immune Checkpoint
-
----
-name: "Immune Checkpoint"
-scale: within-stage
-status: working
-forces: ["Exponential Defect Cost", "Instrument-Task Fit"]
-generators: ["G2 The Unreliable Narrator", "G1 Irreversibility"]
-problem: "In a system with a powerful reviewer and an automated remediation path, the reviewer is the most dangerous instrument: a false-positive finding triggers rollback or deletion of healthy work."
-signals:
-  - "adversarial review feeding automated remediation — fix-PRs, scanner-gated deploys, takedowns"
-  - "reviewer recall tuned high AND a downstream stage treating findings as verdicts rather than leads"
-  - "an AI code reviewer opening fix-PRs directly"
-stages:
-  - name: adversarial-review
-    sheets: 1
-    instrument_guidance: "a strong instrument generating findings in a strict schema"
-    fallback_friendly: true
-    purpose: "Produce {id, claim, location, evidence, proposed_remediation, severity} — high recall, no self-restraint required."
-  - name: tolerance-checkpoint
-    sheets: 1
-    instrument_guidance: "instrument: cli — deterministic, INSIDE the review boundary, before findings are ever emitted as actionable"
-    fallback_friendly: false
-    purpose: "Ground location against actual bytes; compute blast radius; classify load-bearing. Failed/ambiguous → tolerated, never routed."
-  - name: remediation
-    sheets: 1
-    instrument_guidance: "any AI instrument — receives ONLY the actionable subset"
-    fallback_friendly: true
-    purpose: "Remediate the bijective actionable set — no more."
-dependencies:
-  tolerance-checkpoint: [adversarial-review]
-  remediation: [tolerance-checkpoint]
-composes_with:
-  - pattern: "The Skeptical Oracle"
-    how: "layering — recall-side harvest there; precision-side gate here; the pair covers both directions of reviewer error"
-  - pattern: "Andon Cord (v4 archive)"
-    how: "prerequisite — the human summons for ambiguous findings"
----
-
-**Status:** Working. **Source:** regulatory T cells; CTLA-4's higher affinity winning ties. **Plain structural language first (Review 2): this is a precision gate on the critic.** The immunology is illustration, not argument.
-
-**Core Dynamic.** The corpus had adversarial review and gates on the work. It had nothing that gates the **critic** — yet with a powerful reviewer and an automated remediation path, a false-positive finding doesn't waste a cycle, it triggers rollback, churn, or deletion of healthy work. That is autoimmunity, and its prevalence scales with reviewer capability. The checkpoint is an inhibitory gate *inside the review path*: findings cannot trigger destructive remediation until each passes a self-tolerance check — grounding (the cited file:line exists and contains what is claimed), blast-radius computation (the proposed remediation's diff is bounded and touches what the finding names), and load-bearing classification. The constitutive-presence rule is the part worth copying exactly: the checkpoint cannot be configured away, and **on ambiguity it defaults to tolerance** — no action, escalate to a human. The off-signal is designed to win ties. Everything still surfaces — flagged `autoimmune-suspect` rather than `actionable`.
-
-**The recalibration rule, correctly wired (Review 1's fix):** a checkpoint rejecting >80% of findings is itself a finding — the reviewer and the code have diverged and need recalibration, not more rounds. This is enforced by a **deterministic count gate** comparing actionable vs tolerated totals (a script, an exit code), not by `circuit_breaker`, which accepts sheet-failure counts only.
-
-**When to use:** any score where adversarial review feeds automated remediation.
-
-**When NOT to use:** findings are advisory-only and a human reads every one (the checkpoint duplicates the reader). The tolerance check is weaker than the reviewer (a grep that can't see what the finding means will pass plausible nonsense). "Tolerance by default" misread as "review is optional" — the checkpoint suppresses automated *action*, never the finding itself.
-
-**Marianne Score Structure**
-
-```yaml
-movements:
-  1: { name: adversarial-review }
-  2: { name: tolerance-checkpoint, instrument: cli }
-  3: { name: remediation }
-
-sheet:
-  total_items: 3
-  dependencies: { 2: [1], 3: [2] }
-  per_sheet_fallbacks: { 2: [] }        # the checkpoint cannot be degraded away
-
-prompt:
-  template: |
-    {% if stage == 1 %}
-    Generate findings in STRICT schema: {id, claim, location, evidence,
-    proposed_remediation, severity}. Tune recall high — the checkpoint downstream
-    is your precision; do not self-censor.
-    {% elif stage == 2 %}
-    bash "{score_dir}/scripts/tolerance-checkpoint.sh" "{{ workspace }}/findings.json" \
-      --ground-locations --compute-blast-radius --classify-load-bearing \
-      --default-to-tolerance --emit "{{ workspace }}/actionable.json" \
-      --tolerated "{{ workspace }}/tolerated.jsonl"
-    {% elif stage == 3 %}
-    Remediate EXACTLY the findings in {{ workspace }}/actionable.json. If you find yourself
-    working on something not in that file, stop — the bijection is the contract.
-    {% endif %}
-
-validations:
-  - type: command_succeeds
-    # the bijection is the anti-bypass proof: remediation's input set EQUALS the actionable set
-    command: 'bash {score_dir}/scripts/assert-bijection.sh {workspace}/actionable.json {workspace}/remediation-log.json'
-    condition: "stage == 3"
-  - type: command_succeeds
-    # the recalibration gate: a checkpoint rejecting >80% is itself a finding (a count gate,
-    # NOT circuit_breaker — the breaker accepts sheet-failure counts only)
-    command: 'bash {score_dir}/scripts/recalibration-gate.sh {workspace}/actionable.json {workspace}/tolerated.jsonl --max-rejection-ratio 0.8'
-    condition: "stage == 2"
-```
-
-**Near-miss:** a second reviewer stage — more judgment layered on judgment; the gate must be a checker, not another critic.
-
-**Example.** An automated PR-review agent for a monorepo, recall tuned high, opening fix-PRs directly. Without a checkpoint, one bad afternoon of plausible hallucinated "bugs" reverts healthy code across a dozen services — and the team's rational response is to turn the agent off entirely. With the checkpoint: every finding resolves to real bytes or is tolerated; ambiguous ones sit in a human queue; the fix-PR stream runs at a precision that keeps the automation alive.
-
----
-
-# Substrate Documentation (engine-supplied, not score-authored)
-
-*Reclassified per Review 3: these mechanisms are the engine's, not the score author's. A score author benefits from them and wires into them; presenting them as authorable patterns misleads a newcomer into hunting for YAML that isn't theirs to write.*
-
-**Claim custody (the Accountability Board's engine half).** The conductor's governing law, earned in blood: a durable row that says work began is not custody of the actual process; **custody belongs to the semantic result, not the process status** — errors observed at exit 0 are still failing. Cancellation must kill and reap the actual child process group while atomically writing a terminal settlement that does not launder the original error; a restarted conductor must reject stable-ID replacement of an incomplete claim; recovered hooks must retain their configured depth/cooldown/workspace semantics across restart.
-
-**The terminal-failure packet (the Black-Box Ledger's engine half).** The durable `on_failure` hook assembles the evidence packet atomically: job identity, chain depth, per-sheet artifacts, cost spent, the original error verbatim — with restart reconciliation and same-ID protection so duplicate external effects are impossible.
-
-**The rendered graph.** `mzt validate` (YAML syntax, Pydantic schema, extended semantics) plus DAG visualization is the render surface Behavioral Pre-Mortem builds on; programmatic JobConfig dry-rendering for concurrency/ancestry audits is established discipline.
-
-**What is still missing (the score-facing half of the Accountability Board, now in Awaiting Primitives):** a score-facing export of the conductor's claim table with physical process handles, so a PAR sweep can reconcile registry against handles without owning the processes. Until it exists, the authorable approximation is documented under Awaiting Primitives.
-
----
-# Substrate Availability Matrix
-
-*The unanimous demand of all three reviews. Every pattern declares what the substrate provides today. "Real keys" = engine fields verified this iteration. "Scripts" = user-supplied deterministic scripts from the Script Library. "Engine work" = blocked on substrate features that do not exist.*
-
-| Pattern | Status | Real keys consumed | Scripts required | Engine work needed |
-|---|---|---|---|---|
-| The Etiquette Law | working | `instrument: cli`, `per_sheet_fallbacks: []`, `command_succeeds` | run-gates.sh | none |
-| Fan-out + Synthesis | working | `fan_out`, `dependencies`, `capture_files` | none | none |
-| Proof-Carrying Artifact | working | `per_sheet_fallbacks`, `required: true` cadenzas, static `fan_out` | anchor-extractor.py, evidence-gate.sh | data-driven fan-out width (would remove batching) |
-| Positive Transfer | working | `max_wall_seconds`, `on_failure`, `capture_files` | handoff-gate.sh | none |
-| The MIST Card | **approximation** | `required: true` cadenzas | attempt-wrapper.sh, fingerprint-collision.py | per-attempt retry hooks (conductor-internal retries out of scope) |
-| Fork-Evident History | working | (git, or) `command_succeeds` | journal-verify.py | none |
-| The Errata Ledger | working | `per_sheet_fallbacks: []` | errata-commit.py | none |
-| Standby–GO | working | `skip_when` (command form), `max_wall_seconds`, `per_sheet_fallbacks: []` | arm-gate.sh, go.sh | none |
-| The Attested Merge Gate | working | `spec_dir`/`spec_tags`, `skipped_upstream` | compat-sweep.sh, full-suite.sh | per-sheet worktree isolation (job-level chaining is the available form) |
-| Join-Semilattice Merge | working | static `fan_out`, instance-tagged namespaces | idempotence-probe.sh | none |
-| Behavioral Pre-Mortem | working | `mzt validate` DAG render, JobConfig | invariant-check.py | none |
-| First Article Characterization | working | `skip_when` (command form), static `fan_out` | reference-freeze.py, manifest-runner.py | none |
-| The Skeptical Oracle | working | `instrument_map`, static `fan_out`, `per_sheet_fallbacks: []` | reproducer-harness.sh | none |
-| Negative-Treatment Watch | working | leased `schedule` (interval/cron, IANA tz, overlap/misfire), `max_wall_seconds` | source-sweep.sh, quarantine.sh | none |
-| Canon of Phases | working | leased `schedule`, `overlap: skip`, IANA `timezone` | packet-gate.sh | none (multi-deployment topology) |
-| The Fencing Token | working | `max_wall_seconds`, workspace files | token-grant.sh, token-admit.sh | none |
-| The Black-Box Ledger | working | `auto_capture_stdout`, `capture_files`, `max_output_chars`, `lookback_sheets`, durable `on_failure` | packet-integrity.sh | none (packet assembly is engine-supplied) |
-| Flight Rules | working | `spec_dir`/`spec_tags`, `command_succeeds` | rule-board.sh | none |
-| Self-Stabilizing Custody | working | `skip_when` (command form), `mzt recover` | legitimacy.sh, closure.sh | none |
-| Hutchinson's Warning | working | `cost_limits`, `instrument_map`, `max_output_chars`, `lookback_sheets` | ema-probe.py, rung-router.sh, settle.sh | per-window spend telemetry (ledger discipline substitutes) |
-| Replication Licensing | working | leased `schedule`, `mzt recover`, `max_chain_depth` | license-issue.sh, mitosis.sh | none |
-| Designation Is Authorization | working | `spec_dir`/`spec_tags`, `techniques` (skill/mcp/protocol, `required`), cadenza `directory` | capability-render.py | OS-level capability confinement (context designation is what exists) |
-| Immune Checkpoint | working | `per_sheet_fallbacks: []` | tolerance-checkpoint.sh, assert-bijection.sh, recalibration-gate.sh | none |
-
-**Patterns NOT in core because the substrate lacks their primitive** (see Awaiting Primitives): Zeitgeber Entrainment (offset-from-heartbeat scheduling), the Accountability Board's score-facing sweep (claim-table export), MIST Card's conductor-retry feeding, true capability confinement.
-
----
-
-# The Script Library
-
-*Promoted from open question to core deliverable (Reviews 1 and 3). The corpus's entire determinism story rests on these twelve scripts; before this section they were "an unnamed file on the reader's machine." Interface contracts follow; the library is v6's blocking deliverable and lives at `{score_dir}/scripts/` in every proof score.*
-
-| Script | Consumed by | Interface contract |
-|---|---|---|
-| `run-gates.sh` | Etiquette Law | `run-gates.sh <workspace> --lint --schema --tests` → exit 0 iff all gates pass; writes `gate-report.json` |
-| `anchor-extractor.py` | PCA (claim form) | `anchor-extractor.py <deliverable.md>` → claim-ledger JSON on stdout; `--check` re-validates extraction |
-| `evidence-gate.sh` | PCA (proof form) | `evidence-gate.sh <evidence-dir> [ledger] [verdicts]` → re-hashes every digest; exit nonzero on mismatch; `--check` re-verify only |
-| `handoff-gate.sh` | Positive Transfer | `handoff-gate.sh --state-machine <handoff.json>` → asserts release>accept>offer, no regressions, single acceptance per id |
-| `attempt-wrapper.sh` | MIST Card | `attempt-wrapper.sh <item> -- <command>` → appends ledger row (error_class, remedy fingerprint, outcome), then execs; appends result row |
-| `fingerprint-collision.py` | MIST Card | `fingerprint-collision.py <ledger> <proposed> [--reject-on-collision]` → sha256 over normalized(error_class, tool+args, target_path) |
-| `journal-verify.py` | Fork-Evident History | `journal-verify.py <journal.jsonl> --recompute --assert-append-only --require-supersedes-on-corrections` |
-| `errata-commit.py` | Errata Ledger | `errata-commit.py <workspace> --canon <f> --ledger <l>` → atomic pair write; `--verify-join` asserts new_hash = sha256(canon) |
-| `arm-gate.sh` / `go.sh` | Standby–GO | arm: `--cue N --require-ready K --validate-artifacts` → writes armed-N.json; go: refuses unless armed, refuses duplicate cue, mv's the pointer |
-| `compat-sweep.sh` | Attested Merge Gate | `compat-sweep.sh <work> --contract <dir> --schema --typecheck --tests` → sweep-report.json |
-| `idempotence-probe.sh` | Join-Semilattice Merge | runs the join twice into scratch; `diff` must be empty |
-| `invariant-check.py` | Behavioral Pre-Mortem | typed graph schema in, `--emit-counterexamples` out (ordered event lists, not prose) |
-| `reference-freeze.py` / `manifest-runner.py` | First Article | freeze: stamp config hash into reference; runner: `manifest-runner.py <manifest> <out-dir> --check-only` loops keyed checks per instance |
-| `reproducer-harness.sh` | Skeptical Oracle | runs every reproduction pointer; emits verified-manifest + leads-quarantine |
-| `source-sweep.sh` / `quarantine.sh` | Negative-Treatment Watch | sweep: refetch/rehash/flag-drift with `--flag-rate-hold-threshold`; quarantine: moves claims, enumerates dependents |
-| `packet-gate.sh` | Canon of Phases | asserts accepted-through predates results; monotonic beat; rotation-zero exactly once |
-| `token-grant.sh` / `token-admit.sh` | Fencing Token | grant: atomic increment + run-id stamp; admit: `--reject-stale` on embedded token < counter |
-| `packet-integrity.sh` | Black-Box Ledger | `--verbatim-error` asserts the original error string present unmodified |
-| `rule-board.sh` | Flight Rules | `--apply-as-new-versions --contradiction-review`; refuses history edits |
-| `legitimacy.sh` / `closure.sh` | Self-Stabilizing Custody | per-sheet predicate check from disk; closure requires legitimate-or-visibly-skipped |
-| `ema-probe.py` / `rung-router.sh` / `settle.sh` | Hutchinson's Warning | EMA from ledger; rung with `--assert-asymmetry` (down immediate, up after M); settle appends actuals, asserts under ceiling |
-| `license-issue.sh` / `mitosis.sh` | Replication Licensing | issue: refuse-if-unconsumed; mitosis: verify products grounded, emit completion marker |
-| `capability-render.py` | Designation Is Authorization | dumps effective capability sets; `--assert-no-undeclared-overlap` |
-| `tolerance-checkpoint.sh` / `assert-bijection.sh` / `recalibration-gate.sh` | Immune Checkpoint | ground/blast-radius/classify with `--default-to-tolerance`; bijection assert; `--max-rejection-ratio 0.8` |
-
-**Standing rule:** a pattern referencing a script not in this table is incomplete, and a proof score shipping a pattern without its script is unproven.
-
----
-
-# The Proof Program
-
-*All three reviews found the proof corpus broken in the same ways. Dispositions are now explicit; the queue is prioritized; proof coverage is a **blocking requirement for v6** (Review 1: "a pattern without a buildable score is a hypothesis").*
-
-**State found:** six proof scores exist; all six prove **v4** patterns; zero prove any v5/v5.1 core pattern. Clusters: security-audit ×2 (echelon-repair, immune-cascade — the same problem shape, and immune-cascade still recommends the retired gemini-cli), codegen-with-gates ×3 (shipyard-sequence — a documented-flawed proof left standing — prefabrication, dead-letter-quarantine), claim-verification ×1 (source-triangulation — orchestration-identical to Fan-out + Synthesis; never exercises reconstruction). Every proof resolves to a single instrument (`claude-code`): C8's vendor diversity has never been exercised by any proof in corpus history. All carry dead `../../workspaces/` relative paths and folded-scalar warnings.
-
-| Legacy proof | Disposition |
-|---|---|
-| shipyard-sequence | **Retire.** Documented-flawed ("a gate described is not a gate executed") and left standing; its honest successor is an Attested Merge Gate proof |
-| echelon-repair | **Archive** to the v4 evidence base (proves graduated response) |
-| immune-cascade | **Repair** (purge gemini-cli) then archive; name-trap for Immune Checkpoint documented |
-| prefabrication | **Archive** — superseded as evidence by the Attested Merge Gate proof (v6) |
-| dead-letter-quarantine | **Keep** as v4 evidence (the failure-class table's citation); re-instrument off claude-code-only |
-| source-triangulation | **Keep**; re-scoped as Fan-out + Synthesis evidence (its actual structure) |
-
-**v6 proof queue (priority order):** Replication Licensing · Join-Semilattice Merge · Skeptical Oracle (vendor-diverse, finally exercising C8) · Standby–GO · Immune Checkpoint · Proof-Carrying Artifact · Fencing Token · Errata Ledger. Every new proof: auto-derived or `{score_dir}`-anchored workspaces, single-line command scalars (the V303 killer is folded YAML), `command_succeeds` gates wherever a command exists, and its Script Library entries shipped in-score.
-
----
-
-# Problem → Pattern Selection Table
-
-*Review 3's missing on-ramp. Joined to the v4 selection guide (Appendix A) which remains authoritative for the archive.*
-
-| If your problem is… | Start with | Compose with |
-|---|---|---|
-| Claims crossing a trust boundary | Proof-Carrying Artifact | Fork-Evident History, Flight Rules |
-| Work changing owners | Positive Transfer | Black-Box Ledger |
-| A retry that must not re-try a failed remedy | The MIST Card | Flight Rules, Replication Licensing |
-| Correcting canon without silent rewrites | The Errata Ledger | Fork-Evident History, Negative-Treatment Watch |
-| An atomic cutover under live traffic | Standby–GO | First Article Characterization |
-| Parallel writers composing against a contract | The Attested Merge Gate | Join-Semilattice Merge |
-| Parallel writers appending additive facts | Join-Semilattice Merge | Fan-out + Synthesis |
-| Killing design bugs before the first run | Behavioral Pre-Mortem | The Etiquette Law |
-| Validating volume output affordably | First Article Characterization | Skeptical Oracle |
-| Harvesting vendor diversity without hallucinations | The Skeptical Oracle | Immune Checkpoint |
-| Truth rotting as sources move | Negative-Treatment Watch | The Errata Ledger |
-| A stream outliving every worker | Canon of Phases | Positive Transfer |
-| A zombie overwriting newer work | The Fencing Token | Self-Stabilizing Custody |
-| Knowing what happened after the crash | The Black-Box Ledger | Flight Rules |
-| Failures re-argued at 3 AM | Flight Rules | The MIST Card |
-| Restart recovery without global rollback | Self-Stabilizing Custody | The Fencing Token |
-| Budget oscillation (throttle-burst-throttle) | Hutchinson's Warning | The Etiquette Law |
-| A side effect that must happen exactly once | Replication Licensing | Canon of Phases |
-| Untrusted sheets near sensitive context | Designation Is Authorization | Proof-Carrying Artifact |
-| A reviewer triggering destructive remediation | Immune Checkpoint | The Skeptical Oracle |
-
-**If you're new, start here:** The Etiquette Law → Fan-out + Synthesis → Proof-Carrying Artifact → The Fencing Token → Standby–GO.
-
----
-
-# Merge Ledger — Disposition of All Candidates
-
-*Nothing is deleted silently; the archive (Appendix A) remains the extended corpus. Corrected count per Review 1: 6 absorbed + 18 archived = **24** iteration-5 candidates dispositioned beyond the core (the draft's closing line said 18 — that error is recorded, not patched).*
-
-### Iteration-5 candidates absorbed as named variants (seam stated inside the absorber)
-
-| Pattern | Absorbed into | The seam that survives |
-|---------|---------------|------------------------|
-| Annotated Galley | Proof-Carrying Artifact (claim form) | Per-claim fan-out, checkers receive ONLY claim + source; ADMIT/CUT/DEBT |
-| Traceability Chain | Proof-Carrying Artifact (pedigree form) | Pedigree answers *where from*; proof answers *why admissible* — different admission checks |
-| ~~Metered Merge~~ | ~~Hutchinson's Warning~~ | **ABSORPTION REVERSED per Review 2** — see archived table below |
-| Sighted Versions | Standby–GO | Continuous production + serialized promotion; pending/canon buffers — **seam now stated in the pattern body, not only here (Review 1: an absorption that hides the distinction is a deletion)**: Standby–GO's double-buffer IS the two-version state; Sighted Versions adds the *promotion authority* — the serialized sheet that decides which pending version becomes canon, and the visibility ledger of who saw which version |
-| Timekeeper's Ledger | Fencing Token family | Pulse and fence are one family with two instruments (epoch-fenced counter) |
-| Package Is the Permission | Proof-Carrying Artifact + Designation | Fail-closed `required: true` cadenzas; consumer audits the package |
-
-### Iteration-5 candidates archived (valid, composable, not core)
-
-| Pattern | Disposition |
-|---------|-------------|
-| Configuration Control Board | Serialized change office; composes Flight Rules' change board |
-| Effectivity Blocks | Config-manifest validity lease; composes Flight Rules, First Article, Replication Licensing — **strong candidate for core next iteration; three compositions already depend on it** |
-| Sign-Off Chain Against the Hard Date | Waiver discipline + disjoint failure-class ownership; composes Attested Merge Gate |
-| Custody Transfer with Seals | Pairwise integrity check; seam vs Fork-Evident: point seals vs chain verification |
-| Is-Line-Clear | Shared-medium admission (counterparty-answered permission); fail-to-DANGER lifecycle |
-| Concurrent Count | Two-tally reconciliation with split-search discipline; composes Skeptical Oracle |
-| Firing the Pass | Deadline-first (backward) scheduling; resurrects The Aboyeur; convergence-in-waiting |
-| Allostatic Setpoint | Wear accounting — single witness; needs a second domain (LLM drift/compaction debt is the candidate) |
-| Mycorrhizal Reciprocity | Reciprocal quality markets with graduated sanction; needs allocatable scarcity |
-| Prescribed-Fire Pulse | Measured-fuel maintenance bursts on leased schedule; composes workspace hygiene |
-| Globally-Typed Choreography | Offer/need typecheck over the rendered DAG; deadlock as validate-time error — **strong candidate; composes PCA + Behavioral Pre-Mortem** |
-| Transfer of Command | Planned succession via mandated state document + declared minute; composes Black-Box Ledger |
-| Devolution Packet | Awaiting Primitives — vendor-dispersed succession needs multi-host orchestration |
-| Black Start | Awaiting Primitives — global capability rebuild order needs multi-host |
-| Continuity Ledger | Serialized world-fact writer with typed assertions; composes Join-Semilattice (different fact types) |
-| Rejoinder Ledger | Bijection response discipline; composes Skeptical Oracle |
-| Re-Tiering Decision | Mass reclassification, authority separated from existence; triggered by Negative-Treatment Watch's flag-rate hold |
-| Variant Apparatus | Dissent preserved inside the deliverable with witness sigla — the strongest form of C4; **strong candidate** |
-| **Metered Merge** (restored per Review 2) | Admission-rate steering: `admit = k + gain × (target − measured)`, clamped; queue-spill override; degradation to a logged pretimed rate. Same damping law as Hutchinson's Warning applied to **flow**, not budget — the equation and sensor loop are why it is not safely absorbable |
-
-### v4 archive dispositions
-
-- **In v5.1 core/primitives (2):** Fan-out + Synthesis (foundational primitive), The Tool Chain (the Etiquette Law).
-- **Confirmed unchanged, remain the v4 bestiary (Appendix A):** the remaining 54 patterns — the saturated who-does-what-in-what-order axis. The v5.1 core wraps them: v4's gates become Etiquette Law stages, v4's fan-outs gain evidence sidecars, v4's reviews gain checkpoints and reconstruction.
-- **Unblocked by substrate advance:** Saga Compensation Chain (durable `on_failure` now exists).
-- **Resurrected from Awaiting Primitives:** Stretto Entry → Canon of Phases; The Aboyeur → Firing the Pass.
-- **Partially addressed:** Backpressure Valve → Metered Merge's leased admission gate approximates without concurrent execution; Comping Substrate → Canon of Phases covers rotation, not the full adaptive layer.
-- **Newly awaiting:** Devolution Packet, Black Start (multi-host), Zeitgeber (offset scheduling), Accountability Board's score-facing sweep (claim-table export), MIST Card's conductor-retry feeding (per-attempt hooks), true capability confinement (process sandboxing).
-
----
-
-# Patterns Awaiting Primitives
-
-| Pattern | Blocked on | The buildable approximation (state it, don't hide it) |
-|---|---|---|
-| **Zeitgeber Entrainment** | offset-from-heartbeat scheduling (ScheduleConfig has cron/interval/timezone/overlap/misfire/jitter — no phase anchor) | Leased `schedule` + a heartbeat artifact the consumer reads as a `required: true` cadenza + a staleness gate (`skip_when` command comparing heartbeat age to period + tolerance) + skip-to-next-cue on staleness — never a catch-up burst. Different failure modes, different cost: the collapsed form polls and skips; the aspired form phase-locks. |
-| **Accountability Board (score-facing PAR sweep)** | a score-facing export of the conductor's claim table with physical process handles | A CLI PAR movement probing the process table directly (`pgrep`/`ps` against a claims ledger the score maintains), reaping ghosts, asserting zero open rows before wrap-up. Weaker: it sees only processes it spawned. |
-| **MIST Card (conductor retries)** | per-attempt retry hooks appending to a user-visible ledger | Scope to score-authored retry chains via the attempt-wrapper (in core, status: approximation). |
-| **True capability confinement** | OS-level sandboxing of sheet processes (filesystem/tool scope) | Context designation (spec_tags/techniques/cadenza directories) — absent, not hidden; confinement of *prompt content*, not of *process reach* (in core, boundary stated). |
-| **Devolution Packet** | multi-host orchestration | — |
-| **Black Start** | multi-host orchestration | — |
-| Backpressure Valve | concurrent score execution | Metered Merge's leased admission gate |
-| Comping Substrate | concurrent execution with shared filesystem | Canon of Phases rotation |
-| Supervision Hierarchy | supervisor config surface | workspace snapshots + conductor-mediated restart (v4 note) |
-
----
-
-# Glossary
-
-*v4 entries stand unless corrected; additions and coinage definitions first (Review 3's demand).*
-
-| Term | Meaning |
-|------|---------|
-| **Etiquette (vs music)** | The deterministic protocol layer (cues, gates, ledgers, meters) — always non-LLM with an empty fallback chain. The performance layer is the music. |
-| **Admissible** | A claim that may *enter the record* — it carries evidence a small checker verified. Inadmissible ≠ wrong: it is not even considered. |
-| **Rung** | A named degradation tier (0 full instruments → 1 cheap routing → 2 narrower scope → 3 deferral), declared in `capacity-state.yaml`, never in prompt text. |
-| **Beat** | The canon's unit of rotation continuity; the handoff packet's monotonic counter. |
-| **Golden unit** | The retained first article — the reference artifact disputes are settled against, bound to the configuration hash that produced it. |
-| **Arm / fire** | Standby–GO's two phases: collective acknowledged preparation; then one irreversible addressed execution. |
-| **PAR** | Personnel accountability roll call — here, the reconciliation of claimed work against physical process handles. |
-| **Watermark** | A consumer's high-water mark over the corrections ledger; entries newer than the watermark are unprocessed. |
-| **Fencing token** | A monotonic number attached to authority; the shared substrate rejects writes bearing a lower number than the highest seen. |
-| **License** | A single-use authorization artifact, atomically consumed (`mv`) by the act of beginning. |
-| **Validity lease** | An admitted claim's right to remain admitted, renewed by recurring audit against current sources. |
-| **Reproduction pointer** | A typed reference (failing test / lint rule / grep invariant / reproducer script) by which an oracle finding is mechanically re-derived. |
-| `on_failure` | Durable terminal-failure hook: atomically claimed, reconciled across restart, same-ID protected, original-failure integrity preserved (v4's "Aspirational" note is **stale** — the primitive exists). |
-| `schedule` | Durable leased recurrence: exactly one of `cron`/`interval`, IANA `timezone`, `overlap`, `misfire`, `jitter_seconds`. The lease is what makes exactly-one-attempt-per-window true across conductor restarts. |
-| `spec_dir`/`spec_tags` | A specification corpus attached to movements, filtered by tags — context injection by reference; undesignated specs are absent, not hidden. |
-| `techniques` | Per-sheet ECS attachments typed `skill`/`mcp`/`protocol`, optionally `required: true`. |
-| `isolation: git-worktree` | Per-JOB isolated worktree (one per job) — **not per-sheet**; `parallel.enabled` + `isolation.enabled` together is warned against. |
-| `per_sheet_fallbacks` | Fallback chain keyed by expanded sheet number. An **empty chain** on a deterministic stage declares: if this instrument is down, the score stops. |
-| `circuit_breaker` | Threshold-triggered stop on **sheet-failure counts** — full stop. Spend lives in `cost_limits` (which pauses); ratios and flag rates live in deterministic gates. |
-| Grounding validation | A validation that re-verifies a claim against workspace bytes (re-hash, re-run, cite-by-digest) at the moment of consumption. |
-| Sheet / Score / Concert / Conductor / Workspace / Instrument / Prelude / Cadenza / Fan-out / Self-chaining / `capture_files` / validation types | *(unchanged from v4 — see Appendix A glossary)* |
-
----
-
-# Open Questions (v5.1)
-
-1. **The human seam.** Escalation-to-human is the terminal state inside at least four core patterns (Positive Transfer's hold, Immune Checkpoint's tolerance default, Standby–GO's hold escalation, Canon of Phases' rotation zero) and no pattern governs it. v4's Andon Cord is the archive ancestor. The next iteration must either give the human seam a vocabulary or admit the corpus stops at the boundary where custody matters most. **Named v6 requirement (Review 1).**
-2. **C7 is the thinnest convergence.** One core carrier (Hutchinson's Warning) plus one archived family member (Metered Merge). v6 must find a third carrier or demote C7 to a law of controller design. *(The draft hid this; Review 1 found it.)*
-3. **Proof debt — now blocking.** The v6 queue is prioritized above; a v5.1 pattern without a proof by end of v6 drops to hypothesis status. Vendor diversity must be exercised at least once (it never has been).
-4. **The Script Library must be built.** Interfaces are specified above; the scripts must ship, in-score, with the proofs.
-5. **Effectivity Blocks and Globally-Typed Choreography** are the two archived candidates with three and two compositions respectively depending on them — prime core candidates for v6.
-6. **Cost model.** Per-pattern cost estimates relative to baseline remain unwritten; Hutchinson's Warning begins budget-as-first-class but does not finish it.
-7. **Instrument freshness as validation.** Freshness dates are prose today; v6 should make an undated instrument recommendation a mechanical corpus error.
-8. **Self-application.** This document recorded its own errata (Review Integration, item 10); the next iteration should run Fork-Evident History over corpus versions as standing practice — the sibling-citation misnumbering found by luck in the collision must become structurally impossible.
-9. **Inherited from v4:** within-score context compression, dynamic instrument selection, the prompt-technique/orchestration boundary.
-
----
-
-*The Rosetta Pattern Corpus v5.1 — 21 core patterns, 2 foundational primitives, 10 convergences with structural identity tables, 6 generators, 24 iteration-5 candidates dispositioned, 54 v4 patterns retained in Appendix A with frontmatter. The ten moves are its parts of speech, the six generators its phonemes, the domains its dialects, and agent orchestration the demanding speaker that needs every word it has. A grammar that includes words the speaker cannot pronounce is worse than a smaller pronounceable grammar — every word in this corpus is now pronounced in the real dialect.*
-
----
----
-
-# Appendix A — The v4 Bestiary (complete, with frontmatter)
-
-*All 56 v4 patterns, every one retained with its curated frontmatter. The v5.1 core wraps these; they answer who-does-what-in-what-order — the saturated axis — and remain composable exactly as v4 left them. Their score structures predate the dialect verification of this iteration; where a v4 snippet and The Real Dialect disagree, The Real Dialect wins and the v4 snippet is historical.*
-
-
-## Foundational (v4 form — revised in main body as the foundational primitive)
-
----
-name: "Fan-out + Synthesis"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Information Asymmetry"
-  - "Finite Resources"
-generators: []
-problem: "Work that could be parallelized is done sequentially, wasting time, or parallel outputs remain fragmented without meaningful integration."
-signals:
-  - "problem decomposes into independent sub-problems"
-  - "sub-problems can be worked on simultaneously"
-  - "need to integrate diverse perspectives or findings"
-  - "synthesis must address cross-cutting themes, not just concatenate"
-fan_out:
-  analyze: 6
-stages:
-  - name: prepare
-    sheets: 1
-    instrument_guidance: "score-author's choice — sonnet or opus for complex problem decomposition requiring clear scope definition; haiku may suffice for simple scoping tasks"
-    fallback_friendly: true
-    purpose: "Define scope and shared context for parallel analysis."
-    artifacts: ["scope.md"]
-  - name: analyze
-    sheets: "fan_out(6)"
-    instrument_guidance: "score-author's choice — instrument capability must match the analysis complexity; sonnet recommended for code review or detailed analysis; haiku suffices for simple classification or data extraction"
-    fallback_friendly: true
-    purpose: "Analyze independent facets in parallel, each producing separate findings."
-    artifacts: ["analysis-{{ instance_id }}.md"]
-  - name: synthesize
-    sheets: 1
-    instrument_guidance: "sonnet or opus — synthesis requires finding cross-cutting themes and integrating diverse perspectives, higher-order reasoning beyond what produced individual analyses; fallback to cheaper instruments risks mere concatenation"
-    fallback_friendly: false
-    purpose: "Read all parallel outputs and produce unified result addressing cross-cutting concerns."
-    artifacts: []
-composes_with:
-  - pattern: "Barn Raising"
-    how: "Barn Raising establishes shared conventions before fan-out, preventing output format drift across parallel instances."
-  - pattern: "Shipyard Sequence"
-    how: "Shipyard Sequence validates the prepare stage's scope before expensive fan-out begins, preventing cascading rework."
-  - pattern: "After-Action Review"
-    how: "After-Action Review provides a coda on the synthesis stage, extracting lessons from the integration process."
-  - pattern: "Triage Gate"
-    how: "Triage Gate classifies parallel outputs by quality before synthesis, allowing the synthesis stage to handle different quality tiers differently."
-  - pattern: "Relay Zone"
-    how: "Relay Zone compresses verbose parallel outputs before synthesis, reducing synthesis complexity when fan-out produces high-volume results."
-dependencies: {}
----
-
-## Fan-out + Synthesis
-
-`Status: Working` · **Source:** Ubiquitous — confirmed across all expeditions. Prior art: MapReduce (Dean & Ghemawat, 2004).
-
-### Core Dynamic
-
-Split work into parallel independent streams, merge in a synthesis stage. N agents work simultaneously on different facets. A final agent reads all outputs and produces a unified result. Most score-level patterns in this corpus build on, modify, or explicitly reject this structure. It is the default move when information asymmetry meets finite resources.
-
-### When to Use / When NOT to Use
-
-Use when the problem decomposes into independent sub-problems with a meaningful merge. Not when sub-problems share mutable state, synthesis is trivial concatenation, or fan-out width of 1 suffices.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: prepare
-    prompt: "Define scope and shared context for the analysis."
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/scope.md"
-  - name: analyze
-    instances: 6
-    prompt: "Analyze module {{ instance_id }}. Write findings to analysis-{{ instance_id }}.md."
-    capture_files: ["scope.md"]
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/analysis-{{ instance_id }}.md"
-  - name: synthesize
-    prompt: "Read all analysis files. Produce a unified review addressing cross-cutting concerns."
-    capture_files: ["analysis-*.md"]
-    validations:
-      - type: command_succeeds
-        command: "test $(ls {{ workspace }}/analysis-*.md | wc -l) -ge 4"
-```
-
-### Failure Mode
-
-Synthesis produces concatenation rather than integration. Validate with `command_succeeds` checking the synthesis references cross-cutting themes, not just individual reports. If fan-out agents share state, outputs will converge — use Prefabrication with interface contracts instead.
-
-### Composes With
-
-Barn Raising (conventions govern fan-out), Shipyard Sequence (validate before fanning out), After-Action Review (coda on synthesis), Triage Gate (classify outputs before synthesis), Relay Zone (compress before synthesis)
-
----
-
-## Within-Stage Patterns (v4)
-
----
-name: "Decision Propagation"
-scale: within-stage
-type: orchestration-pattern
-status: working
-forces:
-  - "Information Asymmetry"
-generators: []
-problem: "Downstream agents contradict upstream decisions because constraints are buried in prose rather than structured, parseable briefs."
-signals:
-  - "early decisions have compounding effects on later stages"
-  - "downstream agents unknowingly violate upstream constraints"
-  - "decisions are buried in prose output rather than structured artifacts"
-  - "agents cannot tell which upstream decisions are load-bearing"
-fan_out:
-  implement: 4
-config_features:
-  - "fan_out"
-  - "capture_files"
-stages:
-  - name: decide
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to identify load-bearing decisions and write concrete constraint briefs; sonnet or opus recommended"
-    fallback_friendly: false
-    purpose: "Make the architecture decision and write a structured constraint-brief with decision, rationale, implications, and downstream constraints."
-    artifacts: ["constraint-brief.yaml"]
-  - name: implement
-    sheets: "fan_out(4)"
-    instrument_guidance: "score-author's choice — must be capable enough for the implementation task; constraints are externalized in the brief so instrument follows them"
-    fallback_friendly: true
-    purpose: "Read the constraint brief, build one component per instance, and acknowledge which constraints were incorporated."
-    artifacts: []
-composes_with:
-  - pattern: "CDCL Search"
-    how: "When propagated decisions lead to failure, CDCL Search extracts the failure reason as a learned clause that prevents the same bad decision propagation in future iterations."
-  - pattern: "CEGAR Loop"
-    how: "CEGAR Loop's refinement iterations generate decisions at progressively finer abstraction levels; Decision Propagation structures each level's decisions for downstream consumption."
-  - pattern: "Commander's Intent Envelope"
-    how: "Commander's Intent Envelope defines the decision space boundaries (constraints and freedoms) within which Decision Propagation's structured briefs specify concrete downstream constraints."
-dependencies: {}
----
-
-## Decision Propagation
-
-`Status: Working` · **Source:** Constraint satisfaction (renamed from Arc Consistency Propagation). **Forces:** Information Asymmetry.
-
-### Core Dynamic
-
-When a sheet makes a decision that constrains downstream sheets, it writes a structured constraint brief rather than embedding the decision in prose. The brief has: decision, rationale, implications, and constraints-for-downstream. Each downstream sheet reads the brief and acknowledges which constraints it incorporated. Writing the brief requires judgment — the agent must identify which decisions are load-bearing.
-
-### When to Use / When NOT to Use
-
-Use when decisions in early stages have compounding effects. Not when stages are independent or constraints are simple enough for the prompt alone.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: decide
-    prompt: >
-      Make the architecture decision. Write constraint-brief.yaml:
-      {decision, rationale, implications: [], constraints_for_downstream: []}.
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; b=yaml.safe_load(open('{{ workspace }}/constraint-brief.yaml')); assert 'constraints_for_downstream' in b\""
-  - name: implement
-    instances: 4
-    prompt: "Read constraint-brief.yaml. Build component {{ instance_id }}. Acknowledge constraints."
-    capture_files: ["constraint-brief.yaml"]
-```
-
-### Failure Mode
-
-Constraint briefs too abstract to constrain. The brief should name specific artifacts and interfaces, not just abstract goals. Validate with `command_succeeds` checking brief has concrete entries.
-
-### Composes With
-
-CDCL Search, CEGAR Loop, Commander's Intent Envelope
-
----
-name: "Commander's Intent Envelope"
-scale: within-stage
-type: prompt-technique
-status: working
-forces:
-  - "Information Asymmetry"
-generators: []
-problem: "Instruction-based prompts break when the agent encounters conditions the prompt author didn't anticipate."
-signals:
-  - "task has more than one valid approach"
-  - "inputs are variable-format or unpredictable"
-  - "different instruments would solve this differently"
-  - "want to validate outcomes, not methods"
-stages:
-  - name: execute
-    sheets: 1
-    instrument_guidance: "score-author's choice — instrument must be capable enough to exercise autonomous judgment within the envelope; stronger instruments benefit more from the freedoms"
-    fallback_friendly: true
-    purpose: "Execute within an intent envelope structured as PURPOSE (why), END STATE (measurable success), CONSTRAINTS (hard boundaries), FREEDOMS (autonomous decisions). The agent finds its own path."
-    artifacts: ["decision-log.md"]
-composes_with:
-  - pattern: "Mission Command"
-    how: "Commander's Intent Envelope IS Mission Command at the individual sheet scale — the same intent structure applied within one agent rather than across a team."
-  - pattern: "Fan-out + Synthesis"
-    how: "The intent envelope is shared as prelude across fan-out instances, giving each instance the same boundaries but allowing different methods."
-  - pattern: "After-Action Review"
-    how: "The decision-log artifact feeds directly into After-Action Review, providing the record of autonomous decisions for doctrine extraction."
-dependencies: {}
----
-
-## Commander's Intent Envelope
-
-`Status: Working` · **Source:** Military mission command doctrine, Expedition 5. **Scale:** within-stage. **Iteration:** 4. **Type:** Prompt technique.
-
-### Core Dynamic
-
-Structures a single sheet's prompt as PURPOSE (why this task matters in the larger score), END STATE (measurable success conditions), CONSTRAINTS (hard boundaries — MUST NOT violate), and FREEDOMS (decisions the agent may make autonomously). The structural distinction from ordinary prompting: this changes the coordination contract from instructions (do X then Y) to boundaries (achieve Z however you see fit, except A). The agent finds its own path within the envelope. Validates end-state achievement and autonomous decision-making, not method compliance.
-
-### When to Use / When NOT to Use
-
-Use when the task has more than one valid approach, when inputs are variable-format, or when different instruments would achieve the end state differently. Not for purely mechanical tasks (format conversion, command execution), security-critical operations where deviations create vulnerabilities, or when validation criteria can't capture the end state precisely.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: execute
-    prompt: |
-      ## Commander's Intent
-      PURPOSE: Ensure the web application has no exploitable input validation vulnerabilities.
-      END STATE: Report listing all confirmed vulnerabilities with severity, location, fix. Zero false positives.
-      CONSTRAINTS: Do not modify source code. Do not run code. Do not access external services.
-      FREEDOMS: Choose which files to review. Choose review order. Choose depth based on risk.
-
-      ## Context
-      Read {{ workspace }}/codebase/ for the application source.
-
-      ## Resources
-      Write findings to {{ workspace }}/security-report.md and decision-log.md.
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/security-report.md"
-      - type: file_exists
-        path: "{{ workspace }}/decision-log.md"
-      - type: content_contains
-        path: "{{ workspace }}/decision-log.md"
-        content: "DECISION:"
-```
-
-### Failure Mode
-
-Intent briefs too vague produce incoherent decisions; too specific collapses the decision space back to instructions. The decision-log validation is critical: if the agent made no autonomous decisions, the envelope wasn't adding value over direct instructions. If the log shows decisions outside the CONSTRAINTS, the boundaries were unclear.
-
-### Composes With
-
-Mission Command (intent IS mission command at sheet scale), Fan-out + Synthesis (intent envelope shared across instances), After-Action Review (decision-log feeds doctrine)
-
----
-name: "Quorum Trigger"
-scale: within-stage
-type: prompt-technique
-status: working
-forces:
-  - "Accumulated Signal"
-generators:
-  - "Threshold-Triggered Switch"
-problem: "Agents continue executing their original plan after accumulating evidence that makes continuing wasteful or dangerous."
-signals:
-  - "conditions discovered mid-task should change the approach"
-  - "findings accumulate that individually seem minor but collectively demand action"
-  - "agent needs to self-interrupt based on evidence density"
-  - "severity of issues should trigger a mode switch, not just a note"
-stages:
-  - name: audit
-    sheets: 1
-    instrument_guidance: "score-author's choice — must be capable enough for the domain task (code review, research, data processing) and disciplined enough to maintain the signal register faithfully"
-    fallback_friendly: true
-    purpose: "Execute the primary task while maintaining a signal register; switch to alternate behavior (remediation, escalation) when accumulated signals cross the predefined threshold."
-    artifacts: ["signal-register.yaml", "quorum-trigger-report.md"]
-  - name: verify-threshold
-    sheets: 1
-    instrument_guidance: "cli — deterministic validation that the threshold state matches the agent's claimed behavior"
-    fallback_friendly: false
-    purpose: "Independently verify that the signal register's threshold state matches whether the trigger report exists, catching agent miscounting or threshold evasion."
-    artifacts: []
-composes_with:
-  - pattern: "Andon Cord"
-    how: "Quorum Trigger fires within a stage to detect accumulated problems; Andon Cord provides the between-stage diagnostic response when the trigger fires."
-  - pattern: "Circuit Breaker"
-    how: "Quorum Trigger monitors task-level quality signals; Circuit Breaker monitors infrastructure-level failure signals — both are threshold-triggered switches at different abstraction levels."
-  - pattern: "Immune Cascade"
-    how: "Quorum Trigger's threshold firing can initiate Immune Cascade's escalating triage response, routing accumulated findings through graduated investigation tiers."
-dependencies: {}
----
-
-## Quorum Trigger
-
-`Status: Working` · **Source:** Bacterial quorum sensing (threshold-triggered behavioral switch), Expedition 2. **Scale:** within-stage. **Iteration:** 4. **Force:** Accumulated Signal. **Type:** Prompt technique.
-
-### Core Dynamic
-
-Within-stage behavioral switch triggered by accumulated signal density. The agent works on its primary task while maintaining an explicit signal register (a YAML file tracking findings with severity levels). When accumulated signals cross a predefined threshold (e.g., "3+ CRITICAL findings"), the agent stops its current plan and switches to an alternate behavior (remediation, diagnosis, escalation). The switch is binary — a phase transition, not a gradual adjustment.
-
-**Enforcement note:** The signal register is agent-maintained and therefore untrustworthy in isolation. A downstream CLI validation sheet should verify the register's threshold state independently. Do not rely solely on the agent self-reporting whether the trigger fired.
-
-### When to Use / When NOT to Use
-
-Use when conditions discovered mid-task make continuing the original plan wasteful or dangerous: code review finding critical security flaws, research discovering the premise is wrong, data processing hitting malformed records. Not when the threshold is ambiguous, the task is too short for the switch to fire, or the behavioral switch loses valuable pre-switch context.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: audit
-    prompt: |
-      Audit each module for vulnerabilities. Maintain a signal register in signal-register.yaml:
-      each entry has {module, severity: LOW|MEDIUM|HIGH|CRITICAL, finding}.
-
-      THRESHOLD: If you accumulate 3+ CRITICAL findings before completing the full audit,
-      STOP scanning and switch to writing a remediation plan for findings so far.
-      Write quorum-trigger-report.md if threshold fires.
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/signal-register.yaml"
-      - type: content_regex
-        pattern: "severity:\\s+(LOW|MEDIUM|HIGH|CRITICAL)"
-  - name: verify-threshold
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; r=yaml.safe_load(open('{{ workspace }}/signal-register.yaml')); crits=[e for e in r if e.get('severity')=='CRITICAL']; import os; triggered=os.path.exists('{{ workspace }}/quorum-trigger-report.md'); assert (len(crits)>=3)==triggered, f'Threshold mismatch: {len(crits)} crits, triggered={triggered}'\""
-```
-
-### Failure Mode
-
-Agent miscounts findings or ignores the threshold entirely. The CLI verification sheet catches this: if 3+ CRITICALs exist but no trigger report (or vice versa), the validation fails. The deeper failure: the agent classifies everything as MEDIUM to avoid triggering. Only domain-specific validation of severity assignments catches this.
-
-### Composes With
-
-Andon Cord (quorum trigger within a stage, andon cord between stages), Circuit Breaker (quorum for quality, circuit breaker for infrastructure), Immune Cascade (quorum-triggered triage)
-
----
-name: "Constraint Propagation Sweep"
-scale: within-stage
-type: prompt-technique
-status: working
-forces:
-  - "Information Asymmetry"
-  - "Exponential Defect Cost"
-generators: []
-problem: "Agents generate from contradictory specifications because constraint conflicts remain hidden until expensive work is already complete."
-signals:
-  - "specifications from different stakeholders contain implicit contradictions"
-  - "generated outputs fail because requirements conflicted silently"
-  - "reconciling heterogeneous inputs costs less than reworking outputs"
-  - "constraint set is large enough that pairwise conflicts are non-obvious"
-stages:
-  - name: synthesize
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to enumerate constraints, resolve pairwise contradictions, and generate from the reduced space; sonnet or opus recommended for complex constraint sets"
-    fallback_friendly: true
-    purpose: "Single sheet with three mandatory prompt phases: ENUMERATE all constraints from inputs, RESOLVE them pairwise to prune contradictions, GENERATE output from the reduced solution space."
-    artifacts: ["constraint-audit.yaml", "synthesis.md"]
-composes_with:
-  - pattern: "Decision Propagation"
-    how: "Decision Propagation feeds structured constraint briefs into the sweep's enumeration phase, providing pre-identified constraints from upstream decisions."
-  - pattern: "CDCL Search"
-    how: "CDCL Search's learned failure clauses become additional constraints in the sweep's enumeration phase, preventing previously discovered contradictions from recurring."
-  - pattern: "Rashomon Gate"
-    how: "Rashomon Gate applies multiple analytical frames to the same constraint set, revealing frame-dependent contradictions the sweep might miss from a single perspective."
-dependencies: {}
----
-
-## Constraint Propagation Sweep
-
-`Status: Working` · **Source:** Constraint satisfaction, structured reasoning. **Scale:** within-stage. **Iteration:** 4. **Force:** Domain Reduction. **Type:** Prompt technique.
-
-### Core Dynamic
-
-Before generating ANY output, the prompt instructs the agent to separate three kinds of reasoning into mandatory phases: (1) ENUMERATE all constraints from the specification and workspace artifacts, (2) RESOLVE them pairwise to identify contradictions and prune impossible options, (3) GENERATE from the reduced solution space. The phases MUST be separate — generating during resolution skips contradictions; resolving during generation loses information. This is domain reduction before search: pruning is cheap, search through contradictory requirements is expensive.
-
-This is a prompt structuring technique, not a multi-sheet orchestration pattern. The phases are instructions within one prompt, not separate sheets. This means no intermediate validation between phases — the agent can skip resolution and you'd only detect it from the output quality, not structurally. For structural enforcement, use three separate sheets with validation between them.
-
-### When to Use / When NOT to Use
-
-Use when specifications contain implicit contradictions from different stakeholders, when generating from conflicting requirements costs more than constraint analysis, or when reconciling heterogeneous inputs (multiple analyst reports, multi-team requirements). Not when constraints are few and independent, the specification is already consistent, or the task is creative rather than constrained.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: synthesize
-    prompt: |
-      ENUMERATE: List every constraint from the input documents.
-      RESOLVE: Check each pair for conflicts. Mark the weaker constraint as pruned.
-      Write constraint-audit.yaml: {id, constraint, status: active|pruned, reason}.
-      GENERATE: Produce the architecture using only active constraints.
-      Write the synthesis to synthesis.md.
-    capture_files: ["requirements/*.md"]
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/constraint-audit.yaml"
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; a=yaml.safe_load(open('{{ workspace }}/constraint-audit.yaml')); pruned=[e for e in a if e.get('status')=='pruned']; print(f'{len(pruned)} constraints pruned of {len(a)} total')\""
-```
-
-### Failure Mode
-
-Agent performs all three phases but doesn't actually prune — the audit shows zero pruned constraints despite contradictory inputs. The `command_succeeds` validation catches this by printing stats, but can't enforce quality. For high-stakes synthesis, follow with a dedicated clash detection sheet comparing the synthesis against all input constraints.
-
-### Composes With
-
-Decision Propagation (propagation feeds constraint briefs), CDCL Search (failures become new constraints), Rashomon Gate (multiple frames on the same constraint set)
-
-## Score-Level Patterns (v4)
-
----
-name: "Triage Gate"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Finite Resources"
-  - "Partial Failure"
-generators:
-  - "Exploit Failure as Signal"
-problem: "Fan-out produces mixed-quality outputs but synthesis processes all outputs regardless of quality, wasting resources."
-signals:
-  - "fan-out produces wildly varying output quality"
-  - "synthesis stage is expensive and shouldn't process garbage"
-  - "some outputs need rework, others are ready"
-  - "structural quality checks are definable"
-config_features:
-  - "capture_files"
-stages:
-  - name: triage
-    sheets: 1
-    instrument_guidance: "haiku recommended — classification task dominated by structural checks (schema, sections, word count); semantic assessment is secondary and doesn't require strong reasoning"
-    fallback_friendly: true
-    purpose: "Classify each fan-out output as RED (forward to synthesis), YELLOW (rework with targeted prompt), GREEN (supplementary), or BLACK (discard with logged reason)."
-    artifacts: ["triage-manifest.yaml"]
-composes_with:
-  - pattern: "Immune Cascade"
-    how: "Triage Gate provides coarse filtering that precedes Immune Cascade's graduated verification stages."
-  - pattern: "Fan-out + Synthesis"
-    how: "Triage Gate filters fan-out outputs before synthesis, preventing synthesis from processing low-quality or unusable outputs."
-  - pattern: "Relay Zone"
-    how: "Triage Gate classifies fan-out outputs by quality; Relay Zone compresses the classified results to prevent context overflow in downstream processing stages."
-dependencies: {}
----
-
-## Triage Gate
-
-`Status: Working` · **Source:** Emergency medicine START protocol, military command. **Forces:** Finite Resources + Partial Failure.
-
-### Core Dynamic
-
-Coarse classification before expensive processing. A fast classifier reads fan-out outputs and routes: **RED** (forward to synthesis), **YELLOW** (rework with targeted prompt), **GREEN** (supplementary), **BLACK** (discard with logged reason). Structural checks first (schema compliance, required sections, word count), then semantic if needed. This is the convergence ranked #1 across all domains.
-
-### When to Use / When NOT to Use
-
-Use when fan-out produces mixed quality, downstream processing is expensive, and structural quality checks are definable. Not when all outputs must be incorporated or fan-out is narrow (2-3 agents).
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: triage
-    prompt: >
-      Read each output in fan-out-results/. For each, write a line in triage-manifest.yaml:
-      {id, category: RED|YELLOW|GREEN|BLACK, reason, rework_prompt}.
-      Use structural checks first: required sections present, word count > 200.
-    capture_files: ["fan-out-results/*.md"]
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; m=yaml.safe_load(open('{{ workspace }}/triage-manifest.yaml')); assert all(e['category'] in ['RED','YELLOW','GREEN','BLACK'] for e in m)\""
-```
-
-### Failure Mode
-
-If YELLOW count is 0, the rework stage still executes but produces nothing — guard with a Read-and-React conditional. If everything is BLACK, synthesis gets no inputs; the score should fail explicitly.
-
-### Composes With
-
-Immune Cascade, Fan-out + Synthesis, Relay Zone
-
----
-name: "Immune Cascade"
-scale: instrument-strategy
-type: orchestration-pattern
-status: working
-proof_score: "rosetta-proof-immune-cascade.yaml"
-forces:
-  - "Finite Resources"
-  - "Exponential Defect Cost"
-generators:
-  - "Graduate & Filter"
-problem: "Expensive instruments waste resources on broad scanning when cheap preliminary work could narrow scope first."
-signals:
-  - "broad scanning is expensive but most issues are benign"
-  - "don't know which findings warrant expensive investigation"
-  - "need to narrow findings before expensive deep analysis"
-stages:
-  - name: broad-sweep
-    sheets: "fan_out(8)"
-    instrument_guidance: "haiku — fast, cheap scanning across partitions; capability sufficient for breadth-first issue discovery"
-    fallback_friendly: true
-    purpose: "Parallelize broad scanning to identify findings efficiently at low cost."
-    artifacts: ["sweep-{{ instance_id }}.md"]
-  - name: triage-handoff
-    sheets: 1
-    instrument_guidance: "score-author's choice — requires judgment to triage findings and prioritize targets; stronger instruments produce better targeting"
-    fallback_friendly: false
-    purpose: "Deduplicate broad findings and create prioritized targeting brief for expensive investigation."
-    artifacts: ["targeting-brief.md"]
-  - name: deep-investigation
-    sheets: 1
-    instrument_guidance: "opus — deep code analysis and remediation requiring full reasoning capability; critical for thorough investigation"
-    fallback_friendly: false
-    purpose: "Deep-dive on prioritized targets with thorough analysis and remediation design."
-    artifacts: []
-  - name: learning
-    sheets: 1
-    instrument_guidance: "score-author's choice — documents methodology and learnings; can use cheaper instrument"
-    fallback_friendly: true
-    purpose: "Document methodology and learnings for future audit iterations."
-    artifacts: ["doctrine.md"]
-composes_with:
-  - pattern: "Triage Gate"
-    how: "The triage-handoff stage implements Triage Gate logic, filtering broad findings to identify investigation targets."
-  - pattern: "After-Action Review"
-    how: "After-Action Review processes Immune Cascade's findings and learning stage outputs to extract methodology improvements."
-  - pattern: "Relay Zone"
-    how: "Relay Zone compresses the high-volume broad-sweep outputs before triage-handoff, preventing context overflow when parallel scans produce results."
-fan_out:
-  broad-sweep: 8
-config_features:
-  - "fan_out"
-  - "capture_files"
-dependencies: {}
----
-
-## Immune Cascade
-
-`Status: Working` · **Source:** Immunology (innate/adaptive response). Absorbs Kill Chain F2T2EA. **Forces:** Finite Resources + Exponential Defect Cost.
-
-### Core Dynamic
-
-Escalating tiers: fast/cheap/broad first for intelligence, slow/expensive/precise targeting what tier 1 found, then learning persistence. Three structural moves: graduated response, intelligence forwarding, learning persistence. **Strict Sequential Variant (from Kill Chain):** When the problem is pure narrowing, collapse to a linear pipeline where `command_succeeds verifying count decreased` validates each gate.
-
-### When to Use / When NOT to Use
-
-Use when the problem requires broad search before targeted work and cheap scanning methods exist. Not when the problem is narrow enough for direct attack.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: broad-sweep
-    instances: 8
-    instrument: haiku
-    prompt: "Scan {{ partition }} for issues. Write raw findings."
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/sweep-{{ instance_id }}.md"
-  - name: triage-handoff
-    prompt: "Read all sweep files. Deduplicate. Prioritize. Write targeting-brief.md."
-    capture_files: ["sweep-*.md"]
-  - name: deep-investigation
-    instrument: opus
-    prompt: "Deep-dive on prioritized targets. Write remediation."
-    capture_files: ["targeting-brief.md"]
-  - name: learning
-    prompt: "Write doctrine.md: what scanning missed, what triage misjudged, rules for next run."
-    validations:
-      - type: content_regex
-        pattern: "RULE:\\s+.+"
-```
-
-### Failure Mode
-
-The learning stage is useless if it doesn't write persistent, structured output. Specify the artifact: `doctrine.md` with `RULE:` entries that the next iteration's broad sweep reads via prelude.
-
-### Composes With
-
-Triage Gate (handoff IS triage), After-Action Review (coda), Relay Zone (relay between tiers)
-
----
-name: "Mission Command"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Information Asymmetry"
-generators:
-  - "Contract at Interfaces"
-problem: "Centralized instruction-following breaks when agents face conditions the planner didn't anticipate."
-signals:
-  - "tasks require agent judgment and conditions may vary"
-  - "validation should check outcomes, not methods"
-  - "multiple agents must coordinate around shared intent"
-  - "top-down instructions are too brittle for variable conditions"
-fan_out:
-  execute: 4
-stages:
-  - name: mission-brief
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to write a clear intent envelope with testable end-state; sonnet or opus recommended"
-    fallback_friendly: false
-    purpose: "Write the mission brief defining PURPOSE, KEY TASKS, and END STATE."
-    artifacts: ["mission-brief.md"]
-  - name: execute
-    sheets: "fan_out(4)"
-    instrument_guidance: "score-author's choice — must be capable enough for the actual task (code refactoring, analysis, etc.); instrument depends on task complexity"
-    fallback_friendly: false
-    purpose: "Execute the mission by reading the brief and working autonomously within the intent envelope."
-    artifacts: []
-composes_with:
-  - pattern: "After-Action Review"
-    how: "After-Action Review evaluates whether decentralized execution achieved the mission brief's end state and extracts lessons."
-  - pattern: "Barn Raising"
-    how: "Barn Raising establishes shared conventions before Mission Command's parallel execution, preventing convention drift across agents."
-  - pattern: "Prefabrication"
-    how: "Prefabrication defines strict interface contracts that constrain Mission Command agents' output format while preserving freedom of method."
-dependencies: {}
----
-
-## Mission Command
-
-`Status: Working` · **Source:** Auftragstaktik (Prussian military doctrine). **Forces:** Information Asymmetry.
-
-### Core Dynamic
-
-Separate "what and why" (centralized) from "how" (decentralized). The intent envelope has three layers: **purpose** (why), **key tasks** (what), **end state** (what done looks like). Agents adapt freely within the decision space. Validate end-state achievement, never method compliance. The structural distinction: Mission Command scores have a *specific, named intent document* that replaces per-agent context acquisition, plus end-state-only validation.
-
-### When to Use / When NOT to Use
-
-Use when tasks require agent judgment and conditions may differ from expectations. Not for mechanical tasks or constraints so tight only one approach is valid.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: mission-brief
-    prompt: >
-      Write mission-brief.md with three sections:
-      PURPOSE: why this refactoring matters.
-      KEY TASKS: the 4 modules that must be decoupled.
-      END STATE: all 340 tests pass, public API unchanged, coupling metric < 0.3.
-    validations:
-      - type: content_contains
-        content: "PURPOSE:"
-      - type: content_contains
-        content: "END STATE:"
-  - name: execute
-    instances: 4
-    prompt: "Read mission-brief.md. Decouple module {{ instance_id }}."
-    capture_files: ["mission-brief.md"]
-    validations:
-      - type: command_succeeds
-        command: "cd {{ workspace }} && python -m pytest --tb=no -q"
-```
-
-### Failure Mode
-
-Intent briefs too vague produce incoherent decisions. Too specific collapses the decision space. The end state must be testable with `command_succeeds`.
-
-### Composes With
-
-After-Action Review, Barn Raising, Prefabrication
-
----
-name: "Shipyard Sequence"
-scale: score-level
-type: orchestration-pattern
-status: working
-proof_score: "shipyard-sequence.yaml"
-forces:
-  - "Exponential Defect Cost"
-  - "Finite Resources"
-generators:
-  - "Graduate & Filter"
-  - "Gate on Environmental Readiness"
-problem: "Expensive fan-out proceeds on a broken foundation, wasting resources on downstream work that will fail."
-signals:
-  - "downstream fan-out is expensive"
-  - "foundation must be solid before scaling work"
-  - "need real validation tools, not LLM judgment"
-  - "costs multiply when defects reach later stages"
-fan_out:
-  outfitting: 4
-stages:
-  - name: construct-schema
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs code generation for schema/migrations; sonnet or opus for complex domains, haiku for simple schemas"
-    fallback_friendly: true
-    purpose: "Generate the database schema and migration files."
-    artifacts: ["schema.sql"]
-  - name: launch-gate
-    sheets: 1
-    instrument_guidance: "any instrument with command execution — validation is deterministic tool-based (command_succeeds), not LLM judgment; even haiku suffices"
-    fallback_friendly: true
-    purpose: "Validate the schema using real tools (migrate --check, test suite) before expensive fan-out."
-    artifacts: []
-  - name: outfitting
-    sheets: "fan_out(4)"
-    instrument_guidance: "score-author's choice — builds services/modules on validated foundation; capability depends on service complexity"
-    fallback_friendly: true
-    purpose: "Build services or modules in parallel against the validated schema."
-    artifacts: []
-composes_with:
-  - pattern: "Succession Pipeline"
-    how: "Succession Pipeline graduates candidates through quality tiers; Shipyard Sequence validates foundation quality before expensive fan-out investment."
-  - pattern: "Dormancy Gate"
-    how: "Dormancy Gate waits for external environmental conditions; Shipyard Sequence gates on foundation validation readiness before proceeding."
-  - pattern: "Triage Gate"
-    how: "Triage Gate filters work items before processing; Shipyard Sequence validates foundation before expensive downstream fan-out."
-dependencies:
-  launch-gate: [construct-schema]
-  outfitting: [launch-gate]
-config_features:
-  - "fan_out"
-  - "command_succeeds"
----
-
-## Shipyard Sequence
-
-`Status: Working` · **Source:** Shipbuilding hull block method. **Forces:** Exponential Defect Cost + Finite Resources.
-
-### Core Dynamic
-
-Validate foundational work under realistic conditions before investing in expensive fan-out. The launch gate uses `command_succeeds` exclusively — real execution, not LLM judgment. Construction has 1-3 stages; outfitting fans out only after launch passes.
-
-### When to Use / When NOT to Use
-
-Use when downstream fan-out is expensive, foundation must be solid, and real validation tools exist. Not when work is naturally parallel from the start.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: construct-schema
-    prompt: "Generate the database schema and migration files."
-  - name: launch-gate
-    validations:
-      - type: command_succeeds
-        command: "cd {{ workspace }} && python manage.py migrate --check"
-      - type: command_succeeds
-        command: "cd {{ workspace }} && python manage.py test db_schema --verbosity=0"
-  - name: outfitting
-    instances: 4
-    prompt: "Build {{ service_name }} against the validated schema."
-    capture_files: ["schema.sql"]
-```
-
-### Failure Mode
-
-If launch validation is too lenient, expensive fan-out proceeds on a broken foundation. The gate must use `command_succeeds`, never `content_contains`.
-
-### Composes With
-
-Succession Pipeline, Dormancy Gate, Triage Gate
-
----
-name: "Succession Pipeline"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Exponential Defect Cost"
-generators:
-  - "Graduate & Filter"
-problem: "Work requires sequential substrate transformations, but unstructured execution produces outputs incompatible with downstream stages."
-signals:
-  - "each stage needs fundamentally different methods"
-  - "one stage's output becomes the next stage's input substrate"
-  - "stages have categorical differences, not just detail levels"
-  - "work resembles ecological succession with distinct phases"
-stages:
-  - name: parse
-    sheets: 1
-    instrument_guidance: "score-author's choice — parsing is often mechanical; cheaper instruments or CLI parsers work if parsing is deterministic; use stronger instruments only if parsing requires inference"
-    fallback_friendly: true
-    purpose: "Parse source files into abstract syntax trees."
-    artifacts: ["ast.json"]
-  - name: transform
-    sheets: 1
-    instrument_guidance: "score-author's choice — must understand both AST and target IR semantics; sonnet or opus recommended for complex transformations involving semantic analysis or optimization"
-    fallback_friendly: false
-    purpose: "Transform AST into intermediate representation."
-    artifacts: ["ir.dot"]
-  - name: generate
-    sheets: 1
-    instrument_guidance: "score-author's choice — must understand IR and generate valid target code; sonnet or opus for complex languages, haiku may suffice for simple templated output"
-    fallback_friendly: false
-    purpose: "Generate target code from intermediate representation."
-    artifacts: []
-composes_with:
-  - pattern: "Shipyard Sequence"
-    how: "Shipyard Sequence gates each succession stage on environmental readiness, ensuring the substrate is prepared before the next transformation begins."
-  - pattern: "Barn Raising"
-    how: "Barn Raising establishes conventions for how each stage structures its substrate output so the next stage can consume it reliably."
-dependencies: {}
----
-
-## Succession Pipeline
-
-`Status: Working` · **Source:** Forest succession ecology. **Forces:** Exponential Defect Cost.
-
-### Core Dynamic
-
-Each stage transforms the workspace into a state where the next becomes possible. The substrate transformation test: does Stage N's output become Stage N+1's input *substrate* — a different *kind* of thing? Three mandatory phases using categorically different methods.
-
-### When to Use / When NOT to Use
-
-Use when stages require fundamentally different methods and each output is the next's prerequisite environment. Not when each stage uses the same approach (that's iteration).
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: parse
-    prompt: "Parse source files into abstract syntax trees. Write AST JSON."
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import json; json.load(open('{{ workspace }}/ast.json'))\""
-  - name: transform
-    prompt: "Transform AST into intermediate representation."
-    capture_files: ["ast.json"]
-  - name: generate
-    prompt: "Generate target code from IR."
-    capture_files: ["ir.dot"]
-```
-
-### Failure Mode
-
-If your stages use the same method with growing detail, that's Fixed-Point Iteration, not Succession.
-
-### Composes With
-
-Shipyard Sequence, Barn Raising
-
----
-name: "Red Team / Blue Team"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Information Asymmetry"
-  - "Partial Failure"
-generators:
-  - "Exploit Failure as Signal"
-problem: "Artifacts tested by known adversaries pass trivially; unknown adversaries reveal real flaws."
-signals:
-  - "testing is too predictable when defenders know the attacks"
-  - "need to find vulnerabilities that prepared defense would miss"
-  - "want realistic stress-testing where defenders work blind"
-stages:
-  - name: red-attack
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs reasoning capability to devise effective attacks; stronger instrument produces more sophisticated attacks"
-    fallback_friendly: true
-    purpose: "Devise and execute attacks against the artifact, recording both methods and effects."
-    artifacts: ["red-workspace/effects.md", "red-workspace/methods.md"]
-  - name: relay
-    sheets: 1
-    instrument_guidance: "cli — shell command to copy effect descriptions without revealing method details"
-    fallback_friendly: true
-    purpose: "Copy attack effects from red's workspace to blue's briefing, redacting methods."
-    artifacts: ["blue-briefing/effects.md"]
-  - name: blue-defend
-    sheets: 1
-    instrument_guidance: "score-author's choice — must have reasoning capability to devise defenses against unknown attacks; stronger instrument produces more robust defenses"
-    fallback_friendly: true
-    purpose: "Read attack effects and devise defenses without knowing attack methods."
-    artifacts: ["blue-response.md"]
-  - name: purple-debrief
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to analyze attack-defense interactions and extract lessons; opus or sonnet recommended"
-    fallback_friendly: false
-    purpose: "Analyze all attack and defense data to generate attack-defense matrix and lessons."
-    artifacts: ["debrief.md"]
-composes_with:
-  - pattern: "After-Action Review"
-    how: "Purple debrief IS an after-action review, documenting attack-defense interactions and extracting patterns."
-  - pattern: "Immune Cascade"
-    how: "Red Team / Blue Team stress-tests each tier of Immune Cascade's repairs to validate robustness across difficulty levels."
-dependencies: {}
----
-
-## Red Team / Blue Team
-
-`Status: Working` · **Source:** Military adversarial exercises. **Forces:** Information Asymmetry + Partial Failure.
-
-### Core Dynamic
-
-Information asymmetry via redaction: Red writes *effects* but not *methods*. Blue sees effects, must defend blind. Purple debrief gets full access. **Enforcement:** Separate workspace subdirectories (`red-workspace/` vs `blue-briefing/`). A relay stage copies only effect descriptions. Blue's `capture_files` is restricted to `blue-briefing/` only.
-
-### When to Use / When NOT to Use
-
-Use when the artifact needs adversarial stress-testing and the defender should not know attack methods. Not when the team is collaborative or the artifact is too simple for adversarial testing.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: red-attack
-    prompt: "Attack the artifact. Write effects to red-workspace/effects.md and methods to red-workspace/methods.md."
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/red-workspace/effects.md"
-  - name: relay
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "cp {{ workspace }}/red-workspace/effects.md {{ workspace }}/blue-briefing/effects.md"
-  - name: blue-defend
-    prompt: "Read blue-briefing/effects.md. Defend. Write blue-response.md."
-    capture_files: ["blue-briefing/effects.md"]
-  - name: purple-debrief
-    prompt: "Read ALL files. Write debrief with attack-defense matrix."
-    capture_files: ["red-workspace/**", "blue-briefing/**", "blue-response.md"]
-```
-
-### Failure Mode
-
-Red produces weak attacks, Blue passes trivially. Validate Red output contains specific attack categories. If relay leaks methods, Blue's defense is tainted.
-
-### Composes With
-
-After-Action Review (purple debrief IS AAR), Immune Cascade
-
----
-name: "Prefabrication"
-scale: score-level
-type: orchestration-pattern
-status: working
-proof_score: "prefabrication.yaml"
-forces:
-  - "Producer-Consumer Mismatch"
-  - "Finite Resources"
-generators:
-  - "Contract at Interfaces"
-problem: "Parallel tracks produce incompatible outputs because no shared interface contract exists before work begins."
-signals:
-  - "parallel work must produce compatible outputs"
-  - "integration fails due to interface mismatches"
-  - "tracks can't communicate during development"
-  - "neither track depends on the other's code"
-fan_out:
-  build: 4
-stages:
-  - name: interface-spec
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to write a precise, unambiguous interface contract; contract quality determines integration success. Proof score uses contract-designer (claude-code with extended timeout)."
-    fallback_friendly: false
-    purpose: "Define the shared interface contract before parallel work begins. Contract must be precise enough to prevent incompatible implementations but not so restrictive it eliminates parallelization benefits."
-    artifacts: ["interface-spec.yaml"]
-  - name: build
-    sheets: "fan_out(4)"
-    instrument_guidance: "score-author's choice — capability depends on what's being built (code generation, document creation, etc.); proof score uses code-builder (claude-code). Each instance builds independently against the contract."
-    fallback_friendly: true
-    purpose: "Build components in parallel according to the interface contract. Each track works independently without seeing other tracks' code."
-    artifacts: ["component-*/**"]
-  - name: integrate
-    sheets: 1
-    instrument_guidance: "score-author's choice — verification and assembly work; does not need highest capability if contract is solid. Proof score uses verifier (claude-code)."
-    fallback_friendly: true
-    purpose: "Assemble all pre-validated components and verify all interfaces match the contract. Integration is mechanical if the contract is precise."
-    artifacts: []
-composes_with:
-  - pattern: "Barn Raising"
-    how: "Barn Raising establishes shared conventions before Prefabrication's parallel tracks begin, providing the foundation that the interface contract builds upon."
-  - pattern: "Clash Detection"
-    how: "Clash Detection verifies no conflicts exist between assembled components after Prefabrication's integration stage completes."
-  - pattern: "Mission Command"
-    how: "Both patterns coordinate independent parallel work through shared intent artifacts — Prefabrication uses an interface contract, Mission Command uses a mission brief with intent envelope."
-dependencies: {}
----
-
-## Prefabrication
-
-`Status: Working` · **Source:** Construction industry (offsite fabrication). **Forces:** Producer-Consumer Mismatch + Finite Resources.
-
-### Core Dynamic
-
-Define interface contracts before parallel work begins. Each parallel track gets a shared interface definition and builds to it. Integration only assembles pre-validated pieces. Different from Fan-out + Synthesis: prefabrication has an explicit interface specification stage before fan-out.
-
-### When to Use / When NOT to Use
-
-Use when parallel tracks must produce compatible outputs. Not when outputs are independent (use plain Fan-out) or when the interface can't be defined upfront.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: interface-spec
-    prompt: "Define the shared API contract. Write interface-spec.yaml."
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/interface-spec.yaml"
-  - name: build
-    instances: 4
-    prompt: "Build component {{ instance_id }} according to interface-spec.yaml."
-    capture_files: ["interface-spec.yaml"]
-  - name: integrate
-    prompt: "Assemble all components. Verify all interfaces match."
-    capture_files: ["component-*/**"]
-```
-
-### Failure Mode
-
-Interface spec too loose allows incompatible implementations. Too tight eliminates the benefits of parallel work.
-
-### Composes With
-
-Barn Raising, Clash Detection, Mission Command
-
----
-name: "Relay Zone"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Producer-Consumer Mismatch"
-  - "Information Asymmetry"
-generators: []
-problem: "Cumulative outputs across pipeline stages exceed context window limits, degrading downstream agent performance."
-signals:
-  - "pipeline outputs growing too large for downstream context windows"
-  - "later stages receiving more context than they can effectively use"
-  - "information from early stages drowning out recent findings"
-  - "need to preserve key findings while discarding volume"
-stages:
-  - name: relay
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs strong enough comprehension to identify key findings and compress without losing critical information; sonnet recommended for cost-effective compression"
-    fallback_friendly: true
-    purpose: "Read all prior stage outputs and compress to a relay brief preserving key findings, open questions, and critical data at ~20% of original size."
-    artifacts: ["relay-brief.md"]
-composes_with:
-  - pattern: "Fan-out + Synthesis"
-    how: "Relay Zone compresses fan-out outputs before synthesis, preventing context window overflow when many parallel streams merge."
-  - pattern: "Forward Observer"
-    how: "Forward Observer summarizes large input for a single expensive stage; Relay Zone compresses accumulated outputs between any pipeline stages."
-  - pattern: "Screening Cascade"
-    how: "Relay Zone compresses accumulated results between screening stages, preventing context bloat as items escalate through the cascade."
-dependencies: {}
----
-
-## Relay Zone
-
-`Status: Working` · **Source:** Track relay (athletics). **Forces:** Producer-Consumer Mismatch.
-
-### Core Dynamic
-
-Context compression between pipeline stages. A dedicated relay sheet reads the full output of the previous stage and produces a compressed summary for the next stage. Prevents context window bloat across long pipelines.
-
-### When to Use / When NOT to Use
-
-Use when cumulative outputs exceed context limits. Not when all information must survive compression.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: relay
-    prompt: >
-      Read all prior outputs. Compress to relay-brief.md:
-      key findings, open questions, critical data only. Target 20% of original size.
-    capture_files: ["full-output/**"]
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/relay-brief.md"
-      - type: command_succeeds
-        command: "test $(wc -w < '{{ workspace }}/relay-brief.md') -lt 2000"
-```
-
-### Failure Mode
-
-Relay loses critical information. Downstream stages produce incorrect results because the relay omitted a key finding. Validate relay completeness by checking key terms survive compression.
-
-### Composes With
-
-Fan-out + Synthesis, Forward Observer, Screening Cascade
-
----
-name: "Quorum Consensus"
-scale: "score-level"
-type: "orchestration-pattern"
-status: "working"
-forces:
-  - "Partial Failure"
-  - "Finite Resources"
-generators:
-  - "Threshold-Triggered Switch"
-problem: "Partial agent failure should not block the pipeline when majority agreement is sufficient."
-signals:
-  - "fan-out agents may fail unpredictably"
-  - "partial failure shouldn't block downstream stages"
-  - "need to proceed with majority agreement"
-  - "some agents' failures are acceptable if quorum reached"
-fan_out:
-  analyze: 5
-stages:
-  - name: analyze
-    sheets: "fan_out(5)"
-    instrument_guidance: "score-author's choice — any instrument capable of analyzing the artifact; quorum is based on count, not quality"
-    fallback_friendly: true
-    purpose: "Execute analysis in parallel across 5 agents, each producing a workspace file."
-    artifacts: ["analysis-*.md"]
-  - name: quorum-check
-    sheets: 1
-    instrument_guidance: "cli instrument — executes validation command to verify that at least 3 analyses were produced"
-    fallback_friendly: false
-    purpose: "Verify that at least 3 of 5 agents produced valid outputs."
-    artifacts: []
-  - name: synthesize
-    sheets: 1
-    instrument_guidance: "score-author's choice — instrument should be capable of reading multiple analyses and synthesizing consensus; stronger instruments produce higher-quality synthesis"
-    fallback_friendly: true
-    purpose: "Synthesize consensus from successful analyses, noting which agents' outputs were missing."
-    artifacts: []
-composes_with:
-  - pattern: "Triage Gate"
-    how: "Triage Gate pre-filters candidates before Quorum Consensus's fan-out, reducing unnecessary agent invocations."
-  - pattern: "Source Triangulation"
-    how: "Source Triangulation enforces diversity across fan-out agents, preventing systematic bias that would corrupt the quorum validity."
-  - pattern: "Fan-out + Synthesis"
-    how: "Quorum Consensus is a specific implementation of Fan-out + Synthesis that adds a quorum check to handle partial failure, synthesizing results only from the successful majority."
-dependencies: {}
----
-
-## Quorum Consensus
-
-`Status: Working` · **Source:** Distributed systems quorum. **Forces:** Partial Failure + Finite Resources.
-
-### Core Dynamic
-
-Accept results when a quorum (majority) of fan-out agents agree, even if some fail. N agents run; the synthesis stage proceeds when M of N produce valid output. The remaining agents' failures are logged but don't block the pipeline.
-
-### When to Use / When NOT to Use
-
-Use when fan-out may have partial failure and majority agreement is sufficient. Not when every agent's output is critical.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: analyze
-    instances: 5
-    prompt: "Analyze the artifact. Write analysis-{{ instance_id }}.md."
-  - name: quorum-check
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "test $(ls {{ workspace }}/analysis-*.md 2>/dev/null | wc -l) -ge 3"
-  - name: synthesize
-    prompt: "Read available analyses. Note which are missing. Synthesize from quorum."
-    capture_files: ["analysis-*.md"]
-```
-
-### Failure Mode
-
-Quorum reached but the surviving agents all made the same error. Use Source Triangulation to ensure diversity.
-
-### Composes With
-
-Triage Gate, Source Triangulation, Fan-out + Synthesis
-
----
-name: "Commissioning Cascade"
-scale: instrument-strategy
-type: orchestration-pattern
-status: working
-forces:
-  - "Instrument-Task Fit"
-  - "Exponential Defect Cost"
-generators:
-  - "Match Instrument to Grain"
-  - "Graduate & Filter"
-problem: "Different validation scopes require different tools; single-pass validation misses issues or wastes resources."
-signals:
-  - "unit tests pass but integration fails"
-  - "validation is slow because all scopes use expensive instruments"
-  - "can't diagnose failures because all tests run together"
-  - "need different rigor levels for different scopes"
-stages:
-  - name: unit-check
-    sheets: 1
-    instrument_guidance: "cli — required for reliable shell command execution; capability is running shell commands"
-    fallback_friendly: true
-    purpose: "Run unit tests against the codebase."
-    artifacts: []
-  - name: integration-check
-    sheets: 1
-    instrument_guidance: "cli — required for reliable shell command execution; capability is running shell commands"
-    fallback_friendly: true
-    purpose: "Run integration tests against deployed services."
-    artifacts: []
-  - name: acceptance-review
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to evaluate test results against requirements; sonnet or opus recommended"
-    fallback_friendly: false
-    purpose: "Read test results and write acceptance report."
-    artifacts: []
-composes_with:
-  - pattern: "Echelon Repair"
-    how: "Echelon Repair classifies work items by difficulty; Commissioning Cascade validates each echelon's output using tier-appropriate validation instruments."
-  - pattern: "Shipyard Sequence"
-    how: "Shipyard Sequence progresses through launch stages; Commissioning Cascade validates each stage with scope-appropriate instruments."
-  - pattern: "The Tool Chain"
-    how: "The Tool Chain chains tools together; Commissioning Cascade validates the output of each tool using scope-appropriate instruments."
-dependencies: {}
----
-
-## Commissioning Cascade
-
-`Status: Working` · **Source:** Marine vessel commissioning. **Forces:** Instrument-Task Fit + Exponential Defect Cost.
-
-### Core Dynamic
-
-Validate at multiple scopes using different tools at each level. Unit → integration → acceptance, each with scope-appropriate validation instruments. Split chained validations into separate checks so failures are diagnosable.
-
-### When to Use / When NOT to Use
-
-Use when different validation scopes require different tools. Not when a single validation pass suffices.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: unit-check
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "cd {{ workspace }} && python -m pytest tests/unit/ -q"
-  - name: integration-check
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "cd {{ workspace }} && python -m pytest tests/integration/ -q"
-  - name: acceptance-review
-    prompt: "Read test results. Write acceptance report against the original requirements."
-    capture_files: ["test-results/**"]
-```
-
-### Failure Mode
-
-Unit tests pass but integration fails — the cascade catches this. If all validation is at one level, cascading adds no value.
-
-### Composes With
-
-Echelon Repair, Shipyard Sequence, The Tool Chain
-
----
-name: "The Tool Chain"
-scale: "instrument-strategy"
-type: "orchestration-pattern"
-status: "working"
-forces:
-  - "Instrument-Task Fit"
-  - "Finite Resources"
-  - "Producer-Consumer Mismatch"
-generators:
-  - "Match Instrument to Grain"
-  - "Contract at Interfaces"
-problem: "Expensive AI instruments waste budget on deterministic tasks that CLI tools could handle more cheaply."
-signals:
-  - "most pipeline stages are deterministic transformations"
-  - "costs are high using AI instruments for every step"
-  - "work is expressible as shell commands with exit codes"
-  - "need to optimize cost without losing necessary judgment"
-stages:
-  - name: "plan"
-    sheets: 1
-    instrument_guidance: "claude — synthesizes processing plan from input characteristics; judgment needed"
-    fallback_friendly: false
-    purpose: "Read input and design a processing plan."
-    artifacts: ["processing-plan.yaml"]
-  - name: "fetch"
-    sheets: 1
-    instrument_guidance: "cli — curl is deterministic API call; no AI needed"
-    fallback_friendly: true
-    purpose: "Fetch raw data from the source API."
-    artifacts: ["raw.csv"]
-  - name: "clean"
-    sheets: 1
-    instrument_guidance: "cli — user-supplied Python script; data transformation is deterministic"
-    fallback_friendly: true
-    purpose: "Clean and normalize the raw data."
-    artifacts: ["clean.csv"]
-  - name: "analyze"
-    sheets: 1
-    instrument_guidance: "cli — user-supplied Python script; analysis logic is deterministic"
-    fallback_friendly: true
-    purpose: "Analyze cleaned data and produce structured report."
-    artifacts: ["report.md"]
-  - name: "interpret"
-    sheets: 1
-    instrument_guidance: "claude — interprets numerical results and synthesizes recommendations; judgment needed"
-    fallback_friendly: false
-    purpose: "Interpret analysis results and write executive summary with recommendations."
-    artifacts: []
-composes_with:
-  - pattern: "Echelon Repair"
-    how: "The Tool Chain implements Echelon Repair's E1 tier — deterministic work routed to CLI instruments for cost optimization."
-  - pattern: "Commissioning Cascade"
-    how: "Commissioning Cascade validates the output quality of each stage, especially the CLI-based transformations."
-  - pattern: "Composting Cascade"
-    how: "Composting Cascade accumulates CLI instrument exit codes and output as signal for overall process health."
-script_dependencies:
-  - "clean_data.py"
-  - "analyze.py"
-config_features:
-  - "capture_files"
-dependencies: {}
----
-
-## The Tool Chain
-
-`Status: Working` · **Source:** CI/CD pipelines (Jenkins, GitHub Actions), Expedition 1. **Scale:** score-level + instrument strategy. **Iteration:** 4.
-
-### Core Dynamic
-
-Inverts the corpus default: non-AI tools do primary work, AI agents appear only at planning, triage, and interpretation points. Instrument selection follows the work's nature: deterministic work gets deterministic tools, judgment work gets judgment instruments. Most real-world pipelines are 80% deterministic tools, 20% AI judgment.
-
-**Implementation note:** Sheets with `instrument: cli` use validation commands as the execution mechanism. The sheet has no `prompt` — the `command_succeeds` validation IS the work. This is a valid Marianne pattern for deterministic stages.
-
-### When to Use / When NOT to Use
-
-Use when most stages are deterministic transformations (data processing, code compilation, format conversion), when work is expressible as CLI commands with exit codes, when cost matters — CLI instruments are free. Not when every stage requires judgment or output can't be validated by exit code alone.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: plan
-    instrument: claude
-    prompt: "Read input. Produce processing-plan.yaml."
-  - name: fetch
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "curl -sf -o {{ workspace }}/raw.csv 'https://api.example.com/data'"
-  - name: clean
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 {{ workspace }}/clean_data.py {{ workspace }}/raw.csv {{ workspace }}/clean.csv"
-  - name: analyze
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 {{ workspace }}/analyze.py {{ workspace }}/clean.csv {{ workspace }}/report.md"
-  - name: interpret
-    instrument: claude
-    prompt: "Read report.md. Write executive summary with recommendations."
-    capture_files: ["report.md"]
-```
-
-**Script dependencies:** `clean_data.py` and `analyze.py` must exist in the workspace — seeded via prelude, generated by the plan sheet, or supplied by the user.
-
-### Failure Mode
-
-CLI stages fail silently when piped: `cmd | tail -5` always exits 0. Use `bash -c '...; exit ${PIPESTATUS[0]}'` in `command_succeeds` validations. AI stages used where CLI suffices waste budget.
+The self-test is the negative control Review 1 demanded reaches the real gate: a stale permit fixture and a mismatched-target fixture must both fail `execute.sh` with nothing destroyed.
 
 ### Example
 
-Survey processing: AI plans, `curl` fetches, `python3` cleans and analyzes, AI writes executive summary. Cost: ~$0.50 instead of ~$5.00 all-LLM.
-
-### Composes With
-
-Echelon Repair (tool chain IS echelon E1), Commissioning Cascade (CLI tiers for validation), Composting Cascade (CLI instruments as thermometers)
+A nightly maintenance score force-pushes a regenerated `gh-pages` site. The certify movement verifies branch head, worktree cleanliness, and build reproducibility, and writes a permit naming the exact tree hash. A human's emergency merge at 2 AM invalidates the permit silently and correctly — morning's run re-certifies instead of force-pushing over the emergency fix.
 
 ---
-name: "Canary Probe"
+
+## Top-Down Demolition Order
+
+```yaml
+---
+name: "Top-Down Demolition Order"
 scale: score-level
-type: orchestration-pattern
 status: working
-forces:
-  - "Progressive Commitment"
-generators:
-  - "Incremental Exposure"
-problem: "Full-scale execution risks loss of resources and time when pipeline changes or output formats are unproven."
+forces: ["Exponential Defect Cost", "Partial Failure"]
+generators: ["Gate on Environmental Readiness"]
+problem: "Removal order is computed from commit history, so removing a shared thing succeeds while dependents that quietly stood on it lose their footing."
 signals:
-  - "batch processing many items with unproven pipeline"
-  - "pipeline changes with uncertain format impact"
-  - "high cost of full-scale failure"
-  - "need validated evidence before full commitment"
-fan_out:
-  canary-run: 3
-  full-run: 20
+  - "retiring a shared library, column, endpoint, schema, or base image"
+  - "the danger is not 'removal fails' but 'removal succeeds and three consumers break silently'"
+  - "reverse-chronology undo proposed for something with internal structure"
 stages:
-  - name: select-canary
+  - name: "map-structure"
     sheets: 1
-    instrument_guidance: "score-author's choice — needs capability to identify structurally representative items (different sizes, formats, edge cases); haiku acceptable"
-    fallback_friendly: true
-    purpose: "Select a small representative subset from the full item list for testing."
-    artifacts: ["canary-manifest.yaml"]
-  - name: canary-run
-    sheets: "fan_out(3)"
-    instrument_guidance: "score-author's choice — MUST match the exact instruments used in full-run; canary tests the identical pipeline"
+    instrument_guidance: "instrument: cli — computes the live reverse-dependency graph"
     fallback_friendly: false
-    purpose: "Execute the full pipeline on each canary item using identical instruments and validations."
-    artifacts: ["canary-result-{{ instance_id }}.md"]
-  - name: canary-evaluate
+    purpose: "Emit demolition-plan.json: ordered steps, each with a consumers-must-be-empty predicate."
+  - name: "verify-order"
     sheets: 1
-    instrument_guidance: "score-author's choice — needs analysis and reasoning capability; haiku acceptable"
-    fallback_friendly: true
-    purpose: "Analyze all canary results and produce a go/no-go verdict with detailed reasoning."
-    artifacts: ["canary-verdict.yaml"]
-  - name: canary-gate
+    instrument_guidance: "instrument: cli in separately-authored verify/ dir — re-derives the order independently"
+    fallback_friendly: false
+    purpose: "Second, differently-authored derivation must equal the plan."
+  - name: "remove-step"
     sheets: 1
-    instrument_guidance: "cli — purely gatekeeping logic checking the verdict file; no LLM needed"
+    instrument_guidance: "instrument: cli wrapper — sweep empty, remove, re-derive leaves, ledger append; one step per self-chain cycle"
     fallback_friendly: false
-    purpose: "Enforce the canary verdict; halt execution if canary failed."
-    artifacts: []
-  - name: full-run
-    sheets: "fan_out(20)"
-    instrument_guidance: "score-author's choice — must match canary-run instruments; processes remaining items"
+    purpose: "Remove exactly one current leaf; the sweep re-runs after because removals create new leaves."
+  - name: "final-void"
+    sheets: 1
+    instrument_guidance: "instrument: cli — absence proven by the full oracle"
     fallback_friendly: false
-    purpose: "Execute the full pipeline at scale on remaining items, conditional on canary verdict passing."
-    artifacts: []
+    purpose: "Artifact gone AND the full build/test oracle green."
+dependencies:
+  verify-order: ["map-structure"]
+  remove-step: ["verify-order"]
+  final-void: ["remove-step"]
 composes_with:
-  - pattern: "Progressive Rollout"
-    how: "Canary Probe IS the validation gate and phase 1 of Progressive Rollout before scaling to full deployment."
-  - pattern: "Dead Letter Quarantine"
-    how: "Canary Probe's failures reveal items that should be sent to Dead Letter Quarantine instead of full-run processing."
-  - pattern: "Speculative Hedge"
-    how: "Run Canary Probe on each hedge path before committing full-run resources to one strategy."
-dependencies: {}
+  - pattern: "Saga Compensation Chain"
+    how: "contrast — time order vs structure order: the two axes, stated"
+  - pattern: "Behavioral Pre-Mortem"
+    how: "prerequisite — dry-render the demolition DAG before the first cut"
+  - pattern: "The Soak Period"
+    how: "its pair (archive) — structure-computable vs structure-unknowable removals"
 ---
+```
 
-## Canary Probe
-
-`Status: Working` · **Source:** DevOps canary deployment, military recon-in-force, Expedition 5. **Scale:** score-level. **Iteration:** 4. **Force:** Progressive Commitment.
+**Source:** Expedition 1; **the strongest pattern by all three reviews** — "genuinely distinct," "survives complete removal of the ship-breaking story," "a genuine correction to naive saga thinking."
 
 ### Core Dynamic
 
-Run a miniature version of the full pipeline on a tiny subset of real data before committing to full scale. The canary uses the EXACT SAME pipeline — identical instruments, validations, prompts — just on fewer items. If the canary dies, you've lost almost nothing. If it lives, you have evidence (not hope) that full-scale execution works.
+**The assembly DAG read backwards is not a valid disassembly DAG.** When the ship was built, temporary staging carried loads that no longer exist; when the building was poured, formwork carried the slabs until the concrete cured. The completed structure bears weight through paths that did not exist during assembly. Demolition engineers do not replay the build in reverse — they compute a *new* order in which the remaining structure is self-stable at every step. The Marianne translation: **removal order is computed from reverse dependencies, not from commit history.** Saga Compensation undoes by time (correct for restoring business state); demolition removes by structure — you may not remove a thing while anything live still stands on it. Before each removal, a deterministic sweep enumerates the element's consumers; removal proceeds only when that set is empty; and the sweep re-runs after every removal because removals create new leaves. This is Legion's own law — enumerate ALL consumers before touching a shared field — promoted from discipline to mechanism.
 
-**Representativeness caveat:** Canary testing's fundamental limitation is that the subset must be representative. If it isn't, you learn nothing. The selection stage should use structural diversity criteria (different file sizes, different formats, edge cases), not random sampling.
-
-### When to Use / When NOT to Use
-
-Use for any score operating on a list of items, migration scores, batch processing, or concert coordination where Score B depends on Score A's output format. Not when the canary subset can't be representative (tail-risk failures) or setup cost makes a probe nearly as expensive as the full run.
+**The serialized driver (Review 1):** one removal per self-chain cycle. The score re-invokes itself via `concert`/`on_success`; movement 3's sheet is skipped when the ledger shows no remaining steps — so the chain drains the plan and terminates. Parallel removals would race the stability computation; serialization is the safety property.
 
 ### Marianne Score Structure
 
 ```yaml
-sheets:
-  - name: select-canary
-    prompt: >
-      Select 3 representative items from the full set, choosing for structural diversity
-      (different sizes, formats, edge cases). Write canary-manifest.yaml listing selected items.
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/canary-manifest.yaml"
-  - name: canary-run
-    instances: 3
-    prompt: >
-      Read canary-manifest.yaml. Process item at index {{ instance_id }}.
-      Write result to canary-result-{{ instance_id }}.md.
-    capture_files: ["canary-manifest.yaml"]
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/canary-result-{{ instance_id }}.md"
-  - name: canary-evaluate
-    prompt: >
-      Read all canary results. Evaluate: did each produce valid output?
-      Write canary-verdict.yaml: {go: true/false, results: [{item, pass, reason}]}.
-    capture_files: ["canary-result-*.md", "canary-manifest.yaml"]
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; v=yaml.safe_load(open('{{ workspace }}/canary-verdict.yaml')); assert 'go' in v\""
-  - name: canary-gate
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; v=yaml.safe_load(open('{{ workspace }}/canary-verdict.yaml')); assert v['go'], 'Canary failed'\""
-  - name: full-run
-    instances: 20
-    prompt: "Process remaining items from the full set."
-    capture_files: ["canary-manifest.yaml"]
+concert:
+  enabled: true
+  max_chain_depth: 40               # bound: one cycle per step plus commissioning
+  inherit_workspace: true
+on_success:
+  - type: run_job
+    job_path: "{score_dir}/top-down-demolition.yaml"
+
+movements:
+  1: { name: map-structure, instrument: cli, instrument_fallbacks: [] }
+  2: { name: verify-order, instrument: cli, instrument_fallbacks: [] }
+  3: { name: remove-step, instrument: cli, instrument_fallbacks: [] }
+  4: { name: final-void, instrument: cli, instrument_fallbacks: [] }
+
+sheet:
+  size: 1
+  total_items: 4
+  dependencies: { 2: [1], 3: [2], 4: [3] }
+  skip_when:
+    1: { command: 'test -s {workspace}/demolition-plan.json' }   # plan exists: skip re-mapping
+    2: { command: 'test -s {workspace}/order-verified.stamp' }   # verified once: stay verified
+    3: { command: 'test $(jq ".steps | map(select(.state != \"done\")) | length" {workspace}/demolition-plan.json) -eq 0' }
+    4: { command: 'test $(jq ".steps | map(select(.state != \"done\")) | length" {workspace}/demolition-plan.json) -gt 0' }
+  per_sheet_fallbacks:
+    1: []
+    2: []
+    3: []
+    4: []
+
+prompt:
+  template: |
+    {% if stage == 1 %}
+    bash "{score_dir}/scripts/dep-graph.sh" --target "{{ target_path }}" \
+      --emit "{{ workspace }}/demolition-plan.json"
+    {% elif stage == 2 %}
+    bash "{score_dir}/verify/order-rederive.sh" --target "{{ target_path }}" \
+      --diff-against "{{ workspace }}/demolition-plan.json" && touch "{{ workspace }}/order-verified.stamp"
+    {% elif stage == 3 %}
+    bash "{score_dir}/scripts/step.sh" --plan "{{ workspace }}/demolition-plan.json" \
+      --sweep-expect-empty --ledger "{{ workspace }}/demolition-ledger.jsonl"
+    {% else %}
+    Prove absence: bash "{score_dir}/scripts/full-oracle.sh" "{{ workspace }}"
+    {% endif %}
+
+validations:
+  - type: command_succeeds
+    command: 'jq -e ".steps | length > 0" {workspace}/demolition-plan.json'
+    condition: "stage == 1"
+  - type: command_succeeds
+    command: 'bash {score_dir}/verify/order-rederive.sh --target {target_path} --diff-against {workspace}/demolition-plan.json'
+    condition: "stage == 2"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/step.sh --self-test'
+    condition: "stage == 3"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/full-oracle.sh {workspace}'
+    condition: "stage == 4"
 ```
 
-### Failure Mode
+The plan and ledger are JSON checked by jq, never prose greps; movement 2 re-derives the order with a *differently-authored* tool (the `verify/` directory — Concurrent Count's discipline applied to structure); the step self-test includes a fixture where a live consumer exists and removal must refuse; and only the full suite is green at the end.
 
-Canary passes but full run fails — the canary subset was unrepresentative. Mitigate by selecting for structural diversity, not convenience. If the canary itself is expensive (complex setup), the pattern provides no cost advantage — use a simpler validation gate instead.
+### Example
 
-### Composes With
-
-Progressive Rollout (canary IS phase 1), Dead Letter Quarantine (canary failures reveal quarantine candidates), Speculative Hedge (canary each hedge path before committing)
+Deprecating a shared `user-events` topic schema that fourteen services publish to and nine consume. Commit order says the schema came before its consumers, so newest-first would kill the schema first. The demolition order computes: migrate publishers first (no dependents), then consumers, then the topic. Every step leaves the running system self-stable.
 
 ---
-name: "Speculative Hedge"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Progressive Commitment"
-generators:
-  - "Incremental Exposure"
-problem: "Choosing one approach that fails requires expensive restart from scratch, wasting the initial attempt's cost."
-signals:
-  - "uncertain which approach will work for this problem"
-  - "starting over after failed approach costs more than running both"
-  - "need guaranteed progress despite approach uncertainty"
-  - "multiple valid strategies exist but success is unpredictable"
-stages:
-  - name: analyze
-    sheets: 1
-    instrument_guidance: "sonnet or opus — requires strategic analysis to define competing approaches and robust evaluation criteria"
-    fallback_friendly: false
-    purpose: "Analyze the problem and define two competing approaches with evaluation criteria."
-    artifacts: ["hedge-plan.yaml"]
-  - name: approach-a
-    sheets: 1
-    instrument_guidance: "score-author's choice — instrument must match the task complexity; mechanical transformations may use cheaper instruments than clean-room rewrites"
-    fallback_friendly: true
-    purpose: "Execute approach A using mechanical transformation strategy."
-    artifacts: ["approach-a-result/**"]
-  - name: approach-b
-    sheets: 1
-    instrument_guidance: "score-author's choice — clean-room rewrites typically need stronger reasoning than mechanical transforms; choose based on actual task complexity"
-    fallback_friendly: false
-    purpose: "Execute approach B using clean-room rewrite strategy."
-    artifacts: ["approach-b-result/**"]
-  - name: evaluate
-    sheets: 1
-    instrument_guidance: "sonnet or opus — must run tests, evaluate results, and make justified winner selection with rationale"
-    fallback_friendly: false
-    purpose: "Run tests against both approaches and select winner with rationale."
-    artifacts: ["hedge-decision.yaml"]
-composes_with:
-  - pattern: "Canary Probe"
-    how: "Canary Probe validates each approach on a small subset before Speculative Hedge commits full resources to parallel execution."
-config_features:
-  - "capture_files"
-  - "command_succeeds"
-dependencies: {}
----
+# Adaptation Patterns
 
-## Speculative Hedge
+*Three enter — the break-even ladder, the condition-bound overlay, the pre-paid threshold. The ATO Cycle is archived pending a multi-generation redesign.*
 
-`Status: Working` · **Source:** CPU branch prediction, military COA analysis, financial hedging, Expedition 5. **Scale:** score-level. **Iteration:** 4. **Force:** Progressive Commitment.
-
-### Core Dynamic
-
-Run DIFFERENT strategies on the SAME problem and commit to whichever succeeds. Not fan-out (same task, different data) — this runs different APPROACHES on the same data. The cost analysis: if retry-from-scratch costs more than running both, hedge.
-
-**Execution note:** In current Marianne, approaches run sequentially (sheets execute in order). This means the delivery time is the SUM of both approaches, not the MAX. The value proposition is not time savings but elimination of the "wrong approach, start over" scenario — you always get at least one valid result. For true parallel hedging, use two separate scores in a concert.
-
-### When to Use / When NOT to Use
-
-Use for migration tasks with unknown edge cases, research with multiple search strategies, any task where "wrong approach, retry" costs more than "both approaches, discard one." Not when both approaches are equally expensive and success rate is high, when budget is hard-capped, or when approaches interfere.
-
-### Marianne Score Structure
+## Rent-Then-Commit (Break-Even Escalation)
 
 ```yaml
-sheets:
-  - name: analyze
-    prompt: "Analyze the problem. Define two approaches and evaluation criteria. Write hedge-plan.yaml."
-  - name: approach-a
-    prompt: "Execute approach A: mechanical transformation. Write all output to approach-a-result/."
-  - name: approach-b
-    prompt: "Execute approach B: clean-room rewrite guided by tests. Write all output to approach-b-result/."
-    capture_files: ["hedge-plan.yaml"]
-  - name: evaluate
-    prompt: "Run tests against both. Write hedge-decision.yaml: {winner, rationale, test_results}."
-    capture_files: ["approach-a-result/**", "approach-b-result/**"]
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; d=yaml.safe_load(open('{{ workspace }}/hedge-decision.yaml')); assert 'winner' in d\""
-```
-
-### Failure Mode
-
-Both approaches fail — the hedge didn't reduce risk, it doubled cost. Mitigate with a Canary Probe on each approach before full execution. If approaches write to the same files (no subdirectory isolation), they clobber each other's output — always use separate output directories.
-
-### Composes With
-
-Canary Probe (canary each approach before full hedge)
-
 ---
-name: "Dead Letter Quarantine"
-scale: score-level
-type: orchestration-pattern
+name: "Rent-Then-Commit"
+scale: adaptation
 status: working
-proof_score: "dead-letter-quarantine.yaml"
-forces:
-  - "Partial Failure"
-  - "Information Asymmetry"
-  - "Finite Resources"
-generators:
-  - "Exploit Failure as Signal"
-  - "Accumulate Knowledge"
-problem: "Batch processing repeatedly fails on the same items because no systematic analysis identifies root causes or adapts strategy."
+forces: ["Finite Resources"]
+generators: ["Threshold-Triggered Switch"]
+problem: "A repeated per-use cost and a one-time commitment cost face an unknown horizon, and no rule says when committing becomes provably defensible."
 signals:
-  - "some items consistently fail across retries"
-  - "batch processing has persistent partial failures"
-  - "retry loops waste resources on unfixable items"
-  - "no visibility into why certain items fail while others succeed"
-  - "failures seem random but may have underlying patterns"
-fan_out:
-  process: 10
-config_features:
-  - fan_out
+  - "cheap retries that might go on forever vs one expensive settlement"
+  - "recompute-every-run vs freeze-a-contract decisions"
+  - "spot vs reserved capacity across a chain of unknown length"
 stages:
-  - name: process
-    sheets: "fan_out(10)"
-    instrument_guidance: "score-author's choice — initial batch processing; proof score demonstrates haiku for cost efficiency, but any capable instrument works"
-    fallback_friendly: true
-    purpose: "Process batch items in parallel, writing success results to workspace files."
-    artifacts: ["result-*.md"]
-  - name: collect
+  - name: "ledger-probe"
     sheets: 1
-    instrument_guidance: "score-author's choice — failure detection and categorization; needs judgment to classify error types and extract symptoms from missing/malformed outputs"
-    fallback_friendly: true
-    purpose: "Identify failed items from missing or invalid outputs and create structured quarantine manifest."
-    artifacts: ["quarantine.yaml"]
-  - name: analyze-quarantine
-    sheets: 1
-    instrument_guidance: "capable instrument required — cross-failure pattern analysis is the core Dead Letter Quarantine dynamic; identifies systematic causes not visible in individual failures; proof score recommends opus"
+    instrument_guidance: "instrument: cli — reads the persisted spend ledger; nothing else touches it"
     fallback_friendly: false
-    purpose: "Analyze quarantined items to identify common failure patterns and design adapted reprocessing strategies."
-    artifacts: ["quarantine-analysis.md"]
-  - name: reprocess
+    purpose: "Emit ladder-state.yaml: cumulative rent vs declared B."
+  - name: "ladder-decide"
     sheets: 1
-    instrument_guidance: "score-author's choice — applies adapted strategies from analysis; needs sufficient capability for the underlying task (code generation, data transformation, etc.)"
+    instrument_guidance: "instrument: cli — pure arithmetic, exit-coded"
+    fallback_friendly: false
+    purpose: "Emit decision.yaml: {lane: rent|buy, rent_paid, B, ratio_bound: 2}."
+  - name: "rent-lane"
+    sheets: "fan_out(2)"
+    instrument_guidance: "cheap instrument (opencode GLM-5.3-flash); skip_when lane != rent"
     fallback_friendly: true
-    purpose: "Reprocess quarantined items using adapted strategies that address identified root causes."
-    artifacts: ["reprocess-results.yaml"]
+    purpose: "Cheap partial work while the ledger is below B."
+  - name: "buy-lane"
+    sheets: 1
+    instrument_guidance: "strong reasoner (opus); skip_when lane != buy"
+    fallback_friendly: false
+    purpose: "Settle the whole remainder now; the horizon ended."
+  - name: "settle"
+    sheets: 1
+    instrument_guidance: "instrument: cli — appends spend; the self-chain carries the ledger"
+    fallback_friendly: false
+    purpose: "Persist the ledger for the next cycle."
+dependencies:
+  ladder-decide: ["ledger-probe"]
+  rent-lane: ["ladder-decide"]
+  buy-lane: ["ladder-decide"]
+  settle: ["rent-lane", "buy-lane"]
 composes_with:
-  - pattern: "Triage Gate"
-    how: "Triage Gate's BLACK-category items (reject/quarantine) feed directly into Dead Letter Quarantine's collection stage for batch pattern analysis."
-  - pattern: "Screening Cascade"
-    how: "Screening Cascade's rejected items route to Dead Letter Quarantine, where accumulated rejections reveal systematic criteria gaps in the screening filters."
   - pattern: "Circuit Breaker"
-    how: "Circuit Breaker halts processing and routes tripped failures to Dead Letter Quarantine for root cause analysis before resuming."
-  - pattern: "Immune Cascade"
-    how: "Dead Letter Quarantine handles items that fail Immune Cascade's successive verification stages, analyzing what defects survived earlier tiers."
-  - pattern: "After-Action Review"
-    how: "After-Action Review can analyze Dead Letter Quarantine's pattern-finding process itself, extracting doctrine about what kinds of failures cluster."
-dependencies: {}
+    how: "layering — availability state machine composed with the cost ladder"
+  - pattern: "Speculative Hedge"
+    how: "substitution — the hedge IS the parallel purchase; the ladder prices when parallelism pays"
+  - pattern: "The Economic Injury Line"
+    how: "contrast — known damage model (EIL) vs unknown horizon (this); never confuse them"
 ---
+```
 
-## Dead Letter Quarantine
-
-`Status: Working` · **Source:** RabbitMQ/Kafka dead letter queues, Expedition 5. **Scale:** score-level. **Iteration:** 4. **Force:** Graceful Failure.
+**Source:** Expedition 4 (ski-rental); Reviews 1 and 3 demanded the routing actually exist — it now does, in the real dialect.
 
 ### Core Dynamic
 
-After N retries, STOP RETRYING AND QUARANTINE. Move failed items to a separate processing path with different handling: different instruments, different prompts, different strategy. The quarantine is an ARTIFACT that persists, accumulates, and can be ANALYZED. "Why did these 7 items fail?" often reveals a systematic issue that fixing once clears the entire quarantine.
+A repeated per-use cost and a one-time commitment cost face an adversary who knows the horizon and you who do not. The classical result is exactly this strong and exactly this cheap: **keep renting while cumulative rent is below the commitment price B; commit the moment it reaches B; and no adversary can make you pay more than twice what a clairvoyant scheduler would have paid.** The factor of 2 is a proven worst-case bound, and the entire decision policy is arithmetic over a ledger. In an orchestra: cheap retried attempts are rent; the serialized authority, the expensive reasoner, the frozen contract, the precomputed index is the purchase.
 
-### When to Use / When NOT to Use
-
-Use for any batch processing where some items are expected to fail, self-chaining scores where iteration N should not re-attempt items from N-1, or concert-level routing of failures to a different score. Not when every item MUST succeed, failures are truly random, or the quarantine grows to dwarf successful items (the pipeline itself is broken).
+**The routing, made real (Reviews 1 and 3):** there is no dynamic instrument reassignment — `fan_out` and instruments resolve at parse time. The lanes are **sheets gated by `skip_when` commands**: the rent lane's sheets skip when `decision.lane != "rent"`, the buy lane's sheet skips when `!= "buy"`. The decision travels by `capture_files` into whichever lane runs, and the executor cites the ladder position in its output header. The self-chain is the real `concert` + `on_success: run_job` form — the draft's `on_success: {action: self}` shape does not exist. The randomized 1.582-competitive variant is archive-color: it requires its draw distribution and seed assumptions stated, and the deterministic 2-bound is the version the corpus carries.
 
 ### Marianne Score Structure
 
 ```yaml
-sheets:
-  - name: process
-    instances: 10
-    prompt: "Process item {{ instance_id }}. Write result-{{ instance_id }}.md on success."
-  - name: collect
-    prompt: >
-      Identify failures (missing or empty result files). Write quarantine.yaml listing
-      failed items with {item_id, error_symptom, attempted_strategy}.
-    capture_files: ["result-*.md"]
-  - name: analyze-quarantine
-    prompt: >
-      Read quarantine.yaml. Identify common failure patterns.
-      Write quarantine-analysis.md with: {pattern, affected_items, suggested_strategy}.
-    capture_files: ["quarantine.yaml"]
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/quarantine-analysis.md"
-  - name: reprocess
-    prompt: >
-      Read quarantine-analysis.md. For each failure pattern, apply the suggested strategy.
-      Write reprocess-results.yaml: [{item_id, outcome: success|permanent_quarantine, detail}].
-    capture_files: ["quarantine.yaml", "quarantine-analysis.md"]
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; r=yaml.safe_load(open('{{ workspace }}/reprocess-results.yaml')); success=[e for e in r if e['outcome']=='success']; print(f'{len(success)}/{len(r)} reprocessed successfully')\""
+instruments:
+  cheap: { profile: opencode, config: { model: "zai-coding-plan/glm-5.3-flash" } }
+concert:
+  enabled: true
+  max_chain_depth: 12
+  inherit_workspace: true
+on_success:
+  - type: run_job
+    job_path: "{score_dir}/rent-then-commit.yaml"
+
+movements:
+  1: { name: ledger-probe, instrument: cli, instrument_fallbacks: [] }
+  2: { name: ladder-decide, instrument: cli, instrument_fallbacks: [] }
+  3: { name: rent-lane, voices: 2 }
+  4: { name: buy-lane }
+  5: { name: settle, instrument: cli, instrument_fallbacks: [] }
+
+sheet:
+  size: 1
+  total_items: 5                    # expansion: 1,2, rent 3-4, buy 5, settle 6
+  fan_out: { 3: 2 }
+  dependencies: { 2: [1], 3: [2], 4: [2], 5: [3, 4] }
+  skip_when:                        # keys are EXPANDED sheet numbers (adapter.py:2947)
+    3: { command: 'test "$(jq -r .lane {workspace}/decision.yaml)" != "rent"' }
+    4: { command: 'test "$(jq -r .lane {workspace}/decision.yaml)" != "rent"' }
+    5: { command: 'test "$(jq -r .lane {workspace}/decision.yaml)" != "buy"' }
+  per_sheet_instruments:
+    3: cheap
+    4: cheap
+  per_sheet_fallbacks:
+    1: []
+    2: []
+    6: []
+
+cross_sheet:
+  capture_files: ["{{ workspace }}/decision.yaml"]
+
+prompt:
+  variables: { commitment_price: 6.0 }
+  template: |
+    {% if stage == 1 %}
+    bash "{score_dir}/scripts/ladder.sh" probe --ledger "{{ workspace }}/spend-ledger.jsonl" \
+      --commitment {{ commitment_price }} --emit "{{ workspace }}/ladder-state.yaml"
+    {% elif stage == 2 %}
+    bash "{score_dir}/scripts/ladder.sh" decide --state "{{ workspace }}/ladder-state.yaml" \
+      --emit "{{ workspace }}/decision.yaml"
+    {% elif stage == 3 %}
+    Renting. Complete your slice on the cheap path. Cite lane and ladder
+    position from decision.yaml in your output header.
+    {% elif stage == 4 %}
+    Committed. Settle the whole remainder now. Cite the ladder position.
+    {% else %}
+    bash "{score_dir}/scripts/ladder.sh" settle --ledger "{{ workspace }}/spend-ledger.jsonl"
+    {% endif %}
+
+validations:
+  - type: command_succeeds
+    command: 'jq -e "(.ratio_bound == 2) and (.commit == (.rent_paid >= .B))" {workspace}/decision.yaml'
+    condition: "stage == 2"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/ladder.sh --self-test'
+    condition: "stage == 2"
 ```
 
-### Failure Mode
+The self-test is the pattern's own negative control: a ledger with rent ≥ B whose decision did not commit must fail; the proof score's substrate exercises the arithmetic it proves.
 
-Quarantine analysis finds no patterns — items failed for unrelated reasons. The reprocess stage still runs but the "adapted strategy" has nothing to adapt from. In this case, escalate to a more capable instrument (Opus) rather than repeating the same strategy. If the quarantine grows across self-chain iterations, the pipeline itself needs debugging, not the items.
+### Example
 
-### Composes With
-
-Triage Gate (BLACK category feeds quarantine), Screening Cascade (rejected items go to quarantine for pattern analysis), Circuit Breaker (circuit-tripped failures enter quarantine)
+A nonprofit's weekly self-chaining score drafts donor summaries on a cheap model and occasionally needs a strong reasoner for contested numbers. Nobody knows which weeks will be contested. The ladder keeps cheap drafting until cumulative cheap spend equals one strong-instrument takeover, then commits — and the board can be told, arithmetically, that no scheduling hindsight could have done better than twice what was paid.
 
 ---
-name: "Clash Detection"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Exponential Defect Cost"
-  - "Producer-Consumer Mismatch"
-  - "Information Asymmetry"
-generators:
-  - "Exploit Failure as Signal"
-  - "Gate on Environmental Readiness"
-problem: "Parallel tracks produce conflicting artifacts that break integration, and discovering conflicts during integration is expensive."
-signals:
-  - "parallel work needs to integrate but conflicts are unpredictable"
-  - "integration testing is expensive"
-  - "contracts can't anticipate all conflict modes"
-  - "need to detect conflicts before attempting merge"
-fan_out:
-  track-work: 4
-stages:
-  - name: track-work
-    sheets: "fan_out(4)"
-    instrument_guidance: "score-author's choice — instrument must match the component-building task complexity; pattern is instrument-agnostic for this stage"
-    fallback_friendly: true
-    purpose: "Build one component in parallel with other tracks"
-    artifacts: []
-  - name: clash-scan
-    sheets: 1
-    instrument_guidance: "sonnet or better — needs analytical capability to compare outputs across all tracks, detect naming collisions, interface mismatches, and resource conflicts; missing conflicts defeats the pattern's purpose"
-    fallback_friendly: false
-    purpose: "Compare all parallel track outputs to detect conflicts without attempting merge"
-    artifacts: ["clash-report.yaml"]
-  - name: integrate
-    sheets: 1
-    instrument_guidance: "score-author's choice — depends on integration complexity; pattern focuses on pre-integration detection, not integration method"
-    fallback_friendly: true
-    purpose: "Assemble all track outputs after clash detection passes"
-    artifacts: []
-composes_with:
-  - pattern: "Prefabrication"
-    how: "Prefabrication defines interface contracts for parallel tracks; Clash Detection verifies those contracts weren't violated and catches unanticipated conflicts."
-  - pattern: "Andon Cord"
-    how: "When Clash Detection finds conflicts (non-zero clash_count), Andon Cord halts integration and triggers diagnostic workflow to analyze root cause."
-  - pattern: "The Tool Chain"
-    how: "The Tool Chain provides CLI tools (linters, static analyzers) that Clash Detection invokes to find structural conflicts beyond what LLM inspection catches."
-config_features:
-  - "fan_out"
-  - "capture_files"
-  - "command_succeeds"
-dependencies: {}
----
 
-## Clash Detection
-
-`Status: Working` · **Source:** MEP coordination / BIM in construction, Expedition 1. **Scale:** score-level. **Iteration:** 4.
-
-### Core Dynamic
-
-After parallel tracks produce outputs but BEFORE integration, a dedicated stage compares all outputs for CONFLICTS — without trying to merge them. Cheaper than integration testing. Different from the contract (which prevents KNOWN conflict classes) and integration testing (which discovers conflicts empirically). Clash detection uses the OUTPUTS as inputs, overlays them, and searches for interference patterns. The scope is detection, not resolution — downstream stages handle fixes.
-
-### When to Use / When NOT to Use
-
-Use when parallel tracks produce artifacts that must coexist (code modules, config files, API schemas), when the contract can't anticipate all conflict modes, or when integration testing is expensive enough that catching conflicts earlier saves meaningful cost. Not when parallel tracks produce truly independent artifacts, when the contract is exhaustive, or when parallel work is done by the same agent.
-
-### Marianne Score Structure
+## Vintage Overlay
 
 ```yaml
-sheets:
-  - name: track-work
-    instances: 4
-    prompt: "Build component {{ instance_id }}."
-  - name: clash-scan
-    prompt: >
-      Read ALL track outputs. Search for naming collisions, interface mismatches,
-      resource conflicts. Write clash-report.yaml with {clashes: [{type, items, detail}], clash_count: N}.
-    capture_files: ["track-*/**"]
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; r=yaml.safe_load(open('{{ workspace }}/clash-report.yaml')); c=r.get('clash_count',0) if r else 0; assert c==0, f'{c} clashes found'\""
-  - name: integrate
-    prompt: "Assemble all track outputs."
-    capture_files: ["track-*/**"]
-```
-
-### Failure Mode
-
-Clash detection finds conflicts — the assertion fails, blocking integration. This is the INTENDED behavior. The score author must add a resolution stage after clash-scan that fixes conflicts and re-runs the scan. If clash-report.yaml is malformed or missing the `clash_count` key, the validation fails with a clear assertion error rather than a cryptic KeyError.
-
-### Composes With
-
-Prefabrication (clash detection after prefab tracks), Andon Cord (clash triggers diagnostic), The Tool Chain (CLI clash detection for structural conflicts)
-
 ---
-name: "Rashomon Gate"
-scale: score-level
-type: orchestration-pattern
+name: "Vintage Overlay"
+scale: adaptation
 status: working
-forces:
-  - "Structured Disagreement"
-generators:
-  - "Frame Multiplication"
-  - "Verify through Diverse Observers"
-problem: "Single-frame analysis produces unreliable conclusions when the optimal analytical perspective is unknown."
+forces: ["Instrument-Task Fit", "Finite Resources"]
+generators: ["Gate on Environmental Readiness"]
+problem: "A canonical pipeline re-runs on a cadence under external conditions that vary, and each run improvises tuning instead of selecting from pre-authored condition-bound parameter sets."
 signals:
-  - "the right analytical frame is unknown"
-  - "multiple valid perspectives exist (security, performance, maintainability)"
-  - "risk is getting the right answer from the wrong frame"
-  - "need to distinguish genuine ambiguity from frame artifacts"
-fan_out:
-  analyze: 4
-config_features:
-  - "fan_out"
-  - "cadenza"
+  - "the pipeline is stable; the conditions are not"
+  - "conditions are mechanically measurable (versions, rate climates, volatility)"
+  - "per-vintage tuning would beat per-run improvisation"
 stages:
-  - name: evidence
+  - name: "conditions"
     sheets: 1
-    instrument_guidance: "score-author's choice — capability depends on what artifact needs assembly (document analysis, code audit, synthesis work)"
-    fallback_friendly: true
-    purpose: "Assemble the artifact that all analyst instances will examine from their different frames."
-    artifacts: ["evidence/**"]
-  - name: analyze
-    sheets: "fan_out(4)"
-    instrument_guidance: "score-author's choice — needs analytical capability appropriate to the domain; all instances should use similar-strength instruments to avoid confounding frame differences with capability differences"
-    fallback_friendly: true
-    purpose: "Analyze the evidence through an assigned analytical frame (security, performance, maintainability, correctness) provided via cadenza."
-    artifacts: ["analysis-{{ instance_id }}.md"]
-  - name: triangulate
-    sheets: 1
-    instrument_guidance: "score-author's choice — must distinguish genuine disagreement from different vocabulary and identify agreement patterns across frames; sonnet or opus recommended"
+    instrument_guidance: "instrument: cli — the weather station has no opinions; records resolved model families, not instrument names"
     fallback_friendly: false
-    purpose: "Categorize all findings by agreement level (UNANIMOUS, MAJORITY, SPLIT, UNIQUE) and produce structured triangulation report."
-    artifacts: ["triangulation.yaml"]
-composes_with:
-  - pattern: "Source Triangulation"
-    how: "Rashomon Gate varies analytical frames over the same evidence; Source Triangulation varies evidence sources — they can be nested for full cross-product validation."
-  - pattern: "Sugya Weave (Editorial Synthesis)"
-    how: "Sugya Weave synthesizes the categorized findings from Rashomon Gate into a coherent position that acknowledges where frames agree and disagree."
-  - pattern: "Commander's Intent Envelope"
-    how: "Each analytical frame definition acts as a Commander's Intent Envelope for that instance, defining perspective constraints while leaving method autonomous."
-dependencies: {}
----
-
-## Rashomon Gate
-
-`Status: Working` · **Source:** Kurosawa's *Rashomon* (1950), epistemological frame analysis, Expedition 6. **Scale:** score-level. **Iteration:** 4. **Force:** Structured Disagreement.
-
-### Core Dynamic
-
-Every fan-out instance gets the SAME evidence but analyzes from a DIFFERENT analytical frame. Contradictions are not failures — they are data. The synthesis categorizes findings by agreement level: UNANIMOUS (high confidence), MAJORITY, SPLIT (genuine ambiguity), UNIQUE (deep insight or frame artifact). The PATTERN of agreement across frames reveals more than any single analysis.
-
-Different from Source Triangulation (which divides sources) and plain fan-out (which divides work). The cadenza mechanism (see Glossary) maps 1:1 to instances — each instance receives a different frame file defining its analytical perspective.
-
-### When to Use / When NOT to Use
-
-Use for problems where the right analytical frame is unknown, security audits (attacker/defender/compliance), code review (correctness/maintainability/performance), any task where the risk is "right answer from the wrong frame." Not when frames are so similar they produce trivially similar outputs, evidence is unambiguous, or the synthesis agent can't distinguish genuine disagreement from different vocabulary.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: evidence
-    prompt: "Assemble the artifact all analysts will examine."
-  - name: analyze
-    instances: 4
-    cadenza:
-      - "frame-security.md"
-      - "frame-performance.md"
-      - "frame-maintainability.md"
-      - "frame-correctness.md"
-    prompt: "Analyze the evidence through your assigned frame. Write analysis-{{ instance_id }}.md."
-    capture_files: ["evidence/**"]
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/analysis-{{ instance_id }}.md"
-  - name: triangulate
-    prompt: >
-      Read all analyses. For EACH finding across all frames, categorize:
-      UNANIMOUS (all frames agree), MAJORITY (most agree), SPLIT (even division), UNIQUE (one frame only).
-      Write triangulation.yaml: {findings: [{finding, category, frames_agreeing, detail}], summary_counts: {unanimous: N, majority: N, split: N, unique: N}}.
-    capture_files: ["analysis-*.md"]
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; t=yaml.safe_load(open('{{ workspace }}/triangulation.yaml')); assert len(t.get('findings',[])) > 0, 'No findings categorized'\""
-```
-
-### Failure Mode
-
-Frames too similar produce trivially UNANIMOUS results — the gate adds cost without insight. Frames too dissimilar produce all UNIQUE results — no agreement signal to act on. The optimal frame set produces a mix of categories. If the validation only checks for keyword presence (UNANIMOUS/SPLIT), an agent can write the keywords without doing the categorization. The `command_succeeds` validation checking finding count prevents this.
-
-### Composes With
-
-Source Triangulation (Rashomon for frames, triangulation for sources), Sugya Weave (weave the triangulated findings into a position), Commander's Intent Envelope (frame IS the intent for each instance)
-
----
-name: "Graceful Retreat"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Partial Failure"
-  - "Finite Resources"
-generators:
-  - "Exploit Failure as Signal"
-problem: "Long-running work risks total failure on hard deadlines unless tiers of acceptable output are planned in advance."
-signals:
-  - "work has hard time deadlines where partial output has value"
-  - "downstream pipeline stages can adapt to variable completeness"
-  - "attempting full completion might waste resources or miss deadlines"
-stages:
-  - name: execute
+    purpose: "Emit conditions.yaml with per-condition digests."
+  - name: "select"
     sheets: 1
-    instrument_guidance: "score-author's choice — any instrument capable of the actual work (code analysis, content generation, research, etc.); instrument selection determines speed and depth of Tier 1 attempt; weaker instruments may force faster fallback to Tier 2/3"
-    fallback_friendly: true
-    purpose: "Attempt Tier 1 (full output), fall back to Tier 2 (core sections) or Tier 3 (summary) if needed. Produce completion-status.yaml recording which tier was achieved."
-    artifacts: ["completion-status.yaml", "analysis.md"]
-  - name: verify-tier
-    sheets: 1
-    instrument_guidance: "cli — lightweight validation of tier claims; verifies completion-status.yaml and asserts that claimed tier's artifacts exist with expected content"
-    fallback_friendly: true
-    purpose: "Independently verify that claimed tier achievement matches the artifact contents; check that core sections exist if Tier 2+ claimed."
-    artifacts: []
-composes_with:
-  - pattern: "Andon Cord"
-    how: "When Graceful Retreat selects a lower tier, Andon Cord provides detailed diagnostics of what failed in the higher tier for process improvement."
-  - pattern: "Dead Letter Quarantine"
-    how: "Tier 3 summary-only outputs are routed to Dead Letter Quarantine for enhanced reprocessing with additional resources or different instruments."
-  - pattern: "Cathedral Construction"
-    how: "Graceful Retreat completes one iteration within time constraints; Cathedral Construction continues work across iterations without losing prior partial progress."
-dependencies: {}
----
-
-`Status: Working` · **Source:** Military phased withdrawal, Netflix degradation, Expedition 5. **Scale:** score-level. **Iteration:** 4. **Force:** Graceful Failure.
-
-### Core Dynamic
-
-Defines TIERS OF COMPLETENESS upfront. Tier 1: full output, all sections. Tier 2: core sections only. Tier 3: summary-only with pointers to what couldn't be completed. Each tier has its own validation criteria. If Tier 1 fails, the agent falls back to Tier 2 rather than failing entirely. The retreat is PLANNED — tiers defined in the prompt, not discovered during failure.
-
-**Enforcement note:** Tier achievement is self-reported by the agent. For structural enforcement, a downstream CLI validation sheet should independently verify which tier's criteria are met, rather than trusting the agent's `tier_achieved` claim.
-
-### When to Use / When NOT to Use
-
-Use for long-running sheets where partial output has value, hard deadlines where "something by Tuesday" beats "perfection by Thursday," or pipeline stages where downstream can operate on partial input. Not when partial output is dangerous (security audits, financial calculations) or downstream can't distinguish "complete but simple" from "incomplete due to retreat."
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: execute
-    prompt: |
-      TIER 1 (attempt first): Full analysis with all 5 sections (overview, architecture, security, performance, recommendations).
-      TIER 2 (if Tier 1 fails): 3 core sections (overview, architecture, recommendations).
-      TIER 3 (if Tier 2 fails): Executive summary with top-3 issues only.
-
-      Write completion-status.yaml: {tier_achieved: 1|2|3, sections_completed: [], sections_skipped: [], reason}.
-      Write the analysis to analysis.md.
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/completion-status.yaml"
-      - type: file_exists
-        path: "{{ workspace }}/analysis.md"
-  - name: verify-tier
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; s=yaml.safe_load(open('{{ workspace }}/completion-status.yaml')); tier=s['tier_achieved']; content=open('{{ workspace }}/analysis.md').read(); checks={'overview' in content.lower(), 'architecture' in content.lower()}; assert all(checks), f'Tier {tier} claimed but missing core sections'\""
-```
-
-### Failure Mode
-
-Agent always retreats to Tier 3 because it's easiest — the retreat becomes the default. Validate that Tier 1 was genuinely attempted (check for partial Tier 1 artifacts). If downstream stages can't adapt to different tiers, the retreat produces useless partial output — ensure downstream reads `completion-status.yaml` and adjusts expectations.
-
-### Composes With
-
-Andon Cord (retreat triggers diagnostic), Dead Letter Quarantine (Tier 3 outputs enter quarantine for enhanced reprocessing), Cathedral Construction (retreat within a single iteration, continue next)
-
----
-name: "Source Triangulation"
-scale: score-level
-type: orchestration-pattern
-status: working
-proof_score: "source-triangulation.yaml"
-forces:
-  - "Information Asymmetry"
-  - "Structured Disagreement"
-generators:
-  - "Verify through Diverse Observers"
-  - "Frame Multiplication"
-problem: "Single-source analysis cannot detect contradictions between what code does, documentation says, and tests prove."
-signals:
-  - "technical claims need independent verification"
-  - "multiple source types exist (code, docs, tests, benchmarks)"
-  - "single perspective might miss contradictions"
-  - "need to categorize claims as corroborated vs uncorroborated"
-stages:
-  - name: extract
-    sheets: 1
-    instrument_guidance: "haiku or similar cheap instrument — claim extraction is straightforward identification work, doesn't require deep reasoning"
-    fallback_friendly: true
-    purpose: "Extract and structure claims that need verification, defining verification criteria for each."
-    artifacts: ["01-claims.md"]
-  - name: investigate
-    sheets: "fan_out(3)"
-    instrument_guidance: "sonnet or similar mid-tier instrument — each voice needs code/doc/test reading and analysis capability to find supporting or contradicting evidence"
+    instrument_guidance: "instrument: cli — TOTAL lookup with refusal on unknown vectors"
     fallback_friendly: false
-    purpose: "Analyze from assigned source (code/docs/tests) to find evidence supporting or contradicting each claim."
-    artifacts: ["02-code-findings.md", "02-docs-findings.md", "02-test-findings.md"]
-  - name: triangulate
+    purpose: "Emit vintage-manifest.yaml binding overlay ids to the condition digests that selected them."
+  - name: "execute"
     sheets: 1
-    instrument_guidance: "opus or sonnet — deep cross-referencing synthesis requires strong reasoning to categorize claims across all source evidence"
+    instrument_guidance: "any — receives base spec plus the manifest by required cadenza"
+    fallback_friendly: true
+    purpose: "Run under base+overlay; mid-run re-tuning is a different vintage pretending to be the same bottle."
+  - name: "archive-record"
+    sheets: 1
+    instrument_guidance: "instrument: cli — the vintage record is the Write-Time Record's run-level instance"
     fallback_friendly: false
-    purpose: "Cross-reference all investigation results to categorize each claim as CORROBORATED, UNCORROBORATED, or CONTRADICTED."
-    artifacts: ["03-triangulation.md"]
+    purpose: "Archive conditions + digests + overlay ids as this run's vintage record."
 dependencies:
-  investigate: [extract]
-  triangulate: [investigate]
-fan_out:
-  investigate: 3
+  select: ["conditions"]
+  execute: ["select"]
+  archive-record: ["execute"]
 composes_with:
-  - pattern: "Rashomon Gate"
-    how: "Rashomon Gate applies different analytical frames to the same evidence; Source Triangulation divides the evidence itself across structurally different source types."
-  - pattern: "Triage Gate"
-    how: "Triage Gate filters incoming claims before Source Triangulation's multi-source investigation, preventing waste on obviously true or false claims."
-  - pattern: "Sugya Weave (Editorial Synthesis)"
-    how: "Source Triangulation's three investigation voices (code, docs, tests) feed into Sugya Weave (Editorial Synthesis)'s dialectical synthesis when claims require interpretive layering beyond fact-checking."
----
-
-## Source Triangulation
-
-`Status: Working` · **Source:** Journalism, intelligence analysis. **Forces:** Information Asymmetry.
-
-### Core Dynamic
-
-Multiple agents analyze the SAME problem from DIFFERENT sources. The synthesis identifies: corroborated (multiple sources agree), uncorroborated (single source), and contradicted (sources disagree). Different from Rashomon Gate (which uses different frames on same evidence). Source Triangulation divides the evidence itself.
-
-### When to Use / When NOT to Use
-
-Use when claims need independent verification and multiple source types exist. Not when a single authoritative source suffices.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: investigate
-    instances: 3
-    cadenza:
-      - "source-code.md"
-      - "source-docs.md"
-      - "source-tests.md"
-    prompt: "Analyze from your assigned source. Write findings-{{ instance_id }}.md."
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/findings-{{ instance_id }}.md"
-  - name: triangulate
-    prompt: >
-      Read all findings. Categorize each claim: CORROBORATED (2+ sources),
-      UNCORROBORATED (1 source), CONTRADICTED (sources disagree).
-    capture_files: ["findings-*.md"]
-```
-
-### Failure Mode
-
-Sources too similar produce trivially corroborated results. Ensure sources are structurally independent.
-
-### Composes With
-
-Rashomon Gate, Triage Gate, Sugya Weave (Editorial Synthesis)
-
----
-name: "Talmudic Page"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Information Asymmetry"
-generators:
-  - "Accumulate Knowledge"
-problem: "Multiple perspectives on an artifact produce disconnected analyses when commentaries reference only the source, not each other."
-signals:
-  - "primary artifact needs multi-layer annotation"
-  - "analysis requires multiple perspectives anchored to one text"
-  - "commentaries should reference both source and each other"
-  - "single-perspective analysis is insufficient"
-fan_out:
-  commentary: 3
-stages:
-  - name: central-text
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs reasoning capability to produce substantive core analysis that anchors all commentary"
-    fallback_friendly: false
-    purpose: "Write the core analysis that serves as the central reference text."
-    artifacts: ["core-analysis.md"]
-  - name: commentary
-    sheets: "fan_out(3)"
-    instrument_guidance: "score-author's choice — each instance provides a perspective on the central text; cheaper instruments acceptable if commentary task is straightforward"
-    fallback_friendly: true
-    purpose: "Read the core analysis and write commentary from a specific perspective."
-    artifacts: ["commentary-1.md", "commentary-2.md", "commentary-3.md"]
-  - name: interlink
-    sheets: 1
-    instrument_guidance: "score-author's choice — must track and cross-reference multiple sources (core + all commentaries); sonnet or opus recommended for synthesis work"
-    fallback_friendly: false
-    purpose: "Synthesize the core analysis and all commentaries, highlighting cross-references and inter-commentary connections."
-    artifacts: ["synthesis.md"]
-composes_with:
-  - pattern: "Sugya Weave (Editorial Synthesis)"
-    how: "Sugya Weave extends Talmudic Page's multi-layer commentary structure with editorial synthesis that extracts themes across all layers."
-  - pattern: "Fan-out + Synthesis"
-    how: "Talmudic Page is Fan-out + Synthesis with the constraint that all fan-out instances must reference a shared central text, creating hub-and-spoke commentary structure."
-dependencies: {}
----
-
-## Talmudic Page
-
-`Status: Working` · **Source:** Talmudic commentary layout (Mishnah + Gemara + commentaries). **Forces:** Information Asymmetry.
-
-### Core Dynamic
-
-A central text surrounded by commentary layers at different levels of abstraction. The central text anchors all commentary; each layer responds to the text AND to other layers. Produces interlinked multi-perspective analysis without losing the central thread.
-
-### When to Use / When NOT to Use
-
-Use when a primary artifact needs multi-layer annotation. Not when commentaries are independent (use plain Fan-out).
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: central-text
-    prompt: "Write the core analysis."
-  - name: commentary
-    instances: 3
-    prompt: "Read the core analysis. Write commentary from your perspective."
-    capture_files: ["core-analysis.md"]
-  - name: interlink
-    prompt: "Read core + all commentaries. Write cross-referenced synthesis."
-    capture_files: ["core-analysis.md", "commentary-*.md"]
-```
-
-### Failure Mode
-
-Commentaries ignore each other and respond only to the central text. The interlink stage must reference cross-commentary connections.
-
-### Composes With
-
-Sugya Weave, Fan-out + Synthesis
-
----
-name: "Forward Observer"
-scale: instrument-strategy
-type: orchestration-pattern
-status: working
-forces:
-  - "Finite Resources"
-  - "Information Asymmetry"
-generators:
-  - "Match Instrument to Grain"
-problem: "Expensive instruments waste resources reading raw input; cheap summarization can preserve actionable information."
-signals:
-  - "input exceeds available context window"
-  - "expensive instrument required for main task"
-  - "token costs dominate total cost"
-  - "most input is redundant or low-value"
-stages:
-  - name: observe
-    sheets: 1
-    instrument_guidance: "haiku — fast, cheap observation; sufficient for compression and extraction of key items"
-    fallback_friendly: true
-    purpose: "Read large input and extract key findings and actionable items into observer-brief.md."
-    artifacts: ["observer-brief.md"]
-  - name: operate
-    sheets: 1
-    instrument_guidance: "opus — full reasoning capability required for detailed analysis on compressed input"
-    fallback_friendly: false
-    purpose: "Execute main analysis and detailed work based on the observer-brief.md summary."
-    artifacts: []
-composes_with:
-  - pattern: "Relay Zone"
-    how: "Forward Observer produces a formatted brief that Relay Zone can reliably relay between stages."
-  - pattern: "Screening Cascade"
-    how: "Screening Cascade filters volume before Forward Observer compresses the remainder for expensive instruments."
-  - pattern: "Immune Cascade"
-    how: "Immune Cascade escalates difficult items to expensive instruments; Forward Observer compresses large items for those same instruments."
-dependencies: {}
----
-
-## Forward Observer
-
-`Status: Working` · **Source:** Military forward observation. **Forces:** Finite Resources + Information Asymmetry.
-
-### Core Dynamic
-
-A cheap, fast observer (instrument: haiku or sonnet) reads large input and produces a compressed brief for the expensive operator (instrument: opus). Reduces context window pressure and cost. The observer cost must save more tokens downstream than it consumes.
-
-### When to Use / When NOT to Use
-
-Use when input is too large for the main instrument or when cheap summarization preserves actionable information. Not when all information is critical.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: observe
-    instrument: haiku
-    prompt: "Read the full input. Write observer-brief.md: key findings, actionable items only."
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/observer-brief.md"
-  - name: operate
-    instrument: opus
-    prompt: "Read observer-brief.md. Execute the detailed analysis."
-    capture_files: ["observer-brief.md"]
-```
-
-### Failure Mode
-
-Observer discards critical information. Validate by checking brief covers all major topics from the input.
-
-### Composes With
-
-Relay Zone, Screening Cascade, Immune Cascade
-
----
-name: "Closed-Loop Call"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Producer-Consumer Mismatch"
-  - "Partial Failure"
-generators:
-  - "Contract at Interfaces"
-  - "Exploit Failure as Signal"
-problem: "Semantic drift across pipeline stages when consumers misunderstand producer outputs."
-signals:
-  - "handoff fidelity is critical"
-  - "semantic drift is a real risk"
-  - "stages have non-obvious dependencies"
-  - "previous stage outputs are ambiguous"
-stages:
-  - name: produce
-    sheets: 1
-    instrument_guidance: "score-author's choice — any instrument capable of writing structured output with key decisions listed"
-    fallback_friendly: true
-    purpose: "Write output with a manifest listing key decisions."
-    artifacts: ["manifest.yaml"]
-  - name: consume
-    sheets: 1
-    instrument_guidance: "score-author's choice — instrument must be capable of reading and comprehending the produce output"
-    fallback_friendly: true
-    purpose: "Read output and write a readback confirming comprehension of each decision."
-    artifacts: ["readback.yaml"]
-  - name: verify
-    sheets: 1
-    instrument_guidance: "cli — Python validation script comparing manifest.yaml and readback.yaml for structural alignment"
-    fallback_friendly: false
-    purpose: "Validate that the readback matches the manifest structure, catching semantic drift."
-    artifacts: []
-composes_with:
-  - pattern: "Prefabrication"
-    how: "Prefabrication defines strict output contracts that Closed-Loop Call verifies are correctly understood."
-  - pattern: "Relay Zone"
-    how: "Relay Zone compresses accumulated outputs between stages; Closed-Loop Call verifies the compressed handoff preserved semantic meaning."
-  - pattern: "Succession Pipeline"
-    how: "Succession Pipeline chains execution stages; Closed-Loop Call ensures each handoff maintains semantic fidelity."
-dependencies: {}
----
-
-## Closed-Loop Call
-
-`Status: Working` · **Source:** Aviation CRM callout-response protocol. **Forces:** Producer-Consumer Mismatch + Partial Failure.
-
-### Core Dynamic
-
-Explicit handoff verification between stages. Stage A produces output. Stage B reads it and writes back a confirmation of what it understood. A CLI validation compares the two. Prevents semantic drift across pipeline stages.
-
-### When to Use / When NOT to Use
-
-Use when handoff fidelity is critical and semantic drift is a real risk. Not when stages are trivially compatible.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: produce
-    prompt: "Write output with manifest.yaml listing key decisions."
-  - name: consume
-    prompt: "Read output. Write readback.yaml confirming your understanding of each decision."
-    capture_files: ["manifest.yaml", "output/**"]
-  - name: verify
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; m=yaml.safe_load(open('{{ workspace }}/manifest.yaml')); r=yaml.safe_load(open('{{ workspace }}/readback.yaml')); assert set(m.keys())==set(r.keys()), f'Key mismatch: {set(m.keys())-set(r.keys())}'\""
-```
-
-### Failure Mode
-
-Readback is verbatim copy, not comprehension check. The validation should check structural understanding, not string matching.
-
-### Composes With
-
-Relay Zone, Prefabrication, Succession Pipeline
-
----
-name: "Sugya Weave (Editorial Synthesis)"
-scale: within-stage
-type: orchestration-pattern
-status: working
-forces:
-  - "Information Asymmetry"
-  - "Convergence Imperative"
-generators: []
-problem: "Diverse inputs need synthesis into an authoritative position with argued support, not neutral aggregation."
-signals:
-  - "multiple perspectives exist but need editorial judgment"
-  - "summary isn't sufficient — need a supported position"
-  - "inputs are diverse and require interpretation"
-  - "neutrality would hide necessary judgment calls"
-stages:
-  - name: weave
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning for position-taking and argument construction; sonnet or opus recommended for editorial depth"
-    fallback_friendly: false
-    purpose: "Read diverse inputs, take an argued position, and produce editorial synthesis with supporting evidence and acknowledged counterarguments."
-    artifacts: ["editorial-synthesis.md"]
-composes_with:
-  - pattern: "Fan-out + Synthesis"
-    how: "Fan-out produces diverse inputs; Sugya Weave synthesizes them with an editorial position rather than neutral aggregation."
-  - pattern: "Source Triangulation"
-    how: "Source Triangulation provides multiple perspectives; Sugya Weave adjudicates between them with an argued position on which is most credible."
-  - pattern: "Rashomon Gate"
-    how: "Rashomon Gate produces multiple interpretations; Sugya Weave takes a supported position on which interpretation best fits the evidence."
-dependencies: {}
----
-
-## Sugya Weave (Editorial Synthesis)
-
-`Status: Working` · **Source:** Talmudic sugya structure. **Forces:** Information Asymmetry + Convergence Imperative.
-
-### Core Dynamic
-
-Not just synthesis — editorial synthesis. The weaver takes a POSITION on the inputs, arguing for one interpretation while acknowledging alternatives. Produces an opinionated conclusion, not a summary. Requires structured validation that the position is supported.
-
-### When to Use / When NOT to Use
-
-Use when diverse inputs need an authoritative position, not just aggregation. Not when neutrality is required.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: weave
-    prompt: >
-      Read all inputs. Take a position. Write editorial-synthesis.md with:
-      POSITION, SUPPORTING EVIDENCE, COUNTERARGUMENTS, CONCLUSION.
-    capture_files: ["input-*.md"]
-    validations:
-      - type: content_contains
-        content: "POSITION:"
-      - type: content_contains
-        content: "COUNTERARGUMENTS:"
-```
-
-### Failure Mode
-
-Position is unsupported assertion. Validate that supporting evidence references specific inputs.
-
-### Composes With
-
-Fan-out + Synthesis, Source Triangulation, Rashomon Gate
-
----
-name: "Barn Raising"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Producer-Consumer Mismatch"
-  - "Finite Resources"
-generators:
-  - "Contract at Interfaces"
-problem: "Parallel work streams produce inconsistent structure and style when each agent makes independent convention choices."
-signals:
-  - "parallel agents will work on similar types of artifacts"
-  - "consistency in naming, structure, or style matters for integration"
-  - "each agent might make reasonable but incompatible choices"
-  - "prefabrication contracts aren't enough — need broader standards"
-fan_out:
-  build: 6
-config_features:
-  - "fan_out"
-  - "capture_files"
-stages:
-  - name: conventions
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to anticipate integration needs and write comprehensive but not overly rigid conventions; sonnet or opus recommended"
-    fallback_friendly: true
-    purpose: "Write a conventions document defining naming, structure, and stylistic standards for parallel work streams."
-    artifacts: ["conventions.md"]
-  - name: build
-    sheets: "fan_out(6)"
-    instrument_guidance: "score-author's choice — depends on task complexity; instrument must be capable of the actual work being coordinated"
-    fallback_friendly: true
-    purpose: "Build assigned component following the shared conventions."
-    artifacts: []
-dependencies:
-  build: ["conventions"]
-composes_with:
-  - pattern: "Prefabrication"
-    how: "Prefabrication defines strict interface contracts (input/output schemas), while Barn Raising establishes broader conventions (naming, style, structure) that complement those contracts."
-  - pattern: "Mission Command"
-    how: "Mission Command provides the intent envelope defining what to achieve, while Barn Raising provides the implementation conventions defining how to structure the work."
-  - pattern: "Lines of Effort"
-    how: "Lines of Effort separates parallel streams of work; Barn Raising ensures those streams remain consistent through shared conventions."
----
-
-## Barn Raising
-
-`Status: Working` · **Source:** Community barn raising (Amish). **Forces:** Producer-Consumer Mismatch + Finite Resources.
-
-### Core Dynamic
-
-Shared conventions established before parallel work. A conventions document defines naming, structure, interfaces. All parallel tracks read it. Different from Prefabrication (which defines interfaces). Barn Raising defines conventions — broader scope, softer constraints.
-
-### When to Use / When NOT to Use
-
-Use when parallel agents need consistency beyond interface contracts. Not when a single agent does all work.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: conventions
-    prompt: "Write conventions.md: naming rules, file structure, code style."
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/conventions.md"
-  - name: build
-    instances: 6
-    prompt: "Read conventions.md. Build component {{ instance_id }}."
-    capture_files: ["conventions.md"]
-```
-
-### Failure Mode
-
-Conventions too vague to enforce consistency. Too rigid to allow agent judgment. Strike the balance based on integration requirements.
-
-### Composes With
-
-Prefabrication, Mission Command, Lines of Effort
-
----
-name: "Nurse Log"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Finite Resources"
-generators: []
-problem: "Downstream stages waste resources redoing common preparation work because no shared substrate exists."
-signals:
-  - "multiple stages need the same research or data collection"
-  - "agents are duplicating preparation work"
-  - "downstream work is blocked waiting for common prerequisites"
-config_features:
-  - "fan_out"
-fan_out:
-  work: 4
-stages:
-  - name: prepare-substrate
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs capability for thorough research, data collection, and organization; sonnet or opus recommended because substrate quality is load-bearing for all downstream instances"
-    fallback_friendly: false
-    purpose: "Research the domain, collect reference material, and organize it into shared substrate."
-    artifacts: ["substrate/"]
-  - name: work
-    sheets: "fan_out(4)"
-    instrument_guidance: "score-author's choice — depends on component-building task complexity; substrate reading requires minimal capability, but actual component construction may require more reasoning"
-    fallback_friendly: true
-    purpose: "Build component using the prepared substrate."
-    artifacts: []
-composes_with:
-  - pattern: "Fermentation Relay"
-    how: "Fermentation Relay can escalate the substrate preparation stage if initial research proves insufficient for downstream work."
-  - pattern: "Fan-out + Synthesis"
-    how: "Nurse Log's work stage uses fan-out to build components in parallel; Fan-out + Synthesis adds a synthesis stage to combine those parallel outputs."
-dependencies: {}
----
-
-## Nurse Log
-
-`Status: Working` · **Source:** Forest ecology (nurse logs). **Forces:** Finite Resources.
-
-### Core Dynamic
-
-A preparation stage creates general-purpose substrate (research, data collection, organization) that makes downstream stages more productive. Different from Reconnaissance Pull (which discovers the approach). Nurse Log prepares the ground regardless of approach.
-
-### When to Use / When NOT to Use
-
-Use when downstream stages share common preparation needs. Not when preparation is stage-specific.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: prepare-substrate
-    prompt: "Research the domain. Collect reference material. Organize into substrate/."
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/substrate/"
-  - name: work
-    instances: 4
-    prompt: "Read substrate/. Build component {{ instance_id }}."
-    capture_files: ["substrate/**"]
-```
-
-### Failure Mode
-
-Substrate too generic to help. Make preparation specific to the downstream work, not a generic research dump.
-
-### Composes With
-
-Fermentation Relay, Fan-out + Synthesis
-
----
-
-## Concert-Level Patterns (v4)
-
----
-name: "Lines of Effort"
-scale: concert-level
-type: orchestration-pattern
-status: approximation
-forces:
-  - "Information Asymmetry"
-  - "Finite Resources"
-generators: []
-problem: "Parallel campaign workstreams drift apart without convergence mechanisms connecting distinct efforts toward a unified end state."
-signals:
-  - "campaign has distinct workstreams with different objectives"
-  - "parallel efforts must converge toward a shared end state"
-  - "workstreams need autonomy but unified direction"
-  - "coordination should happen through shared state, not message passing"
-approximation_note: "The YAML demonstrates a single-score approximation using fan-out sheets for parallel lines. True Lines of Effort requires concert-level orchestration where each line is its own score with independent instruments, success criteria, and lifecycle, coordinated through shared workspace state."
-config_features:
-  - fan_out
-fan_out:
-  line-work: 3
-stages:
-  - name: define-lines
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs strong reasoning to define distinct objectives and measurable convergence criteria for each line"
-    fallback_friendly: false
-    purpose: "Define lines of effort with objectives and convergence criteria."
-    artifacts: ["lines-definition.md"]
-  - name: line-work
-    sheets: "fan_out(3)"
-    instrument_guidance: "score-author's choice — each line may need different capability depending on its objective; instrument should match the line's task complexity"
-    fallback_friendly: true
-    purpose: "Execute each line of effort per its defined objectives, working independently within shared workspace."
-    artifacts: []
-  - name: convergence-check
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs strong synthesis capability to assess convergence across all lines toward unified end state"
-    fallback_friendly: false
-    purpose: "Read all line outputs and assess convergence toward the unified end state."
-    artifacts: []
-composes_with:
+  - pattern: "Effectivity Blocks"
+    how: "the vintage manifest is a run-level effectivity block"
+  - pattern: "The Write-Time Record"
+    how: "the vintage record is its archival instance"
   - pattern: "Season Bible"
-    how: "Season Bible maintains the mutable reference document that tracks evolving state across lines, ensuring continuity as each line progresses."
-  - pattern: "After-Action Review"
-    how: "After-Action Review evaluates each line's execution against its objectives, feeding lessons into subsequent convergence checks."
-  - pattern: "Barn Raising"
-    how: "Barn Raising establishes shared conventions across all lines before parallel execution begins, preventing convention drift between independent workstreams."
-dependencies: {}
+    how: "contrast — mutable continuity within a campaign vs immutable condition-binding per run"
 ---
+```
 
-## Lines of Effort
-
-`Status: Working (single-score approximation)` · **Source:** Military operational design (JP 5-0). **Forces:** Information Asymmetry + Finite Resources.
+**Source:** Expedition 2; survived Review 3's cut motion 2–1, with the merge critique answered structurally.
 
 ### Core Dynamic
 
-Sustained parallel campaigns with different objectives converging toward a unified end state. Each line has its own scores, instruments, and success criteria. Coordination through shared workspace state, not message passing. Requires concert-level orchestration with multiple scores.
-
-### When to Use / When NOT to Use
-
-Use for large campaigns with distinct workstreams that must converge. Not when workstreams are independent or campaign is short.
+The mature grower's discipline is refusing to write a new score every year. The canonical cycle is stable knowledge; what varies is *which pre-tuned parameter set manifests*, selected by a measurement stage at the top of the run — and that selection is a **lookup**, not judgment. Three review-driven corrections are now constitutive. **Totality with refusal (Reviews 1 and 2):** the condition-map is total over its declared axes; an unknown condition vector exits non-zero — no defaults, no nearest-neighbor guessing. **Manifest as data (Review 2):** runtime-measured conditions cannot re-route already-resolved spec tags, so the manifest reaches consumers as a **required cadenza** — data the sheets read — not as dynamic spec routing. **Pin what is pinnable (Review 1):** the overlay files are authored artifacts, so they are pinned with literal `file_sha256` digests known at authorship; the manifest additionally records the condition digests that did the selecting, so any result's recipe is reproducible months later. The overlay is frozen for the run's duration: mid-run re-tuning is not adaptation, it is a different vintage pretending to be the same bottle.
 
 ### Marianne Score Structure
 
 ```yaml
-# Single-score approximation — true Lines of Effort requires a concert
-sheets:
-  - name: define-lines
-    prompt: "Define 3 lines of effort with objectives and convergence criteria."
-  - name: line-work
-    instances: 3
-    prompt: "Execute line {{ instance_id }} per the defined objectives."
-    capture_files: ["lines-definition.md"]
-  - name: convergence-check
-    prompt: "Read all line outputs. Assess convergence toward unified end state."
-    capture_files: ["line-*/**"]
+movements:
+  1: { name: conditions, instrument: cli, instrument_fallbacks: [] }
+  2: { name: select, instrument: cli, instrument_fallbacks: [] }
+  3: { name: execute }
+  4: { name: archive-record, instrument: cli, instrument_fallbacks: [] }
+
+sheet:
+  size: 1
+  total_items: 4
+  dependencies: { 2: [1], 3: [2], 4: [3] }
+  cadenzas:
+    3:
+      - file: "{{ workspace }}/vintage-manifest.yaml"
+        as: context
+        required: true
+  per_sheet_fallbacks:
+    1: []
+    2: []
+    4: []
+
+prompt:
+  template: |
+    {% if stage == 1 %}
+    bash "{score_dir}/scripts/conditions.sh" --probe versions,rates,volatility \
+      --emit "{{ workspace }}/conditions.yaml"
+    {% elif stage == 2 %}
+    bash "{score_dir}/scripts/overlay.sh" select --conditions "{{ workspace }}/conditions.yaml" \
+      --map "{score_dir}/condition-map.yaml" --emit "{{ workspace }}/vintage-manifest.yaml"
+    {% elif stage == 3 %}
+    Execute under base spec plus the overlay named in your manifest. Mid-run
+    re-tuning is forbidden — different vintage, same bottle is a lie.
+    {% else %}
+    bash "{score_dir}/scripts/overlay.sh" archive --manifest "{{ workspace }}/vintage-manifest.yaml" \
+      --conditions "{{ workspace }}/conditions.yaml" --out "{{ workspace }}/vintage-record/"
+    {% endif %}
+
+validations:
+  - type: file_sha256
+    path: "{score_dir}/overlays/vendor-v3-drift.yaml"
+    sha256: "b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2"
+    condition: "stage == 2"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/overlay.sh select --conditions {workspace}/conditions.yaml --map {score_dir}/condition-map.yaml --self-test'
+    condition: "stage == 2"
 ```
 
-### Failure Mode
+The self-test's fixture is an unknown condition vector that must be refused (exit non-zero), proving the lookup's totality-by-refusal.
 
-Lines diverge without convergence checks. Regular synchronization points are essential.
+### Example
 
-### Composes With
-
-Season Bible, After-Action Review, Barn Raising
+A quarterly SEC-filing extraction pipeline: one canonical score, four runs a year. The 2026-Q3 weather station reads the filing portal's schema version, the data vendor's API generation, and this quarter's document-volume volatility; the manifest binds the `vendor-v3-drift` overlay with the selecting digests; extraction receives base + overlay. The vintage record answers, months later, *which* recipe produced the Q3 numbers.
 
 ---
-name: "Season Bible"
-scale: concert-level
-type: orchestration-pattern
+
+## The Economic Injury Line
+
+```yaml
+---
+name: "The Economic Injury Line"
+scale: adaptation
 status: working
-forces:
-  - "Producer-Consumer Mismatch"
-generators:
-  - "Contract at Interfaces"
-problem: "Multi-score campaigns lose continuity because agents lack shared memory of prior decisions and evolving constraints."
+forces: ["Finite Resources", "Accumulated Signal"]
+generators: ["Threshold-Triggered Switch"]
+problem: "Defensive recurring work responds to felt damage instead of a threshold computed from unit economics before the season began."
 signals:
-  - "scores make decisions inconsistent with earlier work"
-  - "agents repeat mistakes or ignore prior learnings"
-  - "no central record of evolving state across campaign"
-  - "continuity errors accumulate as work progresses"
+  - "real unit costs on both sides — intervening and damage"
+  - "most intervals honestly deserve NO action"
+  - "a bounded sampling protocol can estimate the pressure cheaply"
 stages:
-  - name: read-bible
+  - name: "verify-threshold"
     sheets: 1
-    instrument_guidance: "score-author's choice — needs reading comprehension to extract relevant constraints from the bible; any capable instrument"
-    fallback_friendly: true
-    purpose: "Read season-bible.md to understand current state and constraints before beginning work."
-    artifacts: []
-  - name: work
-    sheets: 1
-    instrument_guidance: "score-author's choice — instrument depends entirely on the nature of the work being performed; bible reading is context, not the task"
+    instrument_guidance: "instrument: cli — re-derives from the PINNED spec inputs; never re-authors"
     fallback_friendly: false
-    purpose: "Execute the actual work while respecting constraints documented in the bible."
-    artifacts: []
-  - name: update-bible
+    purpose: "Diff the re-derivation against the digest-pinned table authored before the season."
+  - name: "scout"
     sheets: 1
-    instrument_guidance: "score-author's choice — needs to write coherent documentation updates; sonnet or haiku sufficient for most continuity recording"
+    instrument_guidance: "instrument: cli — bounded statistical sampling, seeded"
+    fallback_friendly: false
+    purpose: "Append sampled pressure to the scout ledger."
+  - name: "verdict"
+    sheets: 1
+    instrument_guidance: "instrument: cli — one boolean from arithmetic against the frozen table"
+    fallback_friendly: false
+    purpose: "Emit verdict.json: {not-yet | treat-tier-n, table_digest}."
+  - name: "treat"
+    sheets: 1
+    instrument_guidance: "executor for the authorized tier; skip_when not-yet; broad tier barred while incremental retains efficacy"
     fallback_friendly: true
-    purpose: "Update season-bible.md with new decisions, state changes, and continuity constraints discovered during work."
-    artifacts: ["season-bible.md"]
+    purpose: "Execute exactly the authorized tier."
+dependencies:
+  scout: ["verify-threshold"]
+  verdict: ["verify-threshold", "scout"]
+  treat: ["verdict"]
 composes_with:
-  - pattern: "Lines of Effort"
-    how: "Multiple parallel effort lines all read and update the shared bible, maintaining cross-stream continuity."
-  - pattern: "Relay Zone"
-    how: "Relay Zone compresses accumulated outputs to prevent context overflow; Season Bible preserves canonical state that survives compression, ensuring continuity decisions persist across relayed handoffs."
-  - pattern: "Cathedral Construction"
-    how: "Long-running iterative construction where the bible accumulates architectural decisions and constraints across iterations."
-dependencies: {}
+  - pattern: "Rent-Then-Commit"
+    how: "contrast — known damage model vs unknown horizon; the two adaptation arithmetics"
+  - pattern: "Hutchinson's Warning"
+    how: "contrast — no trend, no EMA: a standing threshold and a one-bit question per sample"
+  - pattern: "Immune Cascade"
+    how: "contrast — tiers chosen by triage judgment vs a line computed from unit economics"
 ---
+```
 
-## Season Bible
-
-`Status: Working` · **Source:** Television production (show bible). **Forces:** Producer-Consumer Mismatch.
+**Source:** Expedition 2 (Stern et al. 1959, EIL = C/(V·I·D·K)); Review 2: "one of the best entries"; the timing critique (Reviews 1 and 2) is fixed by pre-observation custody.
 
 ### Core Dynamic
 
-A mutable reference document that evolves as the campaign progresses. Different from Barn Raising conventions (which are static). The bible records decisions, character evolutions, and continuity constraints. Scores read it before starting and update it after completing.
+Everything turns on *when* the threshold is made. The farmer does not discover the tripwire by watching the crop feel bad — she computes it in February from the price of the grain, the price of the spray, and last season's damage curves, writes it on the shed wall, and spends the whole season doing almost nothing except counting bugs on a sampling plan. The runtime decision is one boolean produced by arithmetic against a number frozen before the season began. **Judgment is pre-paid.** **The February fix (Reviews 1 and 2):** the inputs and the derived table are **authored into the spec corpus before the season** and digest-pinned with literal `file_sha256`; the run's first movement *verifies* the re-derivation matches the pinned table and refuses to run on a mismatch. The line sits one response-lag *below* the injury level — act at the density where acting now prevents arrival, not at "damage is visible" (too late by construction). And the conservation clause is an **executable tier ordering**: the broad-spectrum tier is barred while an efficacy check on the incremental tier passes — you do not destroy the wasps doing free pest control unless the cheap insurance is already lost.
 
-### When to Use / When NOT to Use
-
-Use for multi-score campaigns needing continuity. Not for single-score work.
+The season's default outcome is *visibly skipped sheets*: a below-threshold season treats nothing and still exits green — that negative control is the proof, not a degenerate run.
 
 ### Marianne Score Structure
 
 ```yaml
-sheets:
-  - name: read-bible
-    prompt: "Read season-bible.md. Note current state and constraints."
-    capture_files: ["season-bible.md"]
-  - name: work
-    prompt: "Execute work respecting bible constraints."
-  - name: update-bible
-    prompt: "Update season-bible.md with new decisions and state changes."
-    validations:
-      - type: content_contains
-        path: "{{ workspace }}/season-bible.md"
-        content: "Updated:"
+spec:
+  spec_dir: "{score_dir}/specs"
+
+movements:
+  1: { name: verify-threshold, instrument: cli, instrument_fallbacks: [] }
+  2: { name: scout, instrument: cli, instrument_fallbacks: [] }
+  3: { name: verdict, instrument: cli, instrument_fallbacks: [] }
+  4: { name: treat }
+
+sheet:
+  size: 1
+  total_items: 4
+  dependencies: { 2: [1], 3: [1, 2], 4: [3] }
+  skip_when:
+    4: { command: 'jq -e ".action == \"not-yet\"" {workspace}/verdict.json' }
+  per_sheet_fallbacks:
+    1: []
+    2: []
+    3: []
+
+prompt:
+  variables: { run_seed: 11 }
+  template: |
+    {% if stage == 1 %}
+    bash "{score_dir}/scripts/eil.sh" verify --inputs "{score_dir}/specs/eil-inputs.yaml" \
+      --pinned-table "{score_dir}/specs/eil-table.yaml"
+    {% elif stage == 2 %}
+    bash "{score_dir}/scripts/eil.sh" scout --sample 5pct --seed {{ run_seed }} \
+      --ledger "{{ workspace }}/scout-ledger.jsonl"
+    {% elif stage == 3 %}
+    bash "{score_dir}/scripts/eil.sh" verdict --table "{score_dir}/specs/eil-table.yaml" \
+      --ledger "{{ workspace }}/scout-ledger.jsonl" --emit "{{ workspace }}/verdict.json"
+    {% else %}
+    Execute exactly the tier the verdict authorizes. The broad-spectrum tier is
+    barred while the incremental tier retains efficacy.
+    {% endif %}
+
+validations:
+  - type: file_sha256
+    path: "{score_dir}/specs/eil-table.yaml"
+    sha256: "a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2"
+    condition: "stage == 1"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/eil.sh verify --inputs {score_dir}/specs/eil-inputs.yaml --pinned-table {score_dir}/specs/eil-table.yaml'
+    condition: "stage == 1"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/eil.sh --self-test'
+    condition: "stage == 3"
 ```
 
-### Failure Mode
+The verdict carries the table digest it was computed against — a re-derived threshold mid-run is inadmissible. Fan-out is actively wrong here: the sampling protocol is bounded *statistical* sampling, not an exhaustive partition sweep.
 
-Bible grows stale — scores read it but don't update. Validate update stage actually modifies the bible.
+### Example
 
-### Composes With
-
-Lines of Effort, Relay Zone, Cathedral Construction
+A stale-listing remediation loop: re-scrape cost C = $0.004/listing; listing value V = expected margin; injury I and damage D fitted from last quarter's A/B data; efficacy K = 0.8. The February stage — run once, before the season — computes and pins the line; a weekly scout samples 5% of categories; remediation sheets stay skipped until sampled staleness crosses the lag-adjusted line — and the broad rebuild tier is barred while the incremental tier handles 80% for free.
 
 ---
-name: "Saga Compensation Chain"
-scale: concert-level
-type: orchestration-pattern
-status: aspirational
-blocked_by: "on_failure handlers — Marianne does not yet support on_failure actions in score/concert configuration"
-forces:
-  - "Partial Failure"
-generators: []
-problem: "Partial completion of a multi-score concert leaves inconsistent shared state with no automated path to undo forward steps."
-signals:
-  - "concert scores produce side effects on shared state"
-  - "partial completion is worse than full rollback"
-  - "manual cleanup after failure is expensive and error-prone"
-  - "each score's effects need a documented undo path"
-stages:
-  - name: forward-step
-    sheets: 1
-    instrument_guidance: "score-author's choice — instrument must handle the domain task (migration, transformation, etc.); capability depends on task complexity"
-    fallback_friendly: false
-    purpose: "Execute one forward step of the saga, appending side effects and compensation path to saga-log.yaml."
-    artifacts: ["saga-log.yaml"]
-  - name: compensate
-    sheets: 1
-    instrument_guidance: "score-author's choice — must be capable enough to read the saga log and execute compensations in reverse order; same capability tier as forward steps"
-    fallback_friendly: false
-    purpose: "Read saga-log.yaml and execute compensation actions in reverse order to neutralize forward steps' side effects."
-    artifacts: []
-composes_with:
-  - pattern: "After-Action Review"
-    how: "The saga compensation log feeds After-Action Review with structured records of what succeeded, what failed, and what was compensated."
-dependencies: {}
----
 
-## Saga Compensation Chain
+# Concert-Level Patterns
 
-`Status: Aspirational [on_failure compensation actions]` · **Source:** Garcia-Molina & Salem (1987), distributed transactions, Expedition 4. **Scale:** concert-level. **Iteration:** 4. **Force:** Graceful Failure.
+*Two enter — typed decision force across a campaign, and endings with accounting. Cluster Lead is archived; Put-In awaits a seat-remap primitive.*
 
-### Core Dynamic
-
-Every forward score in a concert is paired with a compensating score. If score Tk fails, compensations run Ck-1, Ck-2, ..., C1 in reverse order — not rollback (commits already happened) but forward-acting undo. The compensation isn't "delete what you made" — it's a score that produces artifacts neutralizing the forward score's effects.
-
-**Implementation status:** Marianne does not yet have `on_failure` actions. The pattern can be approximated today with: (1) each forward score writes to `saga-log.yaml` documenting its side effects and compensation path, (2) on manual detection of failure, the user runs a separate compensation score that reads the saga log and undoes in reverse order.
-
-### When to Use / When NOT to Use
-
-Use for multi-score concerts where each score produces side effects on shared state, when partial completion is worse than full rollback, or when manual cleanup cost exceeds compensation engineering cost. Not when scores are idempotent, when scores don't produce side effects beyond workspace files, or when the concert is short enough for manual recovery.
-
-### Marianne Score Structure
+## The Precedent Bench (Stare Decisis Binding)
 
 ```yaml
-# Forward score — writes to saga log for compensation context
-sheets:
-  - name: forward-step
-    prompt: >
-      Execute the migration step. Append to saga-log.yaml:
-      {step: "schema-migration", artifacts: [...], side_effects: [...], compensation: "revert-schema.yaml"}.
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; log=yaml.safe_load(open('{{ workspace }}/saga-log.yaml')); assert len(log) > 0\""
-
-# Compensation score (run manually or via future on_failure)
-# sheets:
-#   - name: compensate
-#     prompt: "Read saga-log.yaml. For each entry in REVERSE order, execute the compensation."
-#     capture_files: ["saga-log.yaml"]
-```
-
-### Failure Mode
-
-Compensation scores can also fail — producing "compensation failure" on top of the original failure. Keep compensations simple and idempotent. The saga log must be written BEFORE side effects, not after — otherwise a crash between effect and log entry leaves uncompensatable state.
-
-### Composes With
-
-After-Action Review (compensation log feeds AAR), Look-Ahead Window (pre-check compensation score availability)
-
 ---
-name: "Progressive Rollout"
+name: "The Precedent Bench"
 scale: concert-level
-type: orchestration-pattern
 status: working
-forces:
-  - "Progressive Commitment"
-generators:
-  - "Incremental Exposure"
-problem: "Full deployment before validation risks large-scale failure; incremental rollout with monitoring gates progression but requires coordinating batch selection, execution, and go/no-go decisions across phases."
+forces: ["Information Asymmetry", "Convergence Imperative"]
+generators: ["Accumulate Knowledge"]
+problem: "A long campaign re-litigates settled decisions every score, or contradicts them silently — because decisions carry no typed force and no supersession record."
 signals:
-  - "works on 5 doesn't guarantee works on 500"
-  - "need to detect scaling issues before full deployment"
-  - "rollback from 100% deployment is expensive"
-  - "early validation could prevent large-scale failures"
-config_features:
-  - "self_chaining"
-  - "fan_out"
-  - "max_chain_depth"
-  - "inherit_workspace"
-fan_out:
-  execute-batch: 5
+  - "'what have we already decided?' answered by archaeology"
+  - "later scores contradicting earlier load-bearing decisions unknowingly"
+  - "corrections and overrulings indistinguishable in the record"
 stages:
-  - name: select-batch
+  - name: "cite-check"
     sheets: 1
-    instrument_guidance: "score-author's choice — any instrument capable of reading YAML state, computing batch sizes, and updating rollout state; algorithmic task suitable for any tier"
+    instrument_guidance: "instrument: cli — dangling citations rejected before reasoning is paid for"
+    fallback_friendly: false
+    purpose: "Join the motion's citations against the precedent index."
+  - name: "brief"
+    sheets: 1
+    instrument_guidance: "any — argues follow | distinguish | overrule; receives the live index by required cadenza"
     fallback_friendly: true
-    purpose: "Select the next batch based on current rollout phase and update state."
-    artifacts: ["current-batch.yaml", "rollout-state.yaml"]
-  - name: execute-batch
+    purpose: "Argue the motion; overrule requires named factors."
+  - name: "bench"
+    sheets: 1
+    instrument_guidance: "ONE named adjudication authority (strong reasoner); advisory seats are Dropped-Axiom-typed inputs, never undisclosed votes"
+    fallback_friendly: false
+    purpose: "Grant or deny; dicta may be declined without ceremony."
+  - name: "enroll"
+    sheets: 1
+    instrument_guidance: "instrument: cli — ONE serialized writer; append holding + supersession edges atomically"
+    fallback_friendly: false
+    purpose: "The ledger transition: enrolled, or superseded-visibly — never edited."
+  - name: "notify"
+    sheets: 1
+    instrument_guidance: "instrument: cli — supersession flags across the precedent corpus"
+    fallback_friendly: false
+    purpose: "Every consumer of an overruled holding learns it moved."
+dependencies:
+  brief: ["cite-check"]
+  bench: ["brief"]
+  enroll: ["bench"]
+  notify: ["enroll"]
+composes_with:
+  - pattern: "Typed Force"
+    how: "its richest form — binding/persuasive force with visible supersession"
+  - pattern: "The Errata Ledger"
+    how: "contrast — errata correct errors; precedent governs decisions that were right and must yield anyway"
+  - pattern: "Fork-Evident History"
+    how: "enrollment rides the append-only chain"
+---
+```
+
+**Source:** Expedition 6; survived review narrowed to a typed append-only decision registry with one adjudication authority (Reviews 1 and 2).
+
+### Core Dynamic
+
+A long campaign accumulates decisions the way a court accumulates cases. Stare decisis resolves the re-litigation tension by giving decisions **typed force**: a decision *necessary to the outcome* of its score (a holding) binds later scores until explicitly overruled; an incidental decision (dictum) persuades and may be declined without ceremony. A score that wants to contradict a holding files a typed motion — **distinguish** (conditions differ in a load-bearing way) or **overrule** (citing reliance, workability, changed circumstances) — and the bench grants or denies. The signature property: **the overruled precedent stays on the books, visibly superseded.** The Errata Ledger corrects errors; only law governs decisions that were correct when made, remain correct as history, and must yield anyway.
+
+**The narrowing (Reviews 1 and 2):** one named adjudication authority decides — advisory benches may fan out, but their aggregate arrives as a Dropped Axiom-typed input with a declared rule, never as an undisclosed vote. The typing decision (`necessary_to_outcome`) is judgment by the *emitting* score under the Typed Force law's provenance rule — assigned by a named authority at creation, contestable by motion, never silently re-typed by a gate. **Delivery (Review 1):** the live precedent index reaches the *brief* and *bench* sheets by required cadenza keyed to their expanded sheet numbers. **Enrollment:** one serialized CLI writer appends the holding row and its supersession edges atomically; an overrule without a named factor does not enroll. **The registration-time/runtime distinction, stated honestly:** spec-corpus fragments inject as they stood at registration; the cadenza injects the live index at runtime — and a score citing precedent that moved between the two is exactly what the cite-join gate catches.
+
+### Marianne Score Structure
+
+```yaml
+movements:
+  1: { name: cite-check, instrument: cli, instrument_fallbacks: [] }
+  2: { name: brief }
+  3: { name: bench }
+  4: { name: enroll, instrument: cli, instrument_fallbacks: [] }
+  5: { name: notify, instrument: cli, instrument_fallbacks: [] }
+
+sheet:
+  size: 1
+  total_items: 5
+  dependencies: { 2: [1], 3: [2], 4: [3], 5: [4] }
+  cadenzas:
+    2:
+      - file: "{{ workspace }}/precedent/INDEX.md"
+        as: context
+        required: true
+    3:
+      - file: "{{ workspace }}/precedent/INDEX.md"
+        as: context
+        required: true
+  per_sheet_fallbacks:
+    1: []
+    4: []
+    5: []
+
+prompt:
+  template: |
+    {% if stage == 1 %}
+    bash "{score_dir}/scripts/cite-join.sh" --motions "{{ workspace }}/motions/current.json" \
+      --index "{{ workspace }}/precedent/index.jsonl"
+    {% elif stage == 2 %}
+    Argue the motion: follow | distinguish | overrule. Overrule REQUIRES named
+    factors from {reliance, workability, changed-circumstances}. Write
+    {{ workspace }}/brief.md.
+    {% elif stage == 3 %}
+    You are the adjudication authority. Grant or deny. Dicta may be declined
+    without ceremony. Write {{ workspace }}/ruling.md with force and assigned_by.
+    {% elif stage == 4 %}
+    bash "{score_dir}/scripts/enroll.sh" --ruling "{{ workspace }}/ruling.md" \
+      --index "{{ workspace }}/precedent/index.jsonl" --atomic
+    {% else %}
+    bash "{score_dir}/scripts/notify.sh" --supersession-flags "{{ workspace }}/precedent/"
+    {% endif %}
+
+validations:
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/cite-join.sh --motions {workspace}/motions/current.json --index {workspace}/precedent/index.jsonl'
+    condition: "stage == 1"
+  - type: content_contains
+    path: "{workspace}/ruling.md"
+    pattern: "force:"
+    condition: "stage == 3"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/enroll.sh --self-test'
+    condition: "stage == 4"
+```
+
+The enroll self-test: an overrule motion lacking a named factor must refuse to enroll; a dangling-citation fixture must die at movement 1, before any reasoning is paid for.
+
+### Example
+
+A refactoring campaign where early scores decided "no new dependencies," "errors at exit 0 are still failing," "unify, never fork." Typed as holdings, they bind later scores until explicitly overruled; a later score wanting a new dependency distinguishes or moves to overrule; the ledger shows the one overrule superseding its predecessor while both remain readable.
+
+---
+
+## Demobilization Checkout
+
+```yaml
+---
+name: "Demobilization Checkout"
+scale: concert-level
+status: working
+forces: ["Partial Failure", "Finite Resources"]
+generators: ["Exploit Failure as Signal"]
+problem: "Concerts end by stopping being visible, leaving orphaned processes, live leases firing into dead workspaces, and credentials outliving their purpose."
+signals:
+  - "a campaign with physical footprint: daemons, leases, clones, containers, credentials"
+  - "retirement has no owner; archival is the only ending ritual"
+  - "'the run ended' treated as if it meant 'the run failed'"
+stages:
+  - name: "census"
+    sheets: 1
+    instrument_guidance: "instrument: cli — fresh enumeration at demob; the WRITE-TIME ledger is its pre-history"
+    fallback_friendly: false
+    purpose: "Emit census.jsonl of everything with a footprint."
+  - name: "dispositions"
+    sheets: 1
+    instrument_guidance: "any — one disposition row per resource id, in a SEPARATE table"
+    fallback_friendly: true
+    purpose: "archive | release | retain-and-why, per census id."
+  - name: "act"
+    sheets: 1
+    instrument_guidance: "instrument: cli — executes dispositions; Gas-Free discipline where destructive"
+    fallback_friendly: false
+    purpose: "Emit receipts.jsonl; destructive rows run under permits."
+  - name: "liveness-settle"
+    sheets: 1
+    instrument_guidance: "instrument: cli — the settlement probes must return EMPTY"
+    fallback_friendly: false
+    purpose: "Prove the host is clean with the same physical checks that prove a conductor stopped."
+  - name: "seal"
+    sheets: 1
+    instrument_guidance: "instrument: cli — harvest before archive; manifest after"
+    fallback_friendly: false
+    purpose: "After-action material out of the live tree, then archive + terminal manifest."
+dependencies:
+  dispositions: ["census"]
+  act: ["dispositions"]
+  liveness-settle: ["act"]
+  seal: ["liveness-settle"]
+composes_with:
+  - pattern: "The Write-Time Record"
+    how: "its consumption side — the commissioning ledger is the census's pre-history"
+  - pattern: "The Gas-Free Certificate"
+    how: "prerequisite — destructive dispositions run under permits"
+  - pattern: "Saga Compensation Chain"
+    how: "contrast — saga compensates effects; demob releases resources"
+---
+```
+
+**Source:** Expedition 5; survived all three reviews ("survives," "every multi-cloud user has lived the six-weeks-of-console-archaeology failure") with the tables separated and the attachment made real.
+
+### Core Dynamic
+
+The corpus knows how to start things and how to fail things. Demobilization is the third ending: **release with accounting**. Every resource the concert consumed — process, workspace, lease, credential, branch, container — gets a checkout record with a disposition before the workspace archives. Doctrine's two sharpest edges: demobilization planning **begins at incident initiation** (the Write-Time Record's commissioning ledger is the census's pre-history — every provisioning row already carries its `decommission_cmd`), and resources are released **as soon as they are no longer needed**. The failure mode demob prevents is not dramatic; it is sediment: orphaned processes holding ports, unstopped leases firing into dead workspaces, finished campaigns occupying a hundred gigabytes because retirement had no owner. The incident that never demobilizes never actually ends; it just stops being visible. "The run ended" is not "the run failed."
+
+**The tables, separated (Review 1):** `census.jsonl` (what exists — CLI enumeration), `dispositions.jsonl` (what the AI decided, per resource id), `receipts.jsonl` (what the CLI did), settlement results (liveness probes that must return empty). The bijections are exact: every census id has exactly one disposition; every destructive disposition has a permit; every disposition has a receipt or a written reason. **The attachment, made real:** the demob score is chained by `on_success: run_job` from the concert's terminal score, with its mirror on `on_failure` — failure also demobilizes, with evidence preservation taking disposition priority.
+
+### Marianne Score Structure
+
+```yaml
+movements:
+  1: { name: census, instrument: cli, instrument_fallbacks: [] }
+  2: { name: dispositions }
+  3: { name: act, instrument: cli, instrument_fallbacks: [] }
+  4: { name: liveness-settle, instrument: cli, instrument_fallbacks: [] }
+  5: { name: seal, instrument: cli, instrument_fallbacks: [] }
+
+sheet:
+  size: 1
+  total_items: 5
+  dependencies: { 2: [1], 3: [2], 4: [3], 5: [4] }
+  per_sheet_fallbacks:
+    1: []
+    3: []
+    4: []
+    5: []
+
+prompt:
+  template: |
+    {% if stage == 1 %}
+    bash "{score_dir}/scripts/demob.sh" census --processes --leases --workspaces \
+      --credentials --branches --containers --emit "{{ workspace }}/census.jsonl"
+    {% elif stage == 2 %}
+    Write ONE disposition row per census id in {{ workspace }}/dispositions.jsonl:
+    {id, disposition: archive|release|retain, reason}. Census and disposition
+    counts must match EXACTLY — nothing unaccounted.
+    {% elif stage == 3 %}
+    bash "{score_dir}/scripts/demob.sh" act --dispositions "{{ workspace }}/dispositions.jsonl" \
+      --receipts "{{ workspace }}/receipts.jsonl" --permits-required-for destructive
+    {% elif stage == 4 %}
+    bash "{score_dir}/scripts/demob.sh" settle --receipts "{{ workspace }}/receipts.jsonl" \
+      --liveness-must-return-empty
+    {% else %}
+    bash "{score_dir}/scripts/demob.sh" seal --harvest "{{ workspace }}/after-action/" \
+      --archive --emit-manifest
+    {% endif %}
+
+validations:
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/demob.sh settle --receipts {workspace}/receipts.jsonl --liveness-must-return-empty'
+    condition: "stage == 4"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/demob.sh bijection --census {workspace}/census.jsonl --dispositions {workspace}/dispositions.jsonl --receipts {workspace}/receipts.jsonl --exact'
+    condition: "stage == 5"
+```
+
+Census and settle are pure CLI (`pgrep`, `find`, `git`, container CLIs, `sha256sum`) with empty fallback chains — no AI reinterprets a liveness fact.
+
+### Example
+
+A quarter-long model-evaluation campaign ends: its demob score finds two stale evaluation daemons holding GPU memory, three scheduled lease entries pointing at archived workspaces, and one service credential — stops/revokes each with a checkout row, harvests the eval histories into the after-action review, archives, and leaves a terminal manifest proving the host is clean.
+
+---
+# Iteration Patterns
+
+## The Unprimed Falsifier (formerly Test Screening to Picture Lock)
+
+```yaml
+---
+name: "The Unprimed Falsifier"
+scale: iteration
+status: working
+forces: ["Structured Disagreement", "Convergence Imperative"]
+generators: ["Verify through Diverse Observers", "Measure Convergence Character"]
+problem: "Makers cannot perceive their finished artifact — fluency hides the claims it makes — and internal evaluation shares the blind spot."
+signals:
+  - "anything read by humans whose makers are too close to it"
+  - "'we think it's clear' has ever been wrong"
+  - "self-evaluation and structural-equality checks both passing while users misread the thing"
+stages:
+  - name: "assemble"
+    sheets: 1
+    instrument_guidance: "any — builds the current cut from the beat map and drafts"
+    fallback_friendly: true
+    purpose: "Produce the artifact under evaluation."
+  - name: "read-cold"
     sheets: "fan_out(5)"
-    instrument_guidance: "score-author's choice — instrument depends on the actual work being rolled out (refactoring needs strong code reasoning, data migrations may need specific domain knowledge)"
-    fallback_friendly: false
-    purpose: "Process items in the current batch with 5 parallel workers."
-    artifacts: []
-  - name: monitor
-    sheets: 1
-    instrument_guidance: "score-author's choice — any instrument capable of analyzing results, computing error rates, and making threshold-based go/no-go decisions"
+    instrument_guidance: "cheap local tier (ollama) — the audience is many, shallow, and genuinely naive; each receives ONLY the artifact by cadenza"
     fallback_friendly: true
-    purpose: "Compute health metrics and determine whether to proceed to the next phase."
-    artifacts: ["phase-verdict.yaml"]
+    purpose: "Report section-anchored reactions: confusion, dead zones, misreads."
+  - name: "note-code"
+    sheets: 1
+    instrument_guidance: "instrument: cli — codes cards into typed, located evidence"
+    fallback_friendly: false
+    purpose: "Emit evidence.json: per-section density of located reactions."
+  - name: "verdict"
+    sheets: 1
+    instrument_guidance: "strong reasoner — evidence-targeted recut or done; NOT the lock authority"
+    fallback_friendly: false
+    purpose: "Recut ONLY where density crosses threshold; declare done or chain."
+dependencies:
+  read-cold: ["assemble"]
+  note-code: ["read-cold"]
+  verdict: ["note-code"]
 composes_with:
-  - pattern: "Canary Probe"
-    how: "Canary Probe provides the initial safety probe that becomes phase 1 of Progressive Rollout's graduated deployment sequence."
-  - pattern: "Dead Letter Quarantine"
-    how: "Dead Letter Quarantine analyzes failed items from each rollout phase to determine whether failures are systemic or isolated."
-dependencies: {}
+  - pattern: "The Freeze"
+    how: "termination — the loop ends in authority-declared lock, not convergence (the lock half of the old Test Screening lives there)"
+  - pattern: "Rehearsal Spotlight"
+    how: "substitution — external falsifier replaces self-evaluation"
+  - pattern: "The Declared Window"
+    how: "the audience's claims are windowed to what the cut shows them — they are the honest window"
 ---
+```
 
-## Progressive Rollout
-
-`Status: Working` · **Source:** DevOps graduated deployment, feature flags, Expedition 5. **Scale:** concert-level. **Iteration:** 4. **Force:** Progressive Commitment.
+**Source:** Expedition 6, entered the draft as "Test Screening to Picture Lock"; split per Review 2 — the lock half routes to The Freeze, the falsifier stands alone.
 
 ### Core Dynamic
 
-Apply a change in PHASES with increasing scope. Each phase's success GATES the next. Each phase's monitoring INFORMS the next's parameters. Different from Canary Probe (probe-then-full). Progressive Rollout is probe → 10% → 25% → 50% → 100%.
+The people who made the film are constitutionally incapable of seeing it. They know what every shot was *meant* to say; the audience, seeing cold, reports what it *says*. The test screening is **falsification by outsiders**: recruited naive readers receive *only the artifact* — never the makers' intent, never the questions the makers are worried about (that would prime them) — and return reaction cards coded into **typed, located evidence**: where readers were confused, where attention died, what they thought happened. Thumbs-up/down is not a location; "bored somewhere in act two" is. The recut is *targeted*: only where evidence density crosses a threshold — a quiet screening is a verdict too, and recutting everything after every screening is churn with a ritual attached.
 
-**Implementation note:** Marianne's `instances` field is static per score execution. The rollout achieves graduated scaling through the select-batch sheet: each self-chain iteration reads `rollout-state.yaml` to determine which items are in the current batch. The instance count stays fixed (e.g., 5 parallel workers), but the batch selection grows across iterations.
-
-### When to Use / When NOT to Use
-
-Use for large-scale migrations, multi-repository changes, any operation where "works on 5" doesn't guarantee "works on 500." Not when items are not independent or monitoring can't distinguish success from luck.
+**Unprimedness is structural, not asserted (Reviews 1 and 3):** this score authors **no prelude**; each reader sheet's cadenza injects exactly one file — the cut — `required: true`; reader prompts contain no design-document references; and a priming check runs as a command gate: the reader outputs must contain no reference to any intent-document filename (grep over the cards returns empty). Readers tier to cheap local instruments — many, shallow, genuinely naive. Termination is authority-declared lock (The Freeze), with the self-chain bounded by `max_chain_depth` as the perfectionism circuit-breaker — infinite test screening is a known pathology.
 
 ### Marianne Score Structure
 
 ```yaml
-sheets:
-  - name: select-batch
-    prompt: >
-      Read rollout-state.yaml (or initialize if first run).
-      Select the next batch: phase 1 = 3 items, phase 2 = 20, phase 3 = 80, phase 4 = remainder.
-      Write current-batch.yaml and update rollout-state.yaml with phase number and processed items.
-    capture_files: ["rollout-state.yaml"]
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/current-batch.yaml"
-  - name: execute-batch
-    instances: 5
-    prompt: "Read current-batch.yaml. Process items assigned to worker {{ instance_id }}."
-    capture_files: ["current-batch.yaml"]
-  - name: monitor
-    prompt: >
-      Compute health metrics for this phase. Write phase-verdict.yaml:
-      {go: bool, phase: N, confidence, items_processed, items_remaining, error_rate}.
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; v=yaml.safe_load(open('{{ workspace }}/phase-verdict.yaml')); assert v.get('go', False), f'Phase {v.get(\"phase\")} failed: error_rate={v.get(\"error_rate\")}'\""
-on_success:
-  action: self
+concert:
+  enabled: true
+  max_chain_depth: 4               # the perfectionism breaker
   inherit_workspace: true
-  max_chain_depth: 10
-```
-
-### Failure Mode
-
-Early phases pass with small samples but later phases fail at scale — sampling bias. If error rate exceeds threshold at any phase, the rollout pauses (self-chain breaks on failed validation) and Dead Letter Quarantine analyzes failures. `max_chain_depth` prevents infinite rollout if the termination condition (`items_remaining == 0`) isn't reached.
-
-### Composes With
-
-Canary Probe (canary IS phase 1), Dead Letter Quarantine (failed items in each phase), Stratification Gate (N consecutive healthy phases before advancing)
-
----
-name: "Systemic Acquired Resistance"
-scale: concert-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Accumulated Signal"
-generators:
-  - "Threshold-Triggered Switch"
-problem: "Failures encountered in one score don't inform subsequent scores in a concert, causing repeated failures across the campaign."
-signals:
-  - "scores in a concert face similar threats"
-  - "first-encounter failure cost is high"
-  - "failures repeat across scores in a concert"
-  - "no mechanism to share failure recovery"
-config_features:
-  - capture_files
-  - on_success
-  - inherit_workspace
-stages:
-  - name: work
-    sheets: 1
-    instrument_guidance: "score-author's choice — must handle failure recovery and write structured primers; stronger instruments produce more effective countermeasures"
-    fallback_friendly: false
-    purpose: "Execute the primary task while reading relevant defense primers and writing new primers when recovering from failures."
-    artifacts: ["output.md", "priming/*.yaml"]
-composes_with:
-  - pattern: "After-Action Review"
-    how: "Primers are structured AAR output — AAR extracts lessons, SAR broadcasts them as actionable defenses."
-  - pattern: "Back-Slopping (Learning Inheritance)"
-    how: "Back-Slopping (Learning Inheritance) provides the mechanism for culture inheritance; SAR structures that culture as threat-specific primers."
-  - pattern: "Circuit Breaker"
-    how: "Circuit Breaker generates a failure signal; SAR captures that signal as a primer to adjust future behavior."
-dependencies: {}
----
-
-## Systemic Acquired Resistance
-
-`Status: Working` · **Source:** Plant immune priming (SAR/ISR), Expedition 2. **Scale:** concert-level. **Iteration:** 4. **Force:** Accumulated Signal.
-
-### Core Dynamic
-
-When a score recovers from a failure, it broadcasts failure-derived defenses to all subsequent scores via structured `priming/` directory. Primed scores CHANGE BEHAVIOR — adjusting prompts, validation thresholds, or monitoring. The priming is specific: a rate-limit encounter primes for rate-limit handling, not general defensiveness.
-
-**Primer schema:** Each primer file in `priming/` follows: `{threat_type: string, trigger_signature: string, countermeasure: string, confidence: float, timestamp: string}`. Downstream scores read primers matching their threat surface and incorporate countermeasures into their prompts.
-
-### When to Use / When NOT to Use
-
-Use for concert campaigns where scores face related threat landscapes, when failure in one score should make the entire campaign more resilient, or when first-encounter failure cost is high. Not when scores face unrelated threats, the priming signal is too vague, or defense overhead degrades unaffected scores (autoimmune response — primers that are too broad cause unnecessary caution).
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: work
-    prompt: |
-      Before starting, read priming/ for defense primers matching your work type.
-      For each relevant primer, incorporate the countermeasure into your approach.
-
-      Execute the primary task. Write output to output.md.
-
-      If you encounter and recover from a failure, write a primer to priming/:
-      File: priming/{threat_type}.yaml
-      Schema: {threat_type, trigger_signature, countermeasure, confidence, timestamp}.
-    capture_files: ["priming/*.yaml"]
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/output.md"
-```
-
-### Failure Mode
-
-Primers too broad cause autoimmune response — every score wastes tokens on irrelevant defenses. Primers too narrow never match. The `trigger_signature` field is the key: specific enough to match real threats, broad enough to generalize. If primers accumulate without pruning, the priming directory becomes noise. Include a `confidence` field and prune low-confidence primers after N uses without trigger.
-
-### Composes With
-
-After-Action Review (primers are structured AAR output), Back-Slopping (Learning Inheritance) (priming IS culture inheritance across scores), Circuit Breaker (primer from circuit-tripped instrument)
-
----
-
-## Communication Patterns (v4)
-
----
-name: "Stigmergic Workspace"
-scale: communication
-type: orchestration-pattern
-status: working
-forces:
-  - "Information Asymmetry"
-  - "Finite Resources"
-generators: []
-problem: "Parallel agents duplicate effort or produce conflicts because they lack visibility into each other's progress and decisions."
-signals:
-  - "parallel agents need loose coordination without direct messaging"
-  - "workspace files already capture meaningful state other agents need"
-  - "real-time coordination would create bottlenecks"
-  - "agents react to each other's outputs, not each other's messages"
-config_features:
-  - "fan_out"
-  - "capture_files"
-fan_out:
-  work: 8
-stages:
-  - name: work
-    sheets: "fan_out(8)"
-    instrument_guidance: "score-author's choice — this is a communication mechanism, not an execution prescription; instrument depends entirely on the actual task the workers perform"
-    fallback_friendly: true
-    purpose: "Read workspace for current state, perform assigned work, write results and signals to shared directories for other workers to discover."
-    artifacts: ["shared/signals/"]
-composes_with:
-  - pattern: "Barn Raising"
-    how: "Barn Raising establishes shared workspace conventions (naming, directory structure, file formats) that prevent Stigmergic Workspace's failure mode of conflicting writes."
-  - pattern: "Lines of Effort"
-    how: "Lines of Effort organizes sustained parallel campaigns that use Stigmergic Workspace as their coordination mechanism — each line reads and writes to shared workspace state."
-dependencies: {}
----
-
-## Stigmergic Workspace
-
-`Status: Working` · **Source:** Ant colony optimization. **Forces:** Information Asymmetry + Finite Resources.
-
-### Core Dynamic
-
-Agents coordinate through workspace artifacts, not direct communication. Agent A writes a file; Agent B reads it. No messages, no coordination protocol — the workspace IS the communication channel.
-
-### When to Use / When NOT to Use
-
-Use when agents need loose coordination and the workspace captures state. Not when real-time coordination is needed.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: work
-    instances: 8
-    prompt: >
-      Read workspace for current state. Do your work. Write results.
-      If you find something relevant to other workers, write it to shared/signals/.
-    capture_files: ["shared/signals/**"]
-```
-
-### Failure Mode
-
-Conflicting writes to the same file. Use namespaced output directories per instance.
-
-### Composes With
-
-Barn Raising, Lines of Effort
-
-## Adaptation Patterns (v4)
-
----
-name: "Read-and-React"
-scale: adaptation
-type: prompt-technique
-status: working
-forces:
-  - "Partial Failure"
-  - "Information Asymmetry"
-generators:
-  - "Gate on Environmental Readiness"
-problem: "Downstream agents follow fixed behavior regardless of upstream results because their prompts don't instruct them to inspect and adapt to workspace state."
-signals:
-  - "downstream behavior should change based on upstream results"
-  - "adaptation path is not known before execution begins"
-  - "workspace state determines which work is needed next"
-  - "agents proceed with default behavior ignoring what previous stages produced"
-config_features:
-  - "capture_files"
-stages:
-  - name: work
-    sheets: 1
-    instrument_guidance: "score-author's choice — any instrument capable of reading workspace files and adapting its approach; instrument depends on the actual task being adapted"
-    fallback_friendly: true
-    purpose: "Read workspace state from previous stages and adapt behavior based on what exists — conditionally varying approach within the prompt based on workspace artifacts."
-    artifacts: []
-composes_with:
-  - pattern: "Triage Gate"
-    how: "Triage Gate classifies fan-out outputs into quality categories that Read-and-React sheets then detect and adapt their processing strategy around."
-  - pattern: "Fragmentary Order (FRAGO)"
-    how: "FRAGO writes correction documents into the workspace that Read-and-React sheets detect and incorporate, adjusting behavior based on the presence and content of the FRAGO."
-  - pattern: "Dormancy Gate"
-    how: "Dormancy Gate waits for external conditions; Read-and-React adapts behavior based on the workspace state that exists once conditions are met and the gate opens."
-dependencies: {}
----
-
-## Read-and-React
-
-`Status: Working` · **Source:** Basketball read-and-react offense. **Forces:** Partial Failure + Information Asymmetry.
-
-### Core Dynamic
-
-Downstream stages read workspace state and adapt their behavior. Not conditional branching (which requires conductor support) but workspace-driven behavioral adaptation within a sheet's prompt.
-
-### When to Use / When NOT to Use
-
-Use when downstream behavior should adapt to upstream results. Not when the adaptation path is known upfront.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: work
-    prompt: >
-      Read previous outputs. Based on what you find:
-      - If analysis-complete.yaml exists: proceed to synthesis.
-      - If analysis-complete.yaml is missing: extend analysis first.
-    capture_files: ["analysis-*.md", "analysis-complete.yaml"]
-```
-
-### Failure Mode
-
-Agent ignores the workspace state and proceeds with default behavior. Validate that the expected adaptation actually occurred.
-
-### Composes With
-
-Triage Gate, FRAGO, Dormancy Gate
-
----
-name: "Dormancy Gate"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Finite Resources"
-generators:
-  - "Gate on Environmental Readiness"
-problem: "External prerequisites are not immediately available, but work cannot safely proceed without them."
-signals:
-  - "downstream work depends on external system state"
-  - "prerequisites will eventually be satisfied but are not immediate"
-  - "need to wait and retry, not fail outright"
-stages:
-  - name: check-conditions
-    sheets: 1
-    instrument_guidance: "cli — lightweight condition testing via command execution; no LLM reasoning required"
-    fallback_friendly: true
-    purpose: "Verify that external conditions are satisfied by testing workspace state or running verification commands."
-    artifacts: []
-  - name: proceed
-    sheets: 1
-    instrument_guidance: "score-author's choice — instrument selection depends on the task being performed"
-    fallback_friendly: true
-    purpose: "Proceed with the actual work once external conditions are confirmed ready."
-    artifacts: []
-composes_with:
-  - pattern: "Read-and-React"
-    how: "Dormancy Gate pauses until conditions warrant re-evaluation, enabling Read-and-React to dynamically re-run the score."
-  - pattern: "Shipyard Sequence"
-    how: "Dormancy Gate ensures each shipyard phase waits for its external prerequisites before proceeding."
-dependencies: {}
----
-
-## Dormancy Gate
-
-`Status: Working` · **Source:** Seed dormancy in botany. **Forces:** Finite Resources.
-
-### Core Dynamic
-
-A gate that waits for external conditions before proceeding. The gate checks workspace state — if conditions aren't met, the score self-chains and checks again. Unlike a validation (which fails the score), dormancy gates pause and retry.
-
-### When to Use / When NOT to Use
-
-Use when work depends on external conditions that will eventually be met. Not when conditions are already known.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: check-conditions
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "test -f {{ workspace }}/external-data-ready.flag"
-  - name: proceed
-    prompt: "Conditions met. Begin processing."
-    capture_files: ["external-data/**"]
-```
-
-### Failure Mode
-
-External condition never materializes. `max_chain_depth` provides a safety bound.
-
-### Composes With
-
-Read-and-React, Shipyard Sequence
-
----
-name: "Reconnaissance Pull"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Information Asymmetry"
-generators:
-  - "Accumulate Knowledge"
-problem: "Planning without prior exploration risks misaligned approaches and wasted effort."
-signals:
-  - "task structure and complexity are unclear"
-  - "initial exploration costs are low relative to execution"
-  - "approach is not obvious from requirements alone"
-config_features:
-  - capture_files
-stages:
-  - name: recon
-    sheets: 1
-    instrument_guidance: "sonnet — balanced cost and capability; sufficient for landscape discovery without deep reasoning"
-    fallback_friendly: true
-    purpose: "Discover and document the landscape of the input: structure, complexity, and risks."
-    artifacts: ["recon-report.md"]
-  - name: plan
-    sheets: 1
-    instrument_guidance: "score-author's choice — planning complexity depends on task and landscape complexity; stronger instruments benefit from comprehensive recon"
-    fallback_friendly: true
-    purpose: "Analyze reconnaissance findings and synthesize a detailed execution plan."
-    artifacts: ["execution-plan.md"]
-  - name: execute
-    sheets: 1
-    instrument_guidance: "score-author's choice — execution capability must match task requirements; recon and plan inform instrument selection"
-    fallback_friendly: false
-    purpose: "Execute the work as specified in the execution plan."
-    artifacts: []
-composes_with:
-  - pattern: "Mission Command"
-    how: "Reconnaissance Pull provides landscape discovery before Mission Command agents begin execution within their intent envelope."
-  - pattern: "Canary Probe"
-    how: "Reconnaissance Pull informs Canary Probe's incremental exposure strategy by discovering the landscape before probing begins."
-dependencies: {}
----
-
-## Reconnaissance Pull
-
-`Status: Working` · **Source:** Military reconnaissance doctrine. **Forces:** Information Asymmetry.
-
-### Core Dynamic
-
-A cheap, fast reconnaissance stage discovers the landscape before committing to a plan. The recon output is advisory — downstream stages read it and adapt. Different from Forward Observer (which compresses). Reconnaissance discovers.
-
-### When to Use / When NOT to Use
-
-Use when the approach isn't obvious and exploration is cheap. Not when the task is well-understood.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: recon
-    instrument: sonnet
-    prompt: "Survey the input. Write recon-report.md: structure, complexity, risks, recommended approach."
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/recon-report.md"
-  - name: plan
-    prompt: "Read recon-report.md. Write execution plan."
-    capture_files: ["recon-report.md"]
-  - name: execute
-    prompt: "Execute per plan."
-    capture_files: ["execution-plan.md"]
-```
-
-### Failure Mode
-
-Recon is too shallow to inform planning. Use a more capable instrument for recon if the domain is complex.
-
-### Composes With
-
-Mission Command, Canary Probe
-
----
-name: "Fragmentary Order (FRAGO)"
-scale: adaptation
-type: orchestration-pattern
-status: working
-forces:
-  - "Partial Failure"
-generators: []
-problem: "Plans become stale mid-execution when discovered conditions diverge from expectations but no mechanism exists for targeted correction without full replanning."
-signals:
-  - "earlier stages produced results that invalidate downstream assumptions"
-  - "the plan is partially wrong but not wrong enough to discard"
-  - "downstream agents need adjusted guidance, not a completely new plan"
-  - "conditions discovered mid-execution were not anticipated by the original plan"
-stages:
-  - name: assess
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs enough reasoning to compare actual outputs against the plan and identify meaningful deviations; instrument depends on domain complexity"
-    fallback_friendly: true
-    purpose: "Read outputs so far, identify deviations from the execution plan, and write frago.md with targeted corrections if needed."
-    artifacts: ["frago.md"]
-  - name: continue
-    sheets: 1
-    instrument_guidance: "score-author's choice — must be capable enough for the underlying task; the FRAGO adjustment doesn't change instrument requirements"
-    fallback_friendly: true
-    purpose: "Read frago.md if it exists and adjust execution approach per the corrections while continuing the original plan."
-    artifacts: []
-composes_with:
-  - pattern: "Read-and-React"
-    how: "Read-and-React provides the workspace-driven adaptation mechanism that the continue stage uses to detect and respond to the FRAGO correction document."
-  - pattern: "Lines of Effort"
-    how: "FRAGO provides mid-execution course corrections to individual lines of effort when they diverge from the convergence plan."
-  - pattern: "Mission Command"
-    how: "Mission Command defines the original intent envelope; FRAGO adjusts tactical guidance when execution conditions diverge from the original brief without overriding the mission's purpose or end state."
-dependencies: {}
----
-
-## Fragmentary Order (FRAGO)
-
-`Status: Working` · **Source:** Military fragmentary orders. **Forces:** Partial Failure.
-
-### Core Dynamic
-
-Mid-execution course correction via cadenza injection. When earlier stages produce unexpected results, a FRAGO sheet writes a correction document that downstream stages read. Not replanning — targeted adjustments to the existing plan.
-
-### When to Use / When NOT to Use
-
-Use when plans need mid-execution adjustment based on discovered conditions. Not when the plan is too broken for incremental fixes.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: assess
-    prompt: "Read outputs so far. Identify deviations from plan. Write frago.md if corrections needed."
-    capture_files: ["execution-plan.md", "progress/**"]
-  - name: continue
-    prompt: "Read frago.md if it exists. Adjust approach per corrections."
-    capture_files: ["frago.md", "execution-plan.md"]
-```
-
-### Failure Mode
-
-FRAGO contradicts the original plan too severely. Downstream agents can't reconcile. Keep corrections incremental.
-
-### Composes With
-
-Read-and-React, Lines of Effort, Mission Command
-
----
-name: "After-Action Review"
-scale: iteration
-type: orchestration-pattern
-status: working
-forces:
-  - "Information Asymmetry"
-  - "Partial Failure"
-generators:
-  - "Accumulate Knowledge"
-  - "Exploit Failure as Signal"
-problem: "Execution insights are lost between iterations because no systematic reflection captures what worked, what failed, and why."
-signals:
-  - "same mistakes happen repeatedly across iterations"
-  - "execution insights disappear after completion"
-  - "teams don't know what actually worked or why it worked"
-  - "improvement recommendations don't reach subsequent iterations"
-config_features:
-  - "capture_files"
-stages:
-  - name: aar
-    sheets: 1
-    instrument_guidance: "sonnet or opus recommended — must synthesize multiple execution outputs, identify concrete deltas between intent and reality, extract actionable lessons with specific references; cheaper instruments risk the documented failure mode (generic platitudes without specific output references)"
-    fallback_friendly: false
-    purpose: "Analyze execution outcomes against original intent, identify concrete deltas, extract what to sustain and what to improve for next iteration."
-    artifacts: ["aar.md"]
-composes_with:
-  - pattern: "Immune Cascade"
-    how: "AAR analyzes which items graduated through Immune Cascade's tier gates and extracts lessons about gate criteria effectiveness for refinement."
-  - pattern: "Cathedral Construction"
-    how: "AAR captures lessons from each Cathedral Construction iteration and feeds improvements into the next cycle's prelude as accumulated knowledge."
-  - pattern: "Back-Slopping (Learning Inheritance)"
-    how: "AAR generates the aar.md artifact that Back-Slopping (Learning Inheritance) propagates forward as starter culture to seed the next iteration with learning inheritance."
-dependencies: {}
----
-
-## After-Action Review
-
-`Status: Working` · **Source:** US Army AAR protocol. **Forces:** Information Asymmetry + Partial Failure.
-
-### Core Dynamic
-
-Dedicated review stage after execution. Not quality checking (that's validation). AAR asks: what was supposed to happen, what actually happened, why the difference, what to change. The AAR output feeds the next iteration's prelude.
-
-### When to Use / When NOT to Use
-
-Use after any significant execution to capture learning. Not for trivial tasks.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: aar
-    prompt: >
-      Read all execution outputs. Write aar.md:
-      INTENDED: what the score was supposed to produce.
-      ACTUAL: what was actually produced.
-      DELTA: why the difference.
-      SUSTAIN: what worked.
-      IMPROVE: what to change next time.
-    capture_files: ["**"]
-    validations:
-      - type: content_contains
-        content: "SUSTAIN:"
-      - type: content_contains
-        content: "IMPROVE:"
-```
-
-### Failure Mode
-
-AAR is generic platitudes. Validate specific references to actual outputs and concrete improvement recommendations.
-
-### Composes With
-
-Immune Cascade, Cathedral Construction, Back-Slopping (Learning Inheritance)
-
----
-name: "Andon Cord"
-scale: adaptation
-type: orchestration-pattern
-status: working
-forces:
-  - "Partial Failure"
-  - "Information Asymmetry"
-generators:
-  - "Exploit Failure as Signal"
-problem: "Validation failures are retried blindly without diagnosing root cause, wasting resources on repeated errors."
-signals:
-  - "validation failures repeat the same error across retries"
-  - "failure output is informative but gets ignored"
-  - "retry costs are high (~$1+ per attempt)"
-  - "agent needs corrective guidance, not just another attempt"
-stages:
-  - name: generate
-    sheets: 1
-    instrument_guidance: "score-author's choice — must be capable enough for the implementation task; pattern focuses on failure handling workflow rather than generation instrument selection"
-    fallback_friendly: true
-    purpose: "Generate the initial implementation."
-    artifacts: ["test-output.log"]
-  - name: diagnose
-    sheets: 1
-    instrument_guidance: "capable instrument (sonnet or opus recommended) — diagnostic reasoning is load-bearing; failure mode explicitly mentions opus for triage to ensure accurate root cause analysis"
-    fallback_friendly: false
-    purpose: "Analyze failure output and identify root cause with concrete fix plan."
-    artifacts: ["andon-diagnosis.md"]
-  - name: regenerate
-    sheets: 1
-    instrument_guidance: "score-author's choice — same capability tier as generate stage; applies the identified fix rather than performing full regeneration"
-    fallback_friendly: true
-    purpose: "Apply the diagnosis to fix the identified issue without rewriting from scratch."
-    artifacts: []
-composes_with:
-  - pattern: "Circuit Breaker"
-    how: "Circuit Breaker monitors instrument-level failures across tasks; Andon Cord diagnoses task-level validation failures within a single workflow, operating at different failure scopes."
-  - pattern: "Quorum Trigger"
-    how: "Quorum Trigger activates Andon Cord when multiple validation failures reach threshold, preventing single-failure noise from triggering expensive diagnosis stages."
-  - pattern: "Commissioning Cascade"
-    how: "Commissioning Cascade verifies outputs at multiple quality gates; Andon Cord provides the diagnostic-and-fix mechanism when any commissioning tier fails validation."
-dependencies: {}
----
-
-## Andon Cord
-
-`Status: Working` · **Source:** Toyota Production System stop-the-line, Expedition 1. **Scale:** adaptation. **Iteration:** 4. **Force:** Graceful Failure.
-
-### Core Dynamic
-
-Replaces blind retry with diagnostic intervention. On validation failure: detect → stop (don't retry blindly) → diagnose (dedicated diagnostic sheet reads failure output) → fix (inject diagnosis as cadenza) → resume (re-run with new context). Transforms failure response from stochastic retry to deterministic diagnosis.
-
-**Relationship to self-healing:** Marianne's conductor-level self-healing feature implements a similar detect-diagnose-fix loop. Andon Cord is the score-level pattern — you compose it explicitly in your YAML. Self-healing is the conductor-level implementation that applies automatically. Both exist at different abstraction levels.
-
-### When to Use / When NOT to Use
-
-Use when failures are diagnostic (agent misunderstood the task, missed a constraint), when failure output contains enough information to diagnose root cause, or when retry cost justifies a diagnostic stage (~$1+ per attempt). Not when failures are stochastic (network timeouts — just retry), failure output is empty, or diagnosis cost exceeds a few blind retries.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: generate
-    prompt: "Generate the REST API implementation."
-    validations:
-      - type: command_succeeds
-        command: "cd {{ workspace }} && pytest -x 2>&1 | tee {{ workspace }}/test-output.log; exit ${PIPESTATUS[0]}"
-  - name: diagnose
-    prompt: |
-      The previous stage failed validation. Read the failed output and test results.
-      Write andon-diagnosis.md with:
-      ROOT CAUSE: (what specifically went wrong)
-      FIX PLAN: (concrete steps to fix)
-    capture_files: ["**/*.py", "test-output.log"]
-    validations:
-      - type: content_contains
-        content: "ROOT CAUSE:"
-      - type: content_contains
-        content: "FIX PLAN:"
-  - name: regenerate
-    prompt: "Read andon-diagnosis.md. Fix the identified issue. Do not rewrite from scratch."
-    capture_files: ["andon-diagnosis.md", "**/*.py"]
-    validations:
-      - type: command_succeeds
-        command: "cd {{ workspace }} && pytest -x"
-```
-
-### Failure Mode
-
-Diagnosis is wrong — the root cause analysis misidentifies the problem, and the fix introduces new failures. Validate that the regenerated output passes the SAME validation that the original failed. If diagnosis consistently fails, fall back to a more capable instrument for the diagnostic sheet (Opus for triage, per CEGAR Loop strategy).
-
-### Composes With
-
-Circuit Breaker (andon for task failure, circuit breaker for instrument failure), Quorum Trigger (quorum triggers andon), Commissioning Cascade (andon at each commissioning tier)
-
----
-name: "Circuit Breaker"
-scale: adaptation
-type: orchestration-pattern
-status: working
-forces:
-  - "Accumulated Signal"
-  - "Finite Resources"
-generators:
-  - "Threshold-Triggered Switch"
-problem: "Long-running jobs fail catastrophically or waste resources when instruments become unavailable mid-execution."
-signals:
-  - "backend outages cause sudden job failures"
-  - "primary instrument becomes unavailable mid-concert"
-  - "self-chaining jobs lose progress when instruments fail"
-  - "cost overruns from repeated retries on broken instruments"
-stages:
-  - name: check-circuit
-    sheets: 1
-    instrument_guidance: "cli — system introspection only; reads circuit-state.yaml to determine current breaker status (closed/open/half-open)"
-    fallback_friendly: true
-    purpose: "Read the persistent circuit state and report the current status."
-    artifacts: []
-  - name: health-probe
-    sheets: 1
-    instrument_guidance: "ollama — probes the primary instrument's health; if unavailable, the probe fails and triggers circuit opening"
-    fallback_friendly: false
-    purpose: "Probe the primary instrument's health; record latency and success/failure to guide circuit state transitions."
-    artifacts: ["probe-result.yaml"]
-  - name: route-work
-    sheets: 1
-    instrument_guidance: "score-author's choice — makes routing decisions between primary and fallback based on circuit state; needs logical capability"
-    fallback_friendly: false
-    purpose: "Read circuit state and probe results; route work to primary instrument (if closed and healthy) or fallback (if open or failed). Update circuit state with new failure counts and timestamps."
-    artifacts: ["circuit-state.yaml"]
-  - name: consolidate
-    sheets: 1
-    instrument_guidance: "score-author's choice — final assembly of outputs from whichever execution path succeeded; straightforward merging task"
-    fallback_friendly: true
-    purpose: "Merge results from primary or fallback execution paths into a unified output."
-    artifacts: []
-composes_with:
-  - pattern: "Dead Letter Quarantine"
-    how: "Dead Letter Quarantine receives items that fail both primary and fallback execution routes for manual inspection."
-  - pattern: "Echelon Repair"
-    how: "Circuit Breaker can gate escalation within echelon tiers; if a cheaper tier's primary instrument fails, escalate to the next tier instead of falling back."
-  - pattern: "Speculative Hedge"
-    how: "Speculative Hedge pre-executes with candidate instruments in parallel; Circuit Breaker routes work to the fastest/most reliable hedge when primary is unavailable."
-config_features:
-  - "self_chaining"
-  - "inherit_workspace"
-dependencies: {}
----
-
-## Circuit Breaker
-
-`Status: Working` · **Source:** Nygard's "Release It!" (2007), Netflix Hystrix, Expedition 5. **Scale:** adaptation. **Iteration:** 4. **Force:** Graceful Failure.
-
-### Core Dynamic
-
-After N instrument failures, STOP TRYING. Three states: Closed (normal — route to primary instrument), Open (all requests use fallback immediately — zero cost on broken instrument), Half-Open (one probe request — if it succeeds, close; if it fails, reopen). The critical distinction: instrument failure vs. task failure. A circuit breaker on "agent produced bad output" would shut down the pipeline. This is for infrastructure failures — backends crashing, APIs timing out, models OOM-ing.
-
-**Stateful implementation:** The circuit state persists in `circuit-state.yaml` across self-chain iterations. Each execution reads the state, makes routing decisions, and updates the state. The self-chain carries the state forward via `inherit_workspace`.
-
-### When to Use / When NOT to Use
-
-Use for scores using unreliable instruments (external APIs, local models), long-running concerts where backends may degrade mid-execution, or self-chaining scores where instruments become unavailable. Not when failure is in the TASK (not the instrument), when only one instrument is available, or for short scores where manual intervention is faster.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: check-circuit
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml,os; s=yaml.safe_load(open('{{ workspace }}/circuit-state.yaml')) if os.path.exists('{{ workspace }}/circuit-state.yaml') else {'state':'closed','failures':0}; print(f'Circuit: {s[\"state\"]}, failures: {s[\"failures\"]}')\""
-  - name: health-probe
-    instrument: ollama
-    prompt: "Health check. Write probe-result.yaml: {status: ok|fail, latency_ms, error}."
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/probe-result.yaml"
-  - name: route-work
-    prompt: >
-      Read circuit-state.yaml and probe-result.yaml.
-      If circuit CLOSED and probe OK: execute with primary instrument (ollama). Write to primary-output/.
-      If circuit OPEN or probe FAIL: execute with fallback instrument (claude). Write to fallback-output/.
-      Update circuit-state.yaml: {state, failures, last_check, last_transition}.
-    capture_files: ["circuit-state.yaml", "probe-result.yaml"]
-  - name: consolidate
-    prompt: "Merge results from whichever path completed."
-    capture_files: ["primary-output/**", "fallback-output/**"]
 on_success:
-  action: self
-  inherit_workspace: true
-  max_chain_depth: 20
+  - type: run_job
+    job_path: "{score_dir}/unprimed-falsifier.yaml"
+
+movements:
+  1: { name: assemble }
+  2: { name: read-cold, voices: 5 }
+  3: { name: note-code, instrument: cli, instrument_fallbacks: [] }
+  4: { name: verdict }
+
+sheet:
+  size: 1
+  total_items: 4                    # expansion: assemble 1, readers 2-6, code 7, verdict 8
+  fan_out: { 2: 5 }
+  dependencies: { 2: [1], 3: [2], 4: [3] }
+  skip_when:                        # EXPANDED sheet keys: all five reader sheets
+    2: { command: 'test -f {workspace}/done.stamp' }
+    3: { command: 'test -f {workspace}/done.stamp' }
+    4: { command: 'test -f {workspace}/done.stamp' }
+    5: { command: 'test -f {workspace}/done.stamp' }
+    6: { command: 'test -f {workspace}/done.stamp' }
+  cadenzas:
+    2:
+      - file: "{{ workspace }}/cut.md"
+        as: context
+        required: true
+    3:
+      - file: "{{ workspace }}/cut.md"
+        as: context
+        required: true
+    4:
+      - file: "{{ workspace }}/cut.md"
+        as: context
+        required: true
+    5:
+      - file: "{{ workspace }}/cut.md"
+        as: context
+        required: true
+    6:
+      - file: "{{ workspace }}/cut.md"
+        as: context
+        required: true
+  per_sheet_instruments:            # cheap local tier on every reader sheet
+    2: ollama
+    3: ollama
+    4: ollama
+    5: ollama
+    6: ollama
+  per_sheet_fallbacks:
+    7: []
+    8: []
+
+prompt:
+  template: |
+    {% if stage == 1 %}
+    Assemble the current cut from the beat map and drafts into {{ workspace }}/cut.md.
+    {% elif stage == 2 %}
+    You are a naive reader. You receive ONLY the cut. Report section-anchored
+    reactions: confusion, dead zones, misreads. No design docs exist for you.
+    Write {{ workspace }}/cards/card-{{ instance }}.md with one `section:` anchor per note.
+    {% elif stage == 3 %}
+    bash "{score_dir}/scripts/notes.sh" code --cards "{{ workspace }}/cards/" \
+      --density --emit "{{ workspace }}/evidence.json"
+    {% else %}
+    Read {{ workspace }}/evidence.json. If any section's density crosses 2: recut
+    ONLY those sections into a new {{ workspace }}/cut.md. Otherwise write
+    {{ workspace }}/done.stamp. A quiet screening is a verdict too.
+    {% endif %}
+
+validations:
+  - type: content_contains
+    path: "{workspace}/cards/card-1.md"
+    pattern: "section:"
+    condition: "stage == 2"
+  - type: command_succeeds
+    command: 'test $(grep -lE "design-doc|intent|spec/" {workspace}/cards/*.md | wc -l) -eq 0'
+    condition: "stage == 3"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/notes.sh code --cards {workspace}/cards --density --self-test'
+    condition: "stage == 3"
 ```
 
-### Failure Mode
+The grep gate is the priming check: any card naming an intent-document path fails the run — the falsification property is enforced, not hoped for. The lock that terminates the loop is The Freeze's, invoked by the next score in the chain against the final cut's digest.
 
-Circuit opens permanently because the health probe itself is too sensitive (marks transient failures as outages). Use a failure count threshold (e.g., 3 consecutive failures) before opening. If the fallback instrument also fails, the circuit breaker can't help — escalate to Dead Letter Quarantine.
+### Example
 
-### Composes With
-
-Dead Letter Quarantine (circuit-tripped items go to quarantine), Echelon Repair (circuit breaker per echelon), Speculative Hedge (backup instrument IS the hedge)
-
-## Instrument Strategy Patterns (v4)
+An API reference read cold by five naive sheets that have never seen the design docs. Cards report: "the auth section assumes a token the reader doesn't have yet," "examples 3–4 read as one example," "the error table lost me." Note-code locates density in the auth section; the verdict recuts exactly that; when a screening runs quiet, the done-stamp lands and the Freeze takes over for the finishing fan-out.
 
 ---
-name: "Echelon Repair"
-scale: instrument-strategy
-type: orchestration-pattern
+
+# Within-Stage Patterns
+
+## The Dropped Axiom (Fan-In Typing)
+
+```yaml
+---
+name: "The Dropped Axiom"
+scale: within-stage
 status: working
-proof_score: "echelon-repair.yaml"
-forces:
-  - "Instrument-Task Fit"
-  - "Finite Resources"
-generators:
-  - "Match Instrument to Grain"
-problem: "Expensive instruments waste resources on work that cheaper instruments could handle."
+forces: ["Structured Disagreement"]
+generators: ["Frame Multiplication"]
+problem: "Every fan-in embodies an aggregation function constrained by theorems that do not care about intentions, and the synthesis presents its concealed choice as neutrality."
 signals:
-  - "work items vary wildly in difficulty"
-  - "expensive instrument is wasted on trivial tasks"
-  - "costs are high but most work is simple"
-  - "need to triage before processing"
+  - "sheets expressing rankings, priorities, or multi-premise verdicts"
+  - "a synthesis that believes it is 'just combining'"
+  - "an unlabelled 'consensus' output"
 stages:
-  - name: classify
+  - name: "fan-in"
     sheets: 1
-    instrument_guidance: "haiku — fast, cheap classification; capability is sufficient for difficulty labeling"
+    instrument_guidance: "any — but the PRODUCER declares input_type on its output; the synthesizer never classifies"
     fallback_friendly: true
-    purpose: "Read each work item and classify difficulty as E1/E2/E3."
-    artifacts: ["echelon-manifest.yaml"]
-  - name: e1-repair
+    purpose: "Apply the lookup row for each declared input type; emit the typed header."
+  - name: "typecheck"
     sheets: 1
-    instrument_guidance: "haiku — simple items; speed and cost matter more than depth"
-    fallback_friendly: true
-    purpose: "Process items classified as E1 (simple)."
-    artifacts: []
-  - name: e2-repair
-    sheets: 1
-    instrument_guidance: "sonnet — moderate items; needs more reasoning than haiku provides"
+    instrument_guidance: "instrument: cli — enforces rule↔axioms bijection per declared type"
     fallback_friendly: false
-    purpose: "Process items classified as E2 (moderate complexity)."
-    artifacts: []
-  - name: e3-repair
-    sheets: 1
-    instrument_guidance: "opus — complex items; full reasoning capability required"
-    fallback_friendly: false
-    purpose: "Process items classified as E3 (high complexity)."
-    artifacts: []
+    purpose: "Reject empty axioms_dropped on rankings; reject dual-pole aggregation; reject unknown input_type."
+dependencies:
+  typecheck: ["fan-in"]
 composes_with:
-  - pattern: "Commissioning Cascade"
-    how: "Commissioning Cascade verifies the output quality of each echelon tier."
-  - pattern: "Fermentation Relay"
-    how: "Fermentation Relay provides the instrument tier escalation that Echelon Repair's classification routes into."
-  - pattern: "Screening Cascade"
-    how: "Screening Cascade pre-filters items before echelon classification to remove obvious non-candidates."
-  - pattern: "Circuit Breaker"
-    how: "Circuit Breaker halts escalation to expensive echelons when failure rates spike."
-dependencies: {}
+  - pattern: "Typed Force"
+    how: "its fan-in form — the typing discipline's merge specialization"
+  - pattern: "Fan-out + Synthesis"
+    how: "grows this header at every merge — the primitive's typing clause"
+  - pattern: "Sugya Weave (Editorial Synthesis)"
+    how: "substitution — editorial authority entered by declaration rather than accident"
 ---
+```
 
-## Echelon Repair
-
-`Status: Working` · **Source:** Military echelon maintenance. **Forces:** Instrument-Task Fit + Finite Resources.
+**Source:** Expedition 4 (Arrow's impossibility theorem; judgment aggregation); kept standalone against Review 2's fold motion (Reviews 1 and 3), with input typing moved to the producer (Review 1).
 
 ### Core Dynamic
 
-Graduated instrument assignment. Easy work goes to cheap/fast instruments. Hard work escalates to expensive/capable instruments. The classification stage determines difficulty BEFORE assignment.
+Every fan-in embodies an aggregation function, and aggregation functions are constrained by theorems that do not care about your intentions. If the sheets express *rankings* over three or more alternatives, Arrow's theorem is already in the room: no rule satisfies unrestricted domain, Pareto, independence of irrelevant alternatives, and non-dictatorship at once — so your "neutral synthesis" is impossible, and whatever it actually does is a concealed choice about which axiom it silently dropped. **Concealment is the defect, not the dropping.** If the sheets express interconnected propositions, majority on each premise can entail a conclusion the majority on the conclusion rejects — and both procedures are "majority rule."
 
-### When to Use / When NOT to Use
-
-Use when work items vary in difficulty and instruments vary in cost/capability. Not when all work is equally complex.
+**The pattern, as a lookup the producer types (Review 1):** the panel-emitting stage writes `input_type ∈ {binary-verdict, ranking, interconnected-propositions, non-reconstructible-judgment}` on its own output — the synthesizer applies exactly the row for the declared type and never classifies inputs itself. The rows: `binary-verdict` + audited independence → majority (Condorcet's territory); `ranking` → declare the dropped axiom (IIA dropped is positional scoring; non-dictatorship dropped is a named editorial authority; unrestricted-domain dropped is declared single-peaked structure with a median); `interconnected-propositions` → premise-pole or conclusion-pole, exactly one, declared; `non-reconstructible-judgment` → editorial synthesis with dissents. The output field `axioms_dropped` is the pattern's whole teeth: an empty value on a ranking aggregation is not innocence, it is perjury. Review 2's fold motion is recorded as the losing argument: the fan-in rule earns its own file because it upgrades *every existing merge in every existing score* with one header field — the cheapest broad improvement in the corpus.
 
 ### Marianne Score Structure
 
 ```yaml
-sheets:
-  - name: classify
-    instrument: haiku
-    prompt: "Read each item. Classify difficulty: E1 (simple), E2 (moderate), E3 (complex). Write echelon-manifest.yaml."
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; m=yaml.safe_load(open('{{ workspace }}/echelon-manifest.yaml')); assert all(e['echelon'] in ['E1','E2','E3'] for e in m)\""
-  - name: e1-repair
-    instrument: haiku
-    prompt: "Process E1 items from echelon-manifest.yaml."
-    capture_files: ["echelon-manifest.yaml"]
-  - name: e2-repair
-    instrument: sonnet
-    prompt: "Process E2 items."
-    capture_files: ["echelon-manifest.yaml"]
-  - name: e3-repair
-    instrument: opus
-    prompt: "Process E3 items."
-    capture_files: ["echelon-manifest.yaml"]
+movements:
+  1: { name: fan-in }
+  2: { name: typecheck, instrument: cli, instrument_fallbacks: [] }
+
+sheet:
+  size: 1
+  total_items: 2
+  dependencies: { 2: [1] }
+  per_sheet_fallbacks:
+    2: []
+
+prompt:
+  template: |
+    {% if stage == 1 %}
+    You are aggregating panel outputs, each carrying its declared input_type.
+    Apply the typing table per declared type — never re-classify an input.
+    Your output header MUST carry {aggregation_rule, axioms_dropped,
+    declared_authority}. Write {{ workspace }}/synthesis.md.
+    {% else %}
+    bash "{score_dir}/scripts/fanin-typecheck.sh" "{{ workspace }}/synthesis.md"
+    {% endif %}
+
+validations:
+  - type: content_contains
+    path: "{workspace}/synthesis.md"
+    pattern: "aggregation_rule:"
+    condition: "stage == 1"
+  - type: command_succeeds
+    command: 'bash {score_dir}/scripts/fanin-typecheck.sh {workspace}/synthesis.md'
+    condition: "stage == 2"
 ```
 
-### Failure Mode
+The typechecker enforces the bijection per declared type — rule ∈ the shared demotion ladder `{majority, weighted-correlation, editorial-with-dissents, refusal}` ⟺ the matching `axioms_dropped` declaration — and the Arrow table lives as data in the checker, so the lens and the gate share one source of truth. The self-test: a ranking aggregation with empty `axioms_dropped` must fail.
 
-Misclassification: E3 items assigned to E1. Validate E1 output quality; escalate failures to E2.
+### Example
 
-### Composes With
-
-Commissioning Cascade, Fermentation Relay, Screening Cascade, Circuit Breaker
+A city planning office fans a zoning dispute to five stakeholder panels, each returning ranked preferences over seven land-use options with `input_type: ranking` declared. The synthesis wants to output "the consensus ranking." Arrow says no such neutral object exists; the typed fan-in forces the office to declare — in the published document — that it drops independence of irrelevant alternatives and scores positions, or that the planning director is the named authority. Either is legitimate; an unlabelled "consensus" is neither.
 
 ---
-name: "Fermentation Relay"
-scale: instrument-strategy
-type: orchestration-pattern
-status: working
-forces:
-  - "Instrument-Task Fit"
-generators:
-  - "Match Instrument to Grain"
-problem: "Expensive instruments waste resources fixing quality issues that cheap instruments created during initial processing."
-signals:
-  - "cheap instruments produce output too noisy for expensive stages to use directly"
-  - "expensive instruments waste budget on noise filtering instead of core work"
-  - "early outputs require multiple refinement steps before quality is acceptable"
-  - "no single instrument choice works well across all pipeline stages"
-stages:
-  - name: extract
-    sheets: 1
-    instrument_guidance: "haiku — fast, cheap initial processing; sufficient for raw information extraction from input"
-    fallback_friendly: true
-    purpose: "Extract raw information from input."
-    artifacts: ["extraction.md"]
-  - name: refine
-    sheets: 1
-    instrument_guidance: "sonnet — moderate reasoning to resolve ambiguities from raw extraction; capability tier between haiku and opus"
-    fallback_friendly: false
-    purpose: "Refine extraction by resolving ambiguities and inconsistencies."
-    artifacts: ["refined.md"]
-  - name: polish
-    sheets: 1
-    instrument_guidance: "opus — highest reasoning capability for final quality pass; capable of catching subtle issues the refinement stage may miss"
-    fallback_friendly: false
-    purpose: "Perform final quality pass and produce polished output."
-    artifacts: []
-composes_with:
-  - pattern: "Echelon Repair"
-    how: "Fermentation Relay defines the multi-tier instrument cost progression that Echelon Repair routes classified difficult items through for remediation."
-  - pattern: "Succession Pipeline"
-    how: "Both use sequential refinement stages; Fermentation Relay optimizes for cost-graduated instruments while Succession Pipeline emphasizes early defect detection."
-  - pattern: "Screening Cascade"
-    how: "Screening Cascade pre-filters items before input to Fermentation Relay's pipeline, improving extraction quality and reducing noise for refinement stages."
-dependencies: {}
----
 
-## Fermentation Relay
+## Merge Ledger — Disposition of Every Candidate
 
-`Status: Working` · **Source:** Fermentation microbiology. **Forces:** Instrument-Task Fit.
+Nothing is deleted silently; the decomposed view (`patterns/`, INDEX.md) is the extended body, and every disposition is recorded here.
 
-### Core Dynamic
+### Draft's 25, dispositioned (17 counted + 1 primitive + 7 out)
 
-Cheap instruments do initial processing; expensive instruments refine. The pipeline is fixed in YAML. "Substrate-driven" refers to how you design the gate between stages, not runtime switching.
+| Entry | Disposition |
+|---|---|
+| The Etiquette Law | **Core, law** — criterion stated + negative-control clause (R1, R2) |
+| Fan-out + Synthesis | **Foundational primitive, uncounted** (R1, R2; v5.1 ruling restored) |
+| The Validity Window | **Core, law** — transition table + adjacency (R1, R2) |
+| The Freeze | **Core, law** — cadenza delivery + `sha256sum -c` pin (R1, R2, R3) |
+| Typed Force | **Core, law, narrowed** — `assigned_by` provenance; umbrella delegated (R1's cut answered, R2's split executed) |
+| The Write-Time Record | **Core, law** — atomic transact wrapper, fail-closed audit (R1, R2) |
+| Monitor Mix | **Core** — per-instance cadenzas, line-check gate (R1, R2) |
+| Condorcet's Premise | **Core** — expanded-sheet routing, defined bounded estimator, pre-authored calibration (R1, R2, R3) |
+| The Declared Window | **Core** — structured claim ledger replaces word ban (R1, R2) |
+| The Gas-Free Certificate | **Core** — check-and-act atomic in one CLI wrapper (R1, R2) |
+| Top-Down Demolition Order | **Core** — serialized self-chain driver, differently-authored re-derivation (R1) |
+| Rent-Then-Commit | **Core** — skip_when lane routing, real self-chain form (R1, R3) |
+| Vintage Overlay | **Core** — total-with-refusal lookup, pinned overlays, manifest-as-data (R1, R2; R3's cut motion defeated 2–1) |
+| The Economic Injury Line | **Core** — pre-observation custody of the pinned table (R1, R2) |
+| The Precedent Bench | **Core** — one adjudication authority, separated tables, honest registration semantics (R1, R2) |
+| Demobilization Checkout | **Core** — four tables, commissioning pre-history, real hook attachment (R1, R2) |
+| The Unprimed Falsifier | **Core** — split from Test Screening to Picture Lock (R2); lock half → The Freeze |
+| The Dropped Axiom | **Core** — producer-declared input_type (R1); fold motion (R2) defeated 2–1 |
+| Calling the Show | **Awaiting Primitives** — overlapped cue machine absent (R1, R2, R3) |
+| Relieving the Watch | **Awaiting Primitives** — mid-sheet checkpoints absent (R1, R2; R3's dissent recorded) |
+| The Strike Clock | **Awaiting Primitives** — timeout→tier transition absent (R1, R2, R3); inverted-DAG + curfew report preserved |
+| Put-In | **Awaiting Primitives** — seat remap absent (R1, R2; R3's dissent recorded) |
+| Command by Negation | **Demoted to idiom** under Mission Command + context economics (R1, R2, R3 unanimous) |
+| The ATO Cycle | **Archived** — redesign condition stated: concurrent cycle identities + atomic rollover (R1, R2) |
+| Cluster Lead | **Archived** — honesty clause promoted to corpus rule (R1, R3; R2's conditional not met) |
 
-### When to Use / When NOT to Use
+### v5.1 core, all retained in the decomposed view
 
-Use when early stages benefit from fast/cheap processing and later stages need precision. Not when all stages need the same capability.
+Proof-Carrying Artifact (Typed Force's evidence form), Positive Transfer, The MIST Card, Fork-Evident History, The Errata Ledger, Standby–GO, The Attested Merge Gate, Join-Semilattice Merge, Behavioral Pre-Mortem, First Article Characterization, The Skeptical Oracle, Negative-Treatment Watch, Canon of Phases, The Fencing Token, The Black-Box Ledger, Flight Rules, Self-Stabilizing Custody, Hutchinson's Warning, Replication Licensing, Designation Is Authorization, Immune Checkpoint — plus the archived pool (Metered Merge, Effectivity Blocks, and the rest of the 111 files indexed in INDEX.md). Iteration-6 seams recorded in the draft (Standby–GO's three-way differentiation, Fencing Token ↔ Gas-Free, Errata Ledger ↔ Precedent Bench) stand.
 
-### Marianne Score Structure
+### Iteration-6 archive pool — promotion queue unchanged
 
-```yaml
-sheets:
-  - name: extract
-    instrument: haiku
-    prompt: "Extract raw information. Write extraction.md."
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/extraction.md"
-  - name: refine
-    instrument: sonnet
-    prompt: "Refine extraction. Resolve ambiguities."
-    capture_files: ["extraction.md"]
-  - name: polish
-    instrument: opus
-    prompt: "Final quality pass. Produce polished output."
-    capture_files: ["refined.md"]
-```
+The Appraisal Room, The Fact Desk, Timeline Bell, Principal Chair, Extension Circuit, Green Wave, The Advance Sheet, The Soak Period, Heat-Sum Clock, Recurrent Selection, Cover-Crop Rotation, Containment Class Permit, Batch-Plant Stagger, Program Bus, Voice-Leading Contract, The Indistinguishable Pair, Budget-Feasible Routing, Two-Speed Targeting — archived, composable, in priority order per the draft's ranking. Budget-Feasible Routing remains the designated instrument-strategy proof candidate.
 
-### Failure Mode
+### Kills standing
 
-Early cheap stages produce such poor output that expensive stages spend all their budget fixing garbage. Validate intermediate quality.
-
-### Composes With
-
-Echelon Repair, Succession Pipeline, Screening Cascade
+The 27 expedition-level kills remain killed. The awaiting ledger's prior 13 rows stand; this iteration adds four (below) and strengthens two existing rows without fabricating primitives (mid-flight abort, runtime fan-out width — unchanged).
 
 ---
-name: "Screening Cascade"
-scale: instrument-strategy
-type: orchestration-pattern
-status: working
-forces:
-  - "Instrument-Task Fit"
-  - "Finite Resources"
-generators:
-  - "Graduate & Filter"
-  - "Match Instrument to Grain"
-problem: "Difficulty emerges during processing; fixed upfront instruments waste expensive resources on simple work or fail on complex work."
-signals:
-  - "work items vary in difficulty but this only becomes clear during processing"
-  - "cheap instruments can screen routine items but some need escalation to stronger capabilities"
-  - "costs are high because you're using expensive instruments for work that doesn't warrant them"
-  - "difficult work emerges during execution, not from upfront inspection"
-stages:
-  - name: screen-1
-    sheets: 1
-    instrument_guidance: "haiku — fast, cost-effective initial screening; sufficient to identify items requiring stronger instruments"
-    fallback_friendly: true
-    purpose: "Process all items with cheap instrument; mark uncertain items for escalation."
-    artifacts: ["screen-1-results.yaml"]
-  - name: screen-2
-    sheets: 1
-    instrument_guidance: "sonnet — stronger reasoning than haiku; handles items that exceed haiku's capability but don't require opus"
-    fallback_friendly: false
-    purpose: "Screen items escalated from stage 1 with improved capability; further escalate remaining uncertain items."
-    artifacts: ["screen-2-results.yaml"]
-  - name: screen-3
-    sheets: 1
-    instrument_guidance: "opus — full reasoning capability for items that exceeded both cheaper instruments; required for the most difficult work"
-    fallback_friendly: false
-    purpose: "Process items escalated from stage 2 with maximum reasoning capability."
-    artifacts: []
-composes_with:
-  - pattern: "Echelon Repair"
-    how: "Screening Cascade discovers difficulty progressively through escalating screens; Echelon Repair pre-classifies items upfront, providing alternative approaches to matching work with instruments."
-  - pattern: "Immune Cascade"
-    how: "Screening Cascade escalates through capability tiers; Immune Cascade provides fallback processing when escalation fails, with items flowing to Immune Cascade's recovery paths."
-  - pattern: "Dead Letter Quarantine"
-    how: "Dead Letter Quarantine captures items that exceed all screening stages' capabilities, isolating unprocessable work from the main pipeline."
-dependencies: {}
----
 
-## Screening Cascade
+## Patterns Awaiting Primitives — iteration-6 additions
 
-`Status: Working` · **Source:** Medical screening. **Forces:** Instrument-Task Fit + Finite Resources.
+Added to `awaiting.md`, each with its blocking primitive and buildable approximation:
 
-### Core Dynamic
-
-Batch processing with escalating instruments at each stage. Stage 1 screens with cheap instrument, passes ambiguous cases to Stage 2 with more capable instrument, and so on. Different from Echelon Repair (which classifies upfront): Screening Cascade discovers difficulty through progressive screening.
-
-### When to Use / When NOT to Use
-
-Use when difficulty isn't classifiable upfront but emerges during processing. Not when all items need the same treatment.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: screen-1
-    instrument: haiku
-    prompt: "Process all items. Mark items you're uncertain about as ESCALATE. Write screen-1-results.yaml."
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/screen-1-results.yaml"
-  - name: screen-2
-    instrument: sonnet
-    prompt: "Process ESCALATE items from screen-1. Mark remaining uncertain as ESCALATE-2."
-    capture_files: ["screen-1-results.yaml"]
-  - name: screen-3
-    instrument: opus
-    prompt: "Process ESCALATE-2 items."
-    capture_files: ["screen-2-results.yaml"]
-```
-
-### Failure Mode
-
-Stage 1 escalates everything (no screening value). Validate escalation rates: if >50% escalate, the screening threshold is too conservative.
-
-### Composes With
-
-Echelon Repair, Immune Cascade, Dead Letter Quarantine
+| Pattern | Blocked By | Buildable approximation / current boundary |
+|---|---|---|
+| Calling the Show | A recurring per-cue state machine with overlapped standby and hold-and-proceed-around | Standby–GO invoked once per cue inside a bounded self-chain; cue ledger as a workspace artifact advanced by a CLI movement; holds recorded as visible skips — the pipelined overlap and the bypass lane are the blocked part. |
+| Relieving the Watch | Mid-sheet checkpointing (write-ahead hook or transactional sheet checkpoints) | Deck log as append-only JSONL written *as the sheet works*; movement-boundary reconciliation gates joining log claims to disk facts; `mzt recover` as the rehearsed spine. Review 3's dissent on record: "the crash-recovery pattern every long-running user needs." |
+| The Strike Clock | A timeout→tier transition (timeouts fail sheets; they select nothing) | Inverted-DAG teardown order derived from the assembly DAG; per-movement budgets via `instrument_config.timeout_seconds`; job-level `max_wall_seconds` for scheduled runs; pack-for-next-run; curfew report as the successor's first input. The tier-arithmetic is the blocked half. |
+| Put-In | Runtime seat remap (instrument assignment expands at parse time) | Track-sheet compile from incumbent artifacts; shadow run as an isolated job writing alongside, never over; structured diff gate with `--require-bijection`; cutover as a versioned score edit with the incumbent written into the next version's fallback chain. Review 3's dissent on record. |
 
 ---
-name: "Vickrey Auction"
-scale: instrument-strategy
-type: orchestration-pattern
-status: approximation
-forces:
-  - "Instrument-Task Fit"
-generators:
-  - "Match Instrument to Grain"
-problem: "Selecting an instrument without evidence wastes resources or produces inferior results when multiple candidates are viable."
-signals:
-  - "multiple instruments are available and it's unclear which performs best"
-  - "instrument choice is based on guesswork, not evidence"
-  - "cost or quality varies significantly across instruments for the same task"
-approximation_note: "The YAML covers competitive probing and evaluation but not dynamic instrument selection for the full run. Using the winning instrument requires a two-score concert or human-in-the-loop step, which cannot be expressed in a single score."
-stages:
-  - name: probe-haiku
-    sheets: 1
-    instrument_guidance: "haiku — one of the candidate instruments being competitively evaluated"
-    fallback_friendly: false
-    purpose: "Process a sample item using haiku to produce a probe output for comparison."
-    artifacts: ["probe-haiku.md"]
-  - name: probe-sonnet
-    sheets: 1
-    instrument_guidance: "sonnet — one of the candidate instruments being competitively evaluated"
-    fallback_friendly: false
-    purpose: "Process the same sample item using sonnet to produce a probe output for comparison."
-    artifacts: ["probe-sonnet.md"]
-  - name: evaluate
-    sheets: 1
-    instrument_guidance: "score-author's choice — needs judgment capability to compare outputs and recommend an instrument; sonnet or opus recommended"
-    fallback_friendly: true
-    purpose: "Compare probe outputs and write an instrument recommendation with rationale."
-    artifacts: ["instrument-recommendation.yaml"]
-composes_with:
-  - pattern: "Echelon Repair"
-    how: "Vickrey Auction's probe results inform which instrument tiers to assign in Echelon Repair's classification-based routing."
-  - pattern: "Canary Probe"
-    how: "Canary Probe tests pipeline viability on a data subset; Vickrey Auction tests instrument fitness on the same task, combining to validate both pipeline and instrument choice before full commitment."
-dependencies: {}
----
 
-## Vickrey Auction
+## Proof Estate (corrected to disk)
 
-`Status: Working (two-run approximation)` · **Source:** Vickrey auction theory. **Forces:** Instrument-Task Fit.
+`proof-scores/` holds **13** YAML scores (the draft said 14; both R1 and R3 counted). Both reviewing sheets independently ran `mzt validate` and agree on the split:
 
-### Core Dynamic
+- **Passing (7):** cathedral-construction, firing-the-pass, join-semilattice-merge, live-relay, negative-treatment-watch, rashomon-gate, the-attested-merge-gate.
+- **Failing (6):** dead-letter-quarantine, echelon-repair, prefabrication (folded multi-line command scalars); immune-cascade, shipyard-sequence, source-triangulation (dead `../../workspaces/` parent paths).
 
-Competitive probing: run the same task on multiple instruments, evaluate which performed best, use that instrument for the full run. The probing informs the NEXT run, not this one — dynamic instrument selection requires either a two-score concert or human-in-the-loop step.
+Dispositions: the six failures are **not live proofs** and are not counted as such. Repair order: the three path failures first (mechanical), the three folded-scalar failures second (validation-shape fixes). The reviewers' clustering findings stand and constrain the queue: three near-duplicate trios (tiered security audit; multi-lens synthesis; contract-frozen parallel build), six proofs sharing a live-publication tail, and the deserts untouched — adaptation (0), within-stage (0), instrument-strategy (0), concert-governance, destructive permits, structural demolition, per-consumer routing, bounded-context epistemics, measured panel dependence.
 
-### When to Use / When NOT to Use
-
-Use when multiple instruments are available and it's unclear which performs best. Not when one instrument is clearly superior.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: probe-haiku
-    instrument: haiku
-    prompt: "Process the sample item. Write probe-haiku.md."
-  - name: probe-sonnet
-    instrument: sonnet
-    prompt: "Process the same sample item. Write probe-sonnet.md."
-  - name: evaluate
-    prompt: "Compare probe outputs. Write instrument-recommendation.yaml: {winner, rationale}."
-    capture_files: ["probe-haiku.md", "probe-sonnet.md"]
-```
-
-### Failure Mode
-
-Probe item isn't representative of the full workload. Use multiple probe items.
-
-### Composes With
-
-Echelon Repair, Canary Probe
+**The v6 proof queue, honestly stated: zero of six executed.** The queue stands, each entry now bound to the minimal-discriminating-score constraint (Reviews 1 and 2: a proof must fail when the pattern is removed while incidental machinery remains — stop rewarding monuments): Rent-Then-Commit (arithmetic-gate negative control: rent ≥ B without commit must fail), The Declared Window (an untagged global claim under `window: partial` must fail the join), The Dropped Axiom (empty `axioms_dropped` on a ranking must fail typecheck), Gas-Free Certificate (stale-permit fixture must refuse with nothing destroyed), Demobilization Checkout (a census row without disposition must fail the bijection), Budget-Feasible Routing (an assignment to an instrument lacking the task's technique tag must fail). Proof debt remains a **blocking requirement for v7** — and it is currently unmet, which is the honest current state of this corpus.
 
 ---
-name: "Composting Cascade"
-scale: score-level
-type: orchestration-pattern
-status: working
-forces:
-  - "Accumulated Signal"
-  - "Instrument-Task Fit"
-generators:
-  - "Threshold-Triggered Switch"
-  - "Match Instrument to Grain"
-problem: "Phase transitions in iterative work need measurable readiness signals rather than time-based or manual progression decisions."
-signals:
-  - "phase transitions are time-based or manual, not metrics-driven"
-  - "unclear when simple work is complete and should escalate to complex restructuring"
-  - "churn rates don't drive phase changes, even when they indicate ongoing work"
-  - "workspace readiness isn't observable"
-stages:
-  - name: simple-work
-    sheets: 1
-    instrument_guidance: "score-author's choice — simple cleanup (renaming, type hints, extraction) is cost-sensitive but needs reasoning; haiku recommended"
-    fallback_friendly: true
-    purpose: "Execute simple cleanup tasks (renaming, type hints, function extraction)."
-    artifacts: []
-  - name: temperature-check
-    sheets: 1
-    instrument_guidance: "cli — shell script measuring workspace metrics (type coverage, test pass rate, etc.); must support --threshold argument"
-    fallback_friendly: false
-    purpose: "Check if workspace metrics meet threshold for phase transition."
-    artifacts: []
-  - name: complex-work
-    sheets: 1
-    instrument_guidance: "opus — complex restructuring (abstractions, algorithm rewrites) requires full reasoning capability; haiku or sonnet insufficient"
-    fallback_friendly: false
-    purpose: "Execute complex restructuring (abstractions, algorithm rewrites)."
-    artifacts: []
-  - name: cooling-check
-    sheets: 1
-    instrument_guidance: "cli — shell script measuring change rate (code churn, diff magnitude); must support --max-churn argument"
-    fallback_friendly: false
-    purpose: "Check if work is cooling (change rate below exhaustion threshold)."
-    artifacts: []
-  - name: maturation
-    sheets: 1
-    instrument_guidance: "haiku — documentation writing is cost-sensitive; cheaper instrument sufficient for guides and changelogs"
-    fallback_friendly: true
-    purpose: "Write documentation (migration guide, changelog)."
-    artifacts: ["migration-guide.md", "changelog.md"]
-composes_with:
-  - pattern: "The Tool Chain"
-    how: "Composting Cascade uses CLI instruments (Tool Chain) as workspace thermometers to measure readiness for phase transitions."
-  - pattern: "Succession Pipeline"
-    how: "Composting Cascade IS succession with metric-driven phase gates rather than time-based progression."
-  - pattern: "Echelon Repair"
-    how: "Composting Cascade escalates instruments per phase; complex-work uses opus while simple-work and maturation use cheaper instruments."
-script_dependencies:
-  - "temperature.py"
-  - "exhaustion.py"
-dependencies: {}
----
 
-## Composting Cascade
+## Script Library (the debt, named at its true size)
 
-`Status: Working` · **Source:** Four-phase composting microbiology, Expedition 2. **Scale:** score-level + instrument strategy. **Iteration:** 4. **Force:** Threshold Accumulation.
+Review 3 counted roughly 50 named scripts against the draft's "~20." The final core reduces the surface to **24 named scripts**, each an entry with an interface contract below; they are contracts to implement, not shipped files, and every pattern whose load-bearing gate reduces to one says so in its structure. Contracts follow one convention throughout: `--self-test` runs the pattern's negative-control fixtures and exits non-zero on any that unexpectedly pass; `--emit`/`--check-only` separate writing from verifying.
 
-### Core Dynamic
+| Script | Pattern | Contract |
+|---|---|---|
+| `run-gates.sh` | Etiquette Law | `--lint --schema --tests`, `--self-test`, `--check-only`; exit code is the decision |
+| `window.sh` | Validity Window | `stamp --subject --ttl --min-age --emit`; `probe --maturity-ledger --append`; `gate <window> --maturity --regenerate-on-expiry`; `manifest`; `--self-test` |
+| `lock.sh` / `freeze-join.sh` | The Freeze | lock: `--pitches --emit --digest`; join: drafts `--against <sha256 file>` rejects hash drift |
+| `force-typecheck.py` | Typed Force | rows `{force, assigned_by}`; rule↔ladder bijection; rejects unassigned rows |
+| `effects.sh` | Write-Time Record | `transact --plan --ledger` (atomic, idempotent by effect_id); `audit --ledger --require-empty-residue`; `--self-test` |
+| `mix.sh` | Monitor Mix | `channels --from --emit`; `assemble --channels --prescription --out` (refuses union-over-source); `line-check --dir --against` |
+| `census.sh` / `demote.sh` | Condorcet's Premise | census: `--answers --ground-truth --emit` (co-occurrence matrix, ρ̄, n_eff, family census, demotion); demote: `--manifest --verdict` joins cited vs demoted rule |
+| `window.sh manifest` / `claims.sh` | Declared Window | manifest from actual config+artifacts; `claims join --manifest --claims --prose` arithmetic + span join |
+| `gas-free.sh` / `execute.sh` | Gas-Free | certify: `--plan --ttl --emit` (records certifier digest); execute: `--permit --plan` — check-and-act atomic, refuses stale/mismatched |
+| `dep-graph.sh` / `order-rederive.sh` / `step.sh` / `full-oracle.sh` | Top-Down Demolition | plan as JSON; differently-authored re-derivation; step: sweep-empty → remove → re-derive → ledger; oracle: full suite |
+| `ladder.sh` | Rent-Then-Commit | `probe --ledger --commitment`; `decide --state --emit` (`commit == (rent_paid >= B)`, ratio_bound 2); `settle --ledger` |
+| `conditions.sh` / `overlay.sh` | Vintage Overlay | probe → conditions.yaml with digests; `select` total-with-refusal; `archive` → vintage record |
+| `eil.sh` | Economic Injury Line | `verify --inputs --pinned-table` (refuses mismatch); `scout --sample --seed --ledger`; `verdict --table --ledger --emit` |
+| `cite-join.sh` / `enroll.sh` / `notify.sh` | Precedent Bench | cite-join rejects dangling citations pre-reasoning; enroll: one serialized writer, `--atomic`, refuses factorless overrules; notify: supersession flags |
+| `demob.sh` | Demobilization | `census`; `act --dispositions --receipts --permits-required-for`; `settle --liveness-must-return-empty`; `bijection --exact`; `seal --harvest --archive` |
+| `notes.sh` | Unprimed Falsifier | `code --cards --density --emit`; `--self-test` |
 
-The work's own output drives phase transitions. CLI instruments measure workspace state ("temperature") and threshold crossings trigger phase changes. The agents don't know they're transitioning — the thermometer knows. CLI instruments are in the control loop; AI instruments are the workers.
-
-**"Temperature" defined:** Workspace metrics that indicate readiness for the next phase. Examples: type coverage percentage (for refactoring), test pass rate (for code generation), function count per file (for extraction work). The metric must be measurable by a CLI script and meaningfully indicate phase readiness.
-
-**Script dependencies:** `temperature.py` and `exhaustion.py` are user-supplied. Interface contract: `temperature.py --threshold N` exits 0 if temperature meets threshold, exits 1 otherwise. `exhaustion.py --max-churn N` exits 0 if change rate is below threshold (work is cooling), exits 1 otherwise.
-
-### When to Use / When NOT to Use
-
-Use for multi-phase projects where work nature should change based on measurable workspace state, codebase refactoring where simple cleanup enables complex restructuring, or documentation campaigns where raw generation enables consolidation. Not when workspace metrics don't reflect work state, phase transitions need human judgment, or the work is single-phase.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: simple-work
-    prompt: "Execute simple cleanup tasks. Rename variables, add type hints, extract functions."
-  - name: temperature-check
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 {{ workspace }}/temperature.py --threshold 60"
-  - name: complex-work
-    instrument: opus
-    prompt: "Execute complex restructuring. Introduce abstractions, rewrite algorithms."
-    capture_files: ["temperature-report.yaml"]
-  - name: cooling-check
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 {{ workspace }}/exhaustion.py --max-churn 5"
-  - name: maturation
-    instrument: haiku
-    prompt: "Write documentation, migration guide, changelog."
-```
-
-### Failure Mode
-
-Temperature metric doesn't correlate with actual readiness — complex-work fires too early and fails because the codebase isn't ready. Calibrate thresholds empirically: run the pipeline once, observe when complex-work succeeds, set the threshold there. If temperature never rises (simple-work doesn't change the measured metric), the cascade stalls at the temperature check.
-
-### Composes With
-
-The Tool Chain (CLI instruments as thermometers), Succession Pipeline (composting IS succession with metric-driven gates), Echelon Repair (instrument escalation per phase)
-
-## Iteration Patterns (v4)
+Owner and shipping plan: the library needs a commissioning score that authors, self-tests, and versions these scripts — the same debt v5.1 flagged, now with contracts instead of names. It is the corpus's largest single dependency and it is visible here rather than in an appendix of regrets.
 
 ---
-name: "CDCL Search"
-scale: iteration
-type: orchestration-pattern
-status: working
-forces:
-  - "Partial Failure"
-  - "Information Asymmetry"
-generators:
-  - "Accumulate Knowledge"
-  - "Exploit Failure as Signal"
-problem: "Iterative processes repeat the same failures because no mechanism captures and propagates failure patterns as constraints."
-signals:
-  - "same failures occur across retry attempts"
-  - "retries don't help because nothing is learned"
-  - "failures contain diagnostic information that could prevent recurrence"
-  - "need to avoid known bad paths in subsequent iterations"
-config_features:
-  - "self_chaining"
-  - "inherit_workspace"
-stages:
-  - name: attempt
-    sheets: 1
-    instrument_guidance: "score-author's choice — instrument capability must match the task being attempted; learned clauses guide behavior but don't reduce the task's inherent capability requirements"
-    fallback_friendly: false
-    purpose: "Attempt the task while avoiding failure patterns documented in learned-clauses.yaml from previous iterations."
-    artifacts: []
-  - name: analyze-failure
-    sheets: 1
-    instrument_guidance: "sonnet or opus recommended — requires strong reasoning to extract generalizable failure patterns; weak instruments produce clauses that are too specific (don't generalize) or too broad (over-constrain)"
-    fallback_friendly: false
-    purpose: "Extract the root cause of failure and append it as a constraint to learned-clauses.yaml to guide future attempts."
-    artifacts: ["learned-clauses.yaml"]
-composes_with:
-  - pattern: "Back-Slopping (Learning Inheritance)"
-    how: "Back-Slopping (Learning Inheritance) provides the learning inheritance mechanism; CDCL Search uses it to accumulate and forward learned failure clauses across self-chaining iterations."
-  - pattern: "After-Action Review"
-    how: "After-Action Review extracts lessons post-execution for human learning; CDCL Search's analyze-failure stage performs similar extraction inline for machine learning between iterations."
-  - pattern: "CEGAR Loop"
-    how: "Both are iterative constraint refinement patterns — CEGAR Loop refines abstractions when verification fails, CDCL Search refines the search space by adding failure-derived clauses; compose by using CDCL for failure learning within CEGAR's refinement loop."
-dependencies: {}
----
 
-## CDCL Search
+## Open Questions (v7)
 
-`Status: Working` · **Source:** Conflict-driven clause learning (SAT solving). **Forces:** Partial Failure + Information Asymmetry.
-
-### Core Dynamic
-
-When a branch fails, extract WHY it failed and add the failure reason as a new constraint. The constraint prevents the same failure pattern in subsequent iterations. Learning from failure, not just retrying.
-
-### When to Use / When NOT to Use
-
-Use when failures are informative and recurring patterns are likely. Not when failures are random.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: attempt
-    prompt: "Read learned-clauses.yaml. Attempt the task avoiding known failure patterns."
-    capture_files: ["learned-clauses.yaml"]
-  - name: analyze-failure
-    prompt: "If attempt failed, extract failure reason. Append to learned-clauses.yaml."
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; c=yaml.safe_load(open('{{ workspace }}/learned-clauses.yaml')); print(f'{len(c)} clauses learned')\""
-on_success:
-  action: self
-  inherit_workspace: true
-  max_chain_depth: 10
-```
-
-### Failure Mode
-
-Learned clauses are too specific (don't generalize) or too broad (over-constrain). Validate clause quality.
-
-### Composes With
-
-Back-Slopping (Learning Inheritance), After-Action Review, CEGAR Loop
+1. **The curation ceiling after cuts.** 17 counted core against a 25 ceiling leaves 8 seats; the promotion queue (Appraisal Room, Fact Desk, Timeline Bell, Principal Chair first) is the ordered fill. Whether the ceiling itself survives v7's review is open.
+2. **The law/pattern boundary.** Five laws now; the five un-minted convergences (pre-paid judgment, unprimed falsifier, artifacts-not-messages, ending-as-phase, two-axes-of-order) each gained a surviving carrier this iteration but not a second independent derivation. The minting criterion stands untested.
+3. **The human-escalation seam — third iteration unowned.** Hold escalation, the impairment emergency, negation's surface order, waiver authority: at least four terminals resolve to "escalate to a human" with no governing pattern. Andon Cord (archive) is the ancestor; v7 should either mint the seam or close the question.
+4. **Proof debt, now quantified.** Zero of six queue entries executed; six legacy proofs non-validating; three near-duplicate trios in the passing seven. v7 is blocked by this corpus's own rule until the queue's minimal discriminating proofs exist.
+5. **Cadenza form variance — resolved.** The draft's Open Question 3 is closed by source: `cadenzas` is a SheetConfig field keyed by expanded sheet number, items `{file|directory, as, required}` (job.py:288-296). One form is canonical; the expedition's `required:` list-of-directories sketch was not a variant, it was an error.
+6. **Divergences hunting their second domain.** Effectiveness-weighted time, licensed displacement, the proceeds rule, typed legal supersession remain single-witness; LLM orchestration candidates are recorded in the draft and stand.
+7. **G7/G8 formalization.** Unknown-horizon and blind-maker generators are expressed through existing forces this iteration; whether they earn forces.md rows is v7's call, with Rent-Then-Commit and the Unprimed Falsifier as the candidate carriers.
 
 ---
-name: "Fixed-Point Iteration"
-scale: iteration
-type: orchestration-pattern
-status: working
-forces:
-  - "Convergence Imperative"
-generators:
-  - "Measure Convergence Character"
-problem: "Iterative refinement requires explicit convergence detection to avoid wasting iterations."
-signals:
-  - "repeated application produces improvements but stopping criterion is unclear"
-  - "iterations are expensive and need measurable termination beyond fixed counts"
-  - "output stabilizes after refinement but manual convergence checking is tedious"
-config_features:
-  - "self_chaining"
-stages:
-  - name: iterate
-    sheets: 1
-    instrument_guidance: "score-author's choice — the improvement task itself determines required instrument capability; Fixed-Point Iteration prescribes no specific tier"
-    fallback_friendly: true
-    purpose: "Read the previous iteration's output and improve it."
-    artifacts:
-      - "output.md"
-  - name: convergence-check
-    sheets: 1
-    instrument_guidance: "cli instrument is required — the convergence validation uses actual shell commands (diff) to measure iteration deltas"
-    fallback_friendly: false
-    purpose: "Check if output has converged by comparing current iteration to previous."
-    artifacts: []
-composes_with:
-  - pattern: "CDCL Search"
-    how: "CDCL Search instantiates fixed-point iteration as a SAT solver, iteratively refining clause sets toward satisfiability."
-  - pattern: "Cathedral Construction"
-    how: "Cathedral Construction applies fixed-point iteration to progressively refine and layer architectural components."
-  - pattern: "Memoization Cache"
-    how: "Memoization Cache optimizes fixed-point iteration by caching intermediate results across refinement cycles."
-dependencies: {}
----
 
-## Fixed-Point Iteration
+## Coda: the corpus obeyed its own discovery, and this time its own dialect
 
-`Status: Working` · **Source:** Numerical analysis, compiler dataflow. **Forces:** Convergence Imperative.
+The strongest evidence for the thesis remains that the six expeditions, working disjoint territories, *practiced* the grammar they were uncovering — trust converted to artifacts, claims typed, judgment pre-paid, endings accounted. The draft did all of that and still shipped structures that could not load, which is the other half of the lesson and now part of the record: a corpus that preaches engine facts over prose must re-verify its own YAML against source every iteration, because v5.1's Real Dialect section did not save v6's draft from fabricating against it — only the reviewers and a fresh source pass did. The correction discipline is now the corpus's own Precedent Bench holding: *verify the dialect at authorship, cite the source line, and let no structure ship on memory.*
 
-### Core Dynamic
+Six domains, six voices, one grammar — cut where the structure was absent, strengthened where the idea outran its carrier, and the laws the harvest actually earned. *Grammar first, lexicon second, laws at curation — and the review is integrated.*
 
-Repeat the same operation until the output stops changing. Convergence is structural: diff the output of iteration N against iteration N-1. When the diff is empty (or below threshold), stop.
-
-### When to Use / When NOT to Use
-
-Use when the task naturally converges (each pass finds fewer issues). Not when convergence isn't guaranteed.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: iterate
-    prompt: "Read previous output. Improve. Write output."
-    capture_files: ["output.md"]
-  - name: convergence-check
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "diff {{ workspace }}/output-prev.md {{ workspace }}/output.md | wc -l | xargs test 5 -gt"
-on_success:
-  action: self
-  inherit_workspace: true
-  max_chain_depth: 10
-```
-
-### Failure Mode
-
-Never converges. `max_chain_depth` provides the safety bound.
-
-### Composes With
-
-CDCL Search, Cathedral Construction, Memoization Cache
-
----
-name: "Cathedral Construction"
-scale: iteration
-type: orchestration-pattern
-status: working
-forces:
-  - "Convergence Imperative"
-  - "Finite Resources"
-generators:
-  - "Accumulate Knowledge"
-problem: "Large artifacts cannot be produced in a single pass and require iterative construction toward a known target."
-signals:
-  - "artifact is too large to complete in one pass"
-  - "work must be built incrementally toward a target"
-  - "each iteration adds structural elements"
-  - "need to track progress toward a known endpoint"
-config_features:
-  - "self_chaining"
-stages:
-  - name: plan-iteration
-    sheets: 1
-    instrument_guidance: "score-author's choice — planning benefits from strong reasoning (sonnet/opus recommended), but the iteration cycle provides correction opportunities so mid-tier instruments are viable"
-    fallback_friendly: true
-    purpose: "Read current state and plan what to add this iteration."
-    artifacts: []
-  - name: build
-    sheets: 1
-    instrument_guidance: "score-author's choice — depends entirely on what is being built (code, documentation, analysis); match instrument capability to the construction task complexity"
-    fallback_friendly: true
-    purpose: "Execute the plan and add to the cathedral."
-    artifacts: ["cathedral/**"]
-  - name: inspect
-    sheets: 1
-    instrument_guidance: "score-author's choice — review and critique work; sonnet-level reasoning typically sufficient since this is evaluation rather than primary construction"
-    fallback_friendly: true
-    purpose: "Review what was built and write inspection report."
-    artifacts: ["inspection-report.md"]
-composes_with:
-  - pattern: "After-Action Review"
-    how: "After-Action Review extracts lessons from the iteration history that Cathedral Construction accumulates, turning execution record into doctrine."
-  - pattern: "Back-Slopping (Learning Inheritance)"
-    how: "Back-Slopping (Learning Inheritance) carries forward patterns and learnings from previous iterations; Cathedral Construction's inherit_workspace provides the substrate for this knowledge transfer."
-  - pattern: "Memoization Cache"
-    how: "Memoization Cache stores previously-built components to avoid rebuilding; Cathedral Construction's incremental additions benefit from cached artifacts across iterations."
-dependencies: {}
----
-
-## Cathedral Construction
-
-`Status: Working` · **Source:** Medieval cathedral building. **Forces:** Convergence Imperative + Finite Resources.
-
-### Core Dynamic
-
-Long-running iterative refinement where each iteration adds structural elements. Different from Fixed-Point (which converges to stability). Cathedral Construction builds toward a known target through incremental addition.
-
-### When to Use / When NOT to Use
-
-Use for large artifacts that can't be produced in one pass. Not when the work is convergent (use Fixed-Point).
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: plan-iteration
-    prompt: "Read current state. Plan what to add this iteration."
-    capture_files: ["cathedral/**"]
-  - name: build
-    prompt: "Execute the plan. Add to the cathedral."
-  - name: inspect
-    prompt: "Review what was built. Write inspection-report.md."
-on_success:
-  action: self
-  inherit_workspace: true
-  max_chain_depth: 20
-```
-
-### Failure Mode
-
-Each iteration adds but never integrates. Include integration checks in the inspection stage.
-
-### Composes With
-
-After-Action Review, Back-Slopping (Learning Inheritance), Memoization Cache
-
----
-name: "Rehearsal Spotlight"
-scale: iteration
-type: orchestration-pattern
-status: working
-forces:
-  - "Convergence Imperative"
-  - "Finite Resources"
-generators:
-  - "Measure Convergence Character"
-problem: "Iteration is expensive; reworking entire outputs wastes resources when only parts need refinement."
-signals:
-  - "iteration cycles are expensive"
-  - "only specific sections need rework"
-  - "most output is good but a few parts are weak"
-  - "need to focus rework effort on problem areas"
-fan_out:
-  rehearse: 3
-config_features:
-  - "self_chaining"
-  - "fan_out"
-  - "capture_files"
-script_dependencies:
-  - "check_quality.py"
-stages:
-  - name: evaluate
-    sheets: 1
-    instrument_guidance: "score-author's choice — must reason about section quality; sonnet or opus recommended"
-    fallback_friendly: true
-    purpose: "Read output, score each section for quality, and identify targets for rework."
-    artifacts: ["spotlight-targets.yaml"]
-  - name: rehearse
-    sheets: "fan_out(3)"
-    instrument_guidance: "score-author's choice — must match the task being reworked (code, prose, analysis, etc.); capability is load-bearing for quality"
-    fallback_friendly: false
-    purpose: "Rework the targeted weak sections based on evaluation feedback."
-    artifacts: []
-  - name: check-done
-    sheets: 1
-    instrument_guidance: "cli — executes shell-based quality validation checks"
-    fallback_friendly: false
-    purpose: "Verify that reworked sections meet quality threshold; trigger self-chain if quality is insufficient."
-    artifacts: []
-composes_with:
-  - pattern: "Echelon Repair"
-    how: "Echelon Repair allocates effort by difficulty tier; Rehearsal Spotlight focuses rework effort on specific weak sections within one score iteration."
-  - pattern: "Soil Maturity Index"
-    how: "Soil Maturity Index measures convergence readiness of context; Rehearsal Spotlight applies convergence measurement to identify which sections need another rehearsal."
-  - pattern: "CEGAR Loop"
-    how: "CEGAR Loop iteratively refines through abstraction phases; Rehearsal Spotlight structures the refinement cycle to rework only sections that failed the previous quality check."
-dependencies: {}
----
-
-## Rehearsal Spotlight
-
-`Status: Working` · **Source:** Theater rehearsal. **Forces:** Convergence Imperative + Finite Resources.
-
-### Core Dynamic
-
-After each iteration, identify the weakest sections and re-run ONLY those. Focuses expensive iteration on the parts that need it most.
-
-### When to Use / When NOT to Use
-
-Use when iteration is expensive and only parts of the output need rework. Not when the whole output needs rework each time.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: evaluate
-    prompt: "Read output. Score each section. Write spotlight-targets.yaml: sections needing rework."
-    capture_files: ["output/**"]
-  - name: rehearse
-    instances: 3
-    prompt: "Rework the targeted section. Write improved version."
-    capture_files: ["spotlight-targets.yaml", "output/**"]
-  - name: check-done
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 {{ workspace }}/check_quality.py --min-score 8"
-on_success:
-  action: self
-  inherit_workspace: true
-  max_chain_depth: 5
-```
-
-### Failure Mode
-
-Spotlight always targets the same sections. Track which sections have been rehearsed and escalate persistent weaknesses.
-
-### Composes With
-
-Echelon Repair, Soil Maturity Index, CEGAR Loop
-
----
-name: "Soil Maturity Index"
-scale: iteration
-type: orchestration-pattern
-status: working
-forces:
-  - "Convergence Imperative"
-generators:
-  - "Measure Convergence Character"
-problem: "Iterative processes lack domain-specific termination conditions beyond structural equality."
-signals:
-  - "iterative improvement plateaus on structural metrics but output lacks qualitative maturity"
-  - "need to distinguish real convergence from mere structural stability"
-  - "process converges structurally but hasn't achieved expected coherence or readiness"
-  - "domain-specific maturity assessment required before proceeding to next phase"
-stages:
-  - name: iterate
-    sheets: 1
-    instrument_guidance: "score-author's choice — any instrument capable of reading and improving content based on domain-specific maturity criteria"
-    fallback_friendly: true
-    purpose: "Read the output and refine it based on domain-specific maturity criteria, iteratively improving toward qualitative convergence."
-    artifacts: ["output.md"]
-  - name: maturity-check
-    sheets: 1
-    instrument_guidance: "cli — executes the maturity assessment script to determine if output has reached target maturity state"
-    fallback_friendly: false
-    purpose: "Execute the maturity assessor script to determine if output has achieved desired maturity; exit code controls self-chaining termination."
-    artifacts: []
-composes_with:
-  - pattern: "Fixed-Point Iteration"
-    how: "Soil Maturity Index provides domain-specific convergence detection where Fixed-Point Iteration uses only structural no-change metrics."
-  - pattern: "Back-Slopping (Learning Inheritance)"
-    how: "Back-Slopping (Learning Inheritance) extracts learnings from iterations; Soil Maturity Index determines when iterations have produced sufficient signal for learning."
-  - pattern: "Delphi Convergence"
-    how: "Delphi Convergence measures consensus across independent attempts; Soil Maturity Index assesses convergence within a single iterative stream."
-script_dependencies:
-  - "maturity_assessor.py"
-config_features:
-  - "self_chaining"
-dependencies: {}
----
-
-## Soil Maturity Index
-
-`Status: Working` · **Source:** Soil science maturity metrics. **Forces:** Convergence Imperative.
-
-### Core Dynamic
-
-Domain-specific termination condition for iterative processes. Instead of "nothing changed" (Fixed-Point) or "all sections pass" (Rehearsal Spotlight), the maturity index measures a qualitative shift — the output has changed CHARACTER, not just improved. A script-driven exit code determines termination.
-
-### When to Use / When NOT to Use
-
-Use when convergence is qualitative (the writing style matured, the architecture became cohesive). Not when convergence is structural.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: iterate
-    prompt: "Read output. Improve based on maturity criteria."
-    capture_files: ["output/**"]
-  - name: maturity-check
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 {{ workspace }}/maturity_assessor.py --output {{ workspace }}/output.md"
-on_success:
-  action: self
-  inherit_workspace: true
-  max_chain_depth: 10
-```
-
-### Failure Mode
-
-Maturity metric doesn't capture the intended qualitative shift. Iterate on the assessor, not just the output.
-
-### Composes With
-
-Fixed-Point Iteration, Back-Slopping (Learning Inheritance), Delphi Convergence
-
----
-name: "Delphi Convergence"
-scale: iteration
-type: orchestration-pattern
-status: working
-forces:
-  - "Convergence Imperative"
-  - "Information Asymmetry"
-generators:
-  - "Measure Convergence Character"
-problem: "Multiple independent agents must converge without anchoring on early opinions."
-signals:
-  - "expert opinions vary widely and need to converge"
-  - "agents anchor on initial assessments and won't update"
-  - "single-round synthesis isn't achieving consensus"
-fan_out:
-  assess: 3
-script_dependencies:
-  - "check_convergence.py"
-config_features:
-  - "fan_out"
-  - "self_chaining"
-  - "command_succeeds"
-stages:
-  - name: assess
-    sheets: "fan_out(3)"
-    instrument_guidance: "score-author's choice — needs strong reasoning capability for expert assessment; sonnet or opus recommended"
-    fallback_friendly: false
-    purpose: "Each assessor independently evaluates the problem and documents their position, reading prior-round assessments if available."
-    artifacts: []
-  - name: check-convergence
-    sheets: 1
-    instrument_guidance: "cli — convergence validation via user-supplied script that analyzes assessment variance"
-    fallback_friendly: true
-    purpose: "Run the convergence check script to determine if assessments have sufficiently converged."
-    artifacts: []
-composes_with:
-  - pattern: "Source Triangulation"
-    how: "Source Triangulation verifies consistency across one-pass multi-perspective views; Delphi Convergence extends to iterative rounds where perspectives update toward consensus."
-  - pattern: "Rashomon Gate"
-    how: "Rashomon Gate captures multiple conflicting perspectives; Delphi Convergence iterates those perspectives toward measurable convergence."
-dependencies: {}
----
-
-## Delphi Convergence
-
-`Status: Working` · **Source:** Delphi method (RAND Corporation). **Forces:** Convergence Imperative + Information Asymmetry.
-
-### Core Dynamic
-
-Multiple agents independently assess, then converge through structured rounds. Different from Fan-out + Synthesis (one round). Delphi iterates until convergence — each round shares anonymized prior assessments, allowing agents to update positions.
-
-### When to Use / When NOT to Use
-
-Use when independent expert judgment needs convergence. Not when a single assessment suffices.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: assess
-    instances: 3
-    prompt: "Read prior round results if they exist. Write your independent assessment."
-    capture_files: ["round-*/**"]
-  - name: check-convergence
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 {{ workspace }}/check_convergence.py --threshold 0.8"
-on_success:
-  action: self
-  inherit_workspace: true
-  max_chain_depth: 5
-```
-
-### Failure Mode
-
-Agents anchor on first-round assessments and never genuinely update. Validate that positions actually change between rounds.
-
-### Composes With
-
-Source Triangulation, Rashomon Gate
-
----
-name: "Back-Slopping (Learning Inheritance)"
-scale: iteration
-type: orchestration-pattern
-status: working
-forces:
-  - "Convergence Imperative"
-generators:
-  - "Accumulate Knowledge"
-problem: "Iterative processes lose hard-won insights because each iteration starts from scratch without accumulated learning."
-signals:
-  - "later iterations repeat mistakes from earlier ones"
-  - "valuable insights discovered during work are lost between iterations"
-  - "iterative process plateaus because it cannot build on prior discovery"
-config_features:
-  - self_chaining
-stages:
-  - name: work
-    sheets: 1
-    instrument_guidance: "score-author's choice — instrument must be capable enough for the primary task and able to read and update structured culture artifacts"
-    fallback_friendly: true
-    purpose: "Execute the primary task informed by accumulated culture, then update the culture artifact with new learning."
-    artifacts: ["culture.yaml"]
-composes_with:
-  - pattern: "Cathedral Construction"
-    how: "Cathedral Construction's incremental building uses Back-Slopping's culture artifact to carry integration lessons and architectural decisions across iterations."
-  - pattern: "CDCL Search"
-    how: "CDCL Search's learned clauses are a specialized form of culture; Back-Slopping generalizes the inheritance mechanism beyond failure-specific constraints to all accumulated learning."
-  - pattern: "Systemic Acquired Resistance"
-    how: "Systemic Acquired Resistance broadcasts defense primers across scores in a concert; Back-Slopping carries learning forward across iterations within a single self-chaining score."
-dependencies: {}
----
-
-## Back-Slopping (Learning Inheritance)
-
-`Status: Working` · **Source:** Sourdough bread making. **Forces:** Convergence Imperative.
-
-### Core Dynamic
-
-Each iteration inherits a "culture" artifact from the previous iteration containing accumulated learning. The culture grows and refines over iterations, carrying forward what worked and what to avoid.
-
-### When to Use / When NOT to Use
-
-Use when later iterations should benefit from earlier learning. Not when each iteration is independent.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: work
-    prompt: "Read culture.yaml for accumulated learning. Do the work. Update culture.yaml with new insights."
-    capture_files: ["culture.yaml"]
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/culture.yaml"
-on_success:
-  action: self
-  inherit_workspace: true
-  max_chain_depth: 10
-```
-
-### Failure Mode
-
-Culture grows without pruning. Old lessons that no longer apply accumulate. Include a pruning step that removes stale entries.
-
-### Composes With
-
-Cathedral Construction, CDCL Search, Systemic Acquired Resistance
-
----
-name: "CEGAR Loop"
-scale: iteration
-type: orchestration-pattern
-status: working
-forces:
-  - "Progressive Commitment"
-  - "Instrument-Task Fit"
-generators:
-  - "Incremental Exposure"
-  - "Match Instrument to Grain"
-problem: "Coarse-grained analysis produces spurious findings requiring expensive verification to distinguish real from false alarms."
-signals:
-  - "coarse analysis produces too many false alarms"
-  - "expensive to verify every finding at fine grain"
-  - "most findings disappear when abstraction is refined"
-  - "need selective refinement, not full re-analysis"
-stages:
-  - name: coarse-check
-    sheets: 1
-    instrument_guidance: "sonnet — module-level analysis is primarily pattern-matching; sonnet provides good context for reducing false positives without the cost of opus"
-    fallback_friendly: true
-    purpose: "Analyze code at module level, identifying potential issues without deep reasoning."
-    artifacts: ["findings.yaml"]
-  - name: triage-findings
-    sheets: 1
-    instrument_guidance: "opus — distinguishing real from spurious findings requires deep code reasoning and domain knowledge; cannot be delegated to cheaper instruments"
-    fallback_friendly: false
-    purpose: "Verify each finding: determine if it is a real issue or an artifact of coarse abstraction."
-    artifacts: ["triage-report.yaml"]
-  - name: refine-or-report
-    sheets: 1
-    instrument_guidance: "score-author's choice — filtering findings and selecting refinement targets is data-processing logic; any capable instrument suffices"
-    fallback_friendly: true
-    purpose: "Filter triage results and identify areas requiring finer-grained analysis; report findings confirmed as real."
-    artifacts: ["refinement-targets.yaml", "current-report.md"]
-  - name: check-termination
-    sheets: 1
-    instrument_guidance: "cli — this stage uses shell-based validation to assert convergence (no LLM needed)"
-    fallback_friendly: false
-    purpose: "Verify that all refinement targets have been resolved, terminating the loop if convergence is achieved."
-    artifacts: []
-composes_with:
-  - pattern: "Memoization Cache"
-    how: "Memoization Cache skips re-analysis of modules whose code has not changed, reducing the cost of CEGAR iterations."
-  - pattern: "CDCL Search"
-    how: "CDCL Search uses real findings confirmed by CEGAR triage as logical constraints to guide subsequent search."
-  - pattern: "Immune Cascade"
-    how: "CEGAR instantiates Immune Cascade with abstraction level as the escalation tier: coarse analysis first, then selective refinement on false positives."
-config_features:
-  - "self_chaining"
-dependencies: {}
----
-
-## CEGAR Loop (Progressive Refinement)
-
-`Status: Working` · **Source:** Counterexample-Guided Abstraction Refinement (Clarke et al., 2000), Expedition 4. **Scale:** iteration. **Iteration:** 4. **Force:** Progressive Commitment.
-
-### Core Dynamic
-
-Iteratively refines ABSTRACTION LEVEL, not output. Start coarse. If a problem is found, check if it's REAL or SPURIOUS (artifact of over-abstraction). If spurious, refine only the specific part that caused the false alarm. You never refine more than necessary. The structural move is minimum-cost verification through progressive abstraction refinement.
-
-The multi-instrument strategy is central: cheap instrument (Sonnet) for the broad coarse pass, expensive instrument (Opus) for the targeted triage. This matches the work's nature — coarse scanning is pattern-matching (cheap), distinguishing real from spurious requires deep reasoning (expensive).
-
-**Termination:** The loop terminates when the CLI validation sheet finds `refinement-targets.yaml` is empty (all findings resolved as REAL or SPURIOUS with no new areas to refine). If `max_chain_depth` is reached before convergence, the loop produces its best current report rather than failing.
-
-### When to Use / When NOT to Use
-
-Use for code review at scale (module-level first, function-level only where coarseness misleads), security audits (dependency scan then exploitability analysis), any verification where thorough analysis is expensive and most of the system is fine. Not when the abstraction hierarchy is shallow, spurious counterexamples are rare, or checking spurious vs. real costs more than full fine-grained analysis.
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: coarse-check
-    instrument: sonnet
-    prompt: "Analyze at module level. Write findings.yaml with [{module, finding, confidence}]."
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/findings.yaml"
-  - name: triage-findings
-    instrument: opus
-    prompt: >
-      For each finding in findings.yaml, determine: REAL or SPURIOUS?
-      Write triage-report.yaml: [{module, finding, verdict: REAL|SPURIOUS, evidence}].
-    capture_files: ["findings.yaml"]
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/triage-report.yaml"
-  - name: refine-or-report
-    prompt: >
-      Read triage-report.yaml.
-      Write refinement-targets.yaml listing modules with SPURIOUS findings needing finer analysis.
-      Write current-report.md summarizing all REAL findings confirmed so far.
-    capture_files: ["triage-report.yaml"]
-  - name: check-termination
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 -c \"import yaml; t=yaml.safe_load(open('{{ workspace }}/refinement-targets.yaml')); assert len(t)==0, f'{len(t)} targets remain'\""
-on_success:
-  action: self
-  inherit_workspace: true
-  max_chain_depth: 5
-```
-
-### Failure Mode
-
-Triage consistently marks real findings as spurious — refinement chases ghosts while real issues pass through. Validate by checking that refined areas produce fewer findings (convergence signal). If the loop exhausts `max_chain_depth` without converging, the abstraction hierarchy may be too shallow for this problem — fall back to full fine-grained analysis. The check-termination assertion fails when targets remain, breaking the self-chain — this is intentional, forcing refinement to continue.
-
-### Composes With
-
-Memoization Cache (unchanged modules skip re-analysis), CDCL Search (real findings become constraints), Immune Cascade (CEGAR IS graduated response with abstraction control)
-
----
-name: "Memoization Cache"
-scale: iteration
-type: orchestration-pattern
-status: working
-forces:
-  - "Progressive Commitment"
-generators:
-  - "Incremental Exposure"
-problem: "Self-chaining scores and iterative processes re-execute stages whose inputs haven't changed, wasting computation."
-signals:
-  - "self-chaining scores re-analyze unchanged modules wastefully"
-  - "concert campaigns process overlapping inputs redundantly"
-  - "CEGAR Loops re-examine stable abstraction regions unnecessarily"
-  - "iterative refinement compounds costs when inputs don't change"
-stages:
-  - name: check-cache
-    sheets: 1
-    instrument_guidance: "cli — simple Python script execution; no language model required"
-    fallback_friendly: true
-    purpose: "Validate the memoization cache is intact and contains entries for the current stage."
-    artifacts: []
-  - name: analyze
-    sheets: 1
-    instrument_guidance: "score-author's choice — capability depends on the analysis task, but memoization is load-bearing for avoiding re-execution"
-    fallback_friendly: false
-    purpose: "Analyze only files not in the cache or with changed fingerprints; update memo-cache.yaml with new entries."
-    artifacts: ["memo-cache.yaml"]
-composes_with:
-  - pattern: "CEGAR Loop"
-    how: "CEGAR Loop refines abstractions; Memoization Cache prevents re-analyzing unchanged regions of the refined model."
-  - pattern: "Cathedral Construction"
-    how: "Cathedral Construction builds iteratively; Memoization Cache caches layer results to avoid re-analyzing unchanged layers."
-  - pattern: "Fixed-Point Iteration"
-    how: "Fixed-Point Iteration converges through repeated refinement; Memoization Cache detects converged regions and skips re-analysis."
-script_dependencies:
-  - "cache_check.py"
-dependencies: {}
----
-
-## Memoization Cache
-
-`Status: Working` · **Source:** Dynamic programming, functional memoization (Bellman, 1957), Expedition 4. **Scale:** iteration + score-level. **Iteration:** 4.
-
-### Core Dynamic
-
-Workspace artifact `memo-cache.yaml` records input fingerprints and corresponding output fingerprints per stage. Before executing, the agent checks the cache: if the input fingerprint matches, reuse the cached output without re-execution. Not about caching LLM responses (infrastructure concern) — about recognizing at the ORCHESTRATION level that a stage's inputs haven't changed. Self-chaining scores that re-analyze unchanged modules are computing Fibonacci naively.
-
-**Context invalidation:** Cache entries include a `context_hash` derived from prelude content and relevant workspace state beyond direct inputs. When the prelude changes (different instructions, updated conventions), the context hash invalidates affected entries even if input files are identical. The user-supplied `cache_check.py` script computes both input fingerprints and context hash.
-
-### When to Use / When NOT to Use
-
-Use for self-chaining scores where each iteration modifies only part of the workspace, concert campaigns where scores analyze overlapping inputs, or CEGAR Loops where refined modules need re-analysis but unchanged ones don't. Not when inputs change every iteration, cache management costs more than re-execution, or the context hash is too coarse (invalidating too much) or too fine (missing real invalidations).
-
-### Marianne Score Structure
-
-```yaml
-sheets:
-  - name: check-cache
-    instrument: cli
-    validations:
-      - type: command_succeeds
-        command: "python3 {{ workspace }}/cache_check.py --stage analysis --workspace {{ workspace }}"
-  - name: analyze
-    prompt: >
-      Read memo-cache.yaml. Analyze ONLY files not in the cache (or with changed fingerprints).
-      Update memo-cache.yaml with new entries: {file, input_hash, output_hash, context_hash, timestamp}.
-    capture_files: ["memo-cache.yaml"]
-    validations:
-      - type: file_exists
-        path: "{{ workspace }}/memo-cache.yaml"
-```
-
-**Script dependency:** `cache_check.py` is user-supplied. Interface contract: `--stage NAME --workspace PATH`. Exits 0 if cache is valid and contains entries for the current stage. Exits 1 if cache needs rebuilding. The script computes SHA-256 fingerprints of input files and a context hash from prelude content.
-
-### Failure Mode
-
-Cache serves stale results because the context hash missed a relevant change (e.g., a prelude update changed the analysis criteria but not the input files). If cached results look wrong, clear the cache and re-run — the first run is no more expensive than running without memoization. Over-aggressive caching (caching everything) wastes disk and adds lookup overhead; only cache stages where re-execution is expensive.
-
-### Composes With
-
-CEGAR Loop (cache unchanged abstractions), Cathedral Construction (cache across cathedral iterations), Fixed-Point Iteration (cache stable regions during convergence)
+*— Sheet 13 of 13. The corpus is final.*

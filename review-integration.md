@@ -86,3 +86,17 @@ Every surviving pattern received: (1) failure mode, (2) status marker (Working/A
 - **Pattern Selection Guide** expanded to cover all 56 patterns.
 - **Generative Forces** expanded from 7 to 10, with three new forces from cross-domain expeditions.
 - **Awaiting Primitives** expanded with 3 new entries from iteration 4 cuts.
+
+### Iteration 6 Review Integration (2026-09-04)
+
+Three adversarial reviews attacked `04-draft-corpus.md` (25 core entries): The Practitioner (**Flawed; needs major revision**), The Skeptic (**Needs revision**), The Newcomer (**Needs revision**). Full adjudication in the v6 final (`archive/rosetta-corpus.md`); the summary record:
+
+**Cut from core → Awaiting Primitives (4):** Calling the Show (overlapped cue machine absent — all three reviews), Relieving the Watch (mid-sheet checkpoints absent — Reviews 1, 2; Review 3's dissent recorded), The Strike Clock (timeout→tier transition absent — all three; inverted-DAG teardown, budgets, pack-for-next-run, curfew report preserved as the buildable approximation), Put-In (runtime seat remap absent — Reviews 1, 2; Review 3's dissent recorded).
+
+**Cut → archive/demoted (3):** Command by Negation (unanimous — demoted to an idiom under Mission Command and the Declared Window), The ATO Cycle (Reviews 1, 2 — the overlapping-generations identity is inexpressible with `overlap: skip`; redesign condition stated), Cluster Lead (Reviews 1, 3 — its "coverage unknown" honesty clause promoted to a corpus rule in The Declared Window and C9).
+
+**Split (1):** Test Screening to Picture Lock → The Unprimed Falsifier (the lock half absorbed into The Freeze law) — Review 2.
+
+**Narrowed (2):** Typed Force (Review 1's umbrella-cut answered by delegation to Precedent Bench / Dropped Axiom / Proof-Carrying Artifact; Review 2's syntax/authority split executed as the `assigned_by` provenance field), Fan-out + Synthesis (returned to uncounted foundational primitive — Reviews 1, 2, restoring the v5.1 ruling the draft had reversed).
+
+**Strengthened (all survivors):** every score structure rewritten in the real dialect, re-verified against engine source (`job.py`, `execution.py`, `workspace.py`, `orchestration.py`, `engine.py`) — the draft's systematic violations (movement-level `fan_out`, expanded `total_items`, top-level `cadenzas`/`instrument_map`, `spec_tags` under `spec:`, digest-free `file_sha256`, `max_wall_seconds` as a movement curfew, invalid duplicate-sheet `instrument_map`) are all fixed. Two fabrications the reviews did not name were found by the integration's own source pass and corrected: `lookback_sheets: 0` means ALL completed sheets (not zero context), and `on_success: {action: self}` is not an accepted shape — self-chaining is `concert` + `on_success: [{type: run_job, job_path: …}]`. One v5.1 Real Dialect error also corrected: `skip_when` keys on the EXPANDED sheet number (adapter.py:2947), not the movement number. Bookkeeping corrected to disk: 13 proof YAMLs (not 14); 7 pass `mzt validate`, 6 fail (both reviews ran it independently and agree). Proof queue honestly reported as zero-of-six executed — a blocking requirement for v7. Script Library debt named at its true size (≈50 named scripts in the draft; the final core reduces to 24 with interface contracts). Core: 17 counted + 1 primitive; the corpus denominator (117 pattern files + 5 laws across core/archive/awaiting) is stated in the document header — Review 2's hidden-denominator finding.

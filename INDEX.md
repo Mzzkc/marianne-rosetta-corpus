@@ -2,6 +2,8 @@
 
 This index is what agents read FIRST when selecting patterns. It conveys WHEN and WHY to use each pattern, not HOW (that's in the individual pattern files).
 
+**Iteration 6 additions (2026-09-04):** four foundational laws (The Validity Window, The Freeze, Typed Force, The Write-Time Record), three communication patterns (Monitor Mix, Condorcet's Premise, The Declared Window), two score-level (The Gas-Free Certificate, Top-Down Demolition Order), three adaptation (Rent-Then-Commit, Vintage Overlay, The Economic Injury Line), two concert-level (The Precedent Bench, Demobilization Checkout), one iteration (The Unprimed Falsifier), one within-stage (The Dropped Axiom). Calling the Show, Relieving the Watch, The Strike Clock, and Put-In moved to Patterns Awaiting Primitives; Command by Negation is an idiom under Mission Command; The ATO Cycle and Cluster Lead are archived. Core count: 17 counted entries + Fan-out + Synthesis as uncounted primitive.
+
 Each entry shows:
 - **Problem**: The coordination problem this pattern addresses
 - **Signals**: When you would reach for this pattern (symptoms or situations)
@@ -24,6 +26,26 @@ Primitive coordination moves that other patterns wrap or specialize.
 - Problem: Deterministic protocol checks are given to LLM instruments that can hallucinate them, making the coordination layer no more reliable than the performers it coordinates.
 - Signals: any check whose result could be a shell exit code; a gate described in prose inside a prompt; a fallback from a deterministic instrument to an LLM
 - Key compositions: Every core pattern
+
+**The Validity Window**
+- Problem: Pipelines hold expirable state — tokens, permits, freshness-bound context, generated datasets — and silently reuse it after it expires.
+- Signals: state whose safety or truth depends on when it was created; a TTL or freshness bound mentioned only in prose; retry or resume paths that re-present old artifacts
+- Key compositions: The Gas-Free Certificate, The Declared Window, Effectivity Blocks
+
+**The Freeze**
+- Problem: Downstream work starts against upstream structure that is still moving, so finishers build on a version that stops existing.
+- Signals: parallel specialists blocked on a structure still under negotiation; re-deciding structure later costs multiples of deciding it now; post-freeze edits arriving silently instead of as visible amendments
+- Key compositions: Fork-Evident History, Prefabrication, The Unprimed Falsifier
+
+**Typed Force**
+- Problem: Authority-carrying and claim-carrying objects flow through pipelines without a type a gate can join on, so binding decisions and persuasive suggestions enforce identically.
+- Signals: downstream consumers behave differently depending on what kind of thing this is, but the kind is not a field; a decision record indistinguishable from an observation; an aggregation presented as neutral
+- Key compositions: The Precedent Bench, The Dropped Axiom, Proof-Carrying Artifact
+
+**The Write-Time Record**
+- Problem: Obligations and provenance are reconstructed by archaeology at end-of-life, after the people and context that created them are gone.
+- Signals: provisioning creates removal obligations nobody writes down; a teardown plan that begins with "figure out what we created"; a manifest written from memory at the end of a campaign
+- Key compositions: Demobilization Checkout, Fork-Evident History, Vintage Overlay
 
 ---
 
@@ -60,6 +82,11 @@ Patterns that structure a single sheet's prompt content or behavior.
 - Problem: Diverse inputs need synthesis into an authoritative position with argued support, not neutral aggregation.
 - Signals: multiple perspectives exist but need editorial judgment; summary isn't sufficient — need a supported position; inputs are diverse and require interpretation; neutrality would hide necessary judgment calls
 - Key compositions: Fan-out + Synthesis, Source Triangulation, Rashomon Gate
+
+**The Dropped Axiom**
+- Problem: Every fan-in embodies an aggregation function constrained by theorems that do not care about intentions, and the synthesis presents its concealed choice as neutrality.
+- Signals: sheets expressing rankings, priorities, or multi-premise verdicts; a synthesis that believes it is "just combining"; an unlabelled "consensus" output
+- Key compositions: Typed Force, Fan-out + Synthesis, Sugya Weave (Editorial Synthesis)
 
 ---
 
@@ -232,6 +259,16 @@ Patterns that arrange multiple sheets within a single score.
 - Signals: fan-out produces wildly varying output quality; synthesis stage is expensive and shouldn't process garbage; some outputs need rework, others are ready; structural quality checks are definable
 - Key compositions: Immune Cascade, Fan-out + Synthesis, Relay Zone
 
+**The Gas-Free Certificate**
+- Problem: Destructive operations run on the strength of a check that passed earlier, against a world that has since moved.
+- Signals: rm, force-push, schema-drop, secret-revoke, teardown ahead; "the check passed earlier" is load-bearing for something irreversible; a retried or resumed run about to reuse yesterday's verification
+- Key compositions: The Validity Window, The Fencing Token, Standby–GO
+
+**Top-Down Demolition Order**
+- Problem: Removal order is computed from commit history, so removing a shared thing succeeds while dependents that quietly stood on it lose their footing.
+- Signals: retiring a shared library, column, endpoint, schema, or base image; the danger is not "removal fails" but "removal succeeds and consumers break silently"; reverse-chronology undo proposed for something with internal structure
+- Key compositions: Saga Compensation Chain, Behavioral Pre-Mortem, The Soak Period (archive)
+
 ---
 
 ## Concert-Level
@@ -282,6 +319,16 @@ Patterns that coordinate multiple scores in a campaign.
 - Problem: Planned succession changes the named operator but leaves tacit state, pending decisions, and incident context behind.
 - Signals: ownership changes at a known time; work spans shifts or deployments; the successor must act immediately without re-discovery
 - Key compositions: The Black-Box Ledger, Positive Transfer
+
+**The Precedent Bench**
+- Problem: A long campaign re-litigates settled decisions every score, or contradicts them silently — because decisions carry no typed force and no supersession record.
+- Signals: "what have we already decided?" answered by archaeology; later scores contradicting earlier load-bearing decisions unknowingly; corrections and overrulings indistinguishable in the record
+- Key compositions: Typed Force, The Errata Ledger, Fork-Evident History
+
+**Demobilization Checkout**
+- Problem: Concerts end by stopping being visible, leaving orphaned processes, live leases firing into dead workspaces, and credentials outliving their purpose.
+- Signals: a campaign with physical footprint (daemons, leases, clones, containers, credentials); retirement has no owner; "the run ended" treated as if it meant "the run failed"
+- Key compositions: The Write-Time Record, The Gas-Free Certificate, Saga Compensation Chain
 
 ---
 
@@ -349,6 +396,21 @@ Patterns that enable coordination through durable workspace state and evidence.
 - Signals: credible witnesses disagree; the disagreement affects action; a single conclusion would conceal assumptions rather than resolve them
 - Key compositions: Sugya Weave (Editorial Synthesis), Talmudic Page
 
+**Monitor Mix**
+- Problem: Many consumers need different slices of one shared accumulating state, and each currently receives either everything or someone else's slice.
+- Signals: one shared state, many consumers with genuinely different depth needs; a summarizer drowning in function bodies while an implementer starves of them; routing decisions made ad hoc per run instead of written down
+- Key compositions: Relay Zone, The Declared Window
+
+**Condorcet's Premise**
+- Problem: Voting authority is assumed from panel size, but correlated panels ratify errors with majority confidence instead of averaging them out.
+- Signals: a fan-in that will vote, over claims that cannot be mechanically reconstructed; a "vendor-diverse" claim never family-probed; n reviewers from what turns out to be one model family
+- Key compositions: The Skeptical Oracle, Rashomon Gate, The Dropped Axiom
+
+**The Declared Window**
+- Problem: Synthesis sheets read bounded lookback over large runs and then make global claims their window cannot support.
+- Signals: streak/trend/consensus language in late sheets ("consistently", "across the run", "no objections"); a truncation whose consumers quote "the" upstream output; a silent exact-looking guess chosen over a declared approximation
+- Key compositions: The Black-Box Ledger, Hutchinson's Warning
+
 ---
 
 ## Adaptation
@@ -414,6 +476,21 @@ Patterns that adjust behavior mid-execution based on runtime conditions.
 - Problem: A paused or retried executor cannot observe its own expiry and silently overwrites newer work with older, slower work.
 - Signals: a shared mutable surface two sequenced executors may touch; workspace regions republished by a retry after timeout; scheduled jobs whose lease lapsed while the job kept running
 - Key compositions: Self-Stabilizing Custody, Replication Licensing
+
+**Rent-Then-Commit**
+- Problem: A repeated per-use cost and a one-time commitment cost face an unknown horizon, and no rule says when committing becomes provably defensible.
+- Signals: cheap retries that might go on forever vs one expensive settlement; recompute-every-run vs freeze-a-contract decisions; spot vs reserved capacity across a chain of unknown length
+- Key compositions: Circuit Breaker, Speculative Hedge, The Economic Injury Line
+
+**Vintage Overlay**
+- Problem: A canonical pipeline re-runs on a cadence under external conditions that vary, and each run improvises tuning instead of selecting from pre-authored condition-bound parameter sets.
+- Signals: the pipeline is stable but the conditions are not; conditions are mechanically measurable (versions, rate climates, volatility); per-vintage tuning would beat per-run improvisation
+- Key compositions: Effectivity Blocks, The Write-Time Record, Season Bible
+
+**The Economic Injury Line**
+- Problem: Defensive recurring work responds to felt damage instead of a threshold computed from unit economics before the season began.
+- Signals: real unit costs on both sides — intervening and damage; most intervals honestly deserve NO action; a bounded sampling protocol can estimate the pressure cheaply
+- Key compositions: Rent-Then-Commit, Hutchinson's Warning, Immune Cascade
 
 ---
 
@@ -531,6 +608,11 @@ Patterns that structure repeated refinement and learning across execution cycles
 - Problem: Iterative processes lack domain-specific termination conditions beyond structural equality.
 - Signals: iterative improvement plateaus on structural metrics but output lacks qualitative maturity; need to distinguish real convergence from mere structural stability; process converges structurally but hasn't achieved expected coherence or readiness; domain-specific maturity assessment required before proceeding to next phase
 - Key compositions: Fixed-Point Iteration, Back-Slopping (Learning Inheritance), Delphi Convergence
+
+**The Unprimed Falsifier**
+- Problem: Makers cannot perceive their finished artifact — fluency hides the claims it makes — and internal evaluation shares the blind spot.
+- Signals: anything read by humans whose makers are too close to it; "we think it's clear" has ever been wrong; self-evaluation and structural-equality checks both passing while users misread the thing
+- Key compositions: The Freeze, Rehearsal Spotlight, The Declared Window
 
 ---
 

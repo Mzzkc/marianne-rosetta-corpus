@@ -20,6 +20,33 @@ If you're new to orchestration, start with these five patterns in order. They co
 
 ---
 
+## Iteration 6 Problem → Pattern Additions
+
+Rows for the iteration-6 core: four laws, twelve patterns. Problem-first, per this guide's rule.
+
+| If your problem is… | Start with | Compose with |
+|---|---|---|
+| Pipelines hold expirable state — tokens, permits, freshness-bound context, generated datasets — and silently reuse it after it expires. | **The Validity Window** | The Gas-Free Certificate, The Declared Window |
+| Downstream work starts against upstream structure that is still moving, so finishers build on a version that stops existing. | **The Freeze** | Fork-Evident History, The Unprimed Falsifier |
+| Authority-carrying objects flow without a type a gate can join on, so binding decisions and persuasive suggestions enforce identically. | **Typed Force** | The Precedent Bench, The Dropped Axiom |
+| Obligations and provenance are reconstructed by archaeology at end-of-life, after the people who created them are gone. | **The Write-Time Record** | Demobilization Checkout, Vintage Overlay |
+| Many consumers need different slices of one shared accumulating state, and each receives everything or someone else's slice. | **Monitor Mix** | Relay Zone, The Declared Window |
+| Voting authority is assumed from panel size, but correlated panels ratify errors with majority confidence. | **Condorcet's Premise** | The Skeptical Oracle, Rashomon Gate |
+| Synthesis sheets read bounded lookback over large runs and then make global claims their window cannot support. | **The Declared Window** | The Black-Box Ledger, Hutchinson's Warning |
+| A destructive operation will run on the strength of a check that passed earlier, against a world that has since moved. | **The Gas-Free Certificate** | The Validity Window, The Fencing Token |
+| Removing a shared thing would succeed while dependents that quietly stood on it lose their footing. | **Top-Down Demolition Order** | Saga Compensation Chain, Behavioral Pre-Mortem |
+| A repeated per-use cost and a one-time commitment cost face an unknown horizon, with no rule for when committing is provably defensible. | **Rent-Then-Commit** | Circuit Breaker, The Economic Injury Line |
+| A stable canonical pipeline re-runs under varying external conditions, and each run improvises tuning. | **Vintage Overlay** | Effectivity Blocks, The Write-Time Record |
+| Defensive recurring work responds to felt damage instead of a threshold computed from unit economics before the season. | **The Economic Injury Line** | Rent-Then-Commit, Hutchinson's Warning |
+| A long campaign re-litigates settled decisions every score, or contradicts them silently. | **The Precedent Bench** | Typed Force, The Errata Ledger |
+| A concert is ending with processes, leases, workspaces, and credentials still live — retirement has no owner. | **Demobilization Checkout** | The Write-Time Record, The Gas-Free Certificate |
+| Makers cannot perceive their finished artifact, and internal evaluation shares the blind spot. | **The Unprimed Falsifier** | The Freeze, Rehearsal Spotlight |
+| A fan-in presents its concealed aggregation choice as neutrality. | **The Dropped Axiom** | Typed Force, Fan-out + Synthesis |
+
+Moved out of core this iteration: Calling the Show, Relieving the Watch, The Strike Clock, and Put-In are in Patterns Awaiting Primitives (with buildable approximations); Command by Negation is an idiom under Mission Command and the Declared Window; The ATO Cycle and Cluster Lead are archived with their surviving components recorded.
+
+---
+
 ## Iteration 5.1 Problem → Pattern Additions
 
 These rows cover every newly curated split pattern, plus the renamed foundational law. Archived/incubator entries remain selectable: their individual files state their evidence strength and limits.

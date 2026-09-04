@@ -206,6 +206,27 @@ prompt:
       The proof score must use at least 3 categories. The LLM is the coordinator, not the worker.
       Default to CLI instruments for deterministic work. Justify every stage that uses an LLM.
 
+    primitives: |
+      Primitive coverage refresh (2026-09-04, source-verified):
+      self_healing (HEALING baton state after retries; healing coordinator
+      diagnosis and re-dispatch; --self-healing/--escalation);
+      prompt_extensions (global then per-sheet directives); interactive_mode
+      (profile default or forced interactive/headless, with nudges);
+      mcp_shared_pool (one daemon-shared process per configured MCP server);
+      bridge (accepted config, currently conductor-unconsumed); code_execution
+      (opt-in classified blocks, require_sandbox fails closed); sheet_pacing;
+      relative_workspace_anchor (file parent vs string-load CWD); state_backends
+      (score json/sqlite surface, conductor registry remains SQLite);
+      entropy_response and learning_auto_apply (modeled, not consumed by current
+      per-score dispatch); agent_card (in-process A2A, memory-only state);
+      runtime_variables (mzt run --var, later wins, resume-persistent); cli_pause
+      (sheet-boundary pause); cli_resume (--from-sheet resets later work);
+      cli_modify (validate/pause/replace/resume); cli_cancel (immediate);
+      cli_clear (terminal state only); conductor_lifecycle_cli
+      (mzt start/stop/restart/conductor-status); clear_rate_limits_cli
+      (return affected WAITING sheets to PENDING); prompt_preflight
+      (daemon token warning/error thresholds, zero disables).
+
     # Adversarial reviewer voices
     reviewers:
       1:

@@ -45,13 +45,17 @@ composes_with:
   how: substitution — replaces trust-the-findings with deterministic reconstruction
 - pattern: Proof-Carrying Artifact
   how: layering — wraps the fan-out so synthesis consumes only admitted evidence
+- pattern: The Dropped Axiom
+  how: the typing clause — every merge declares its aggregation rule and dropped axioms
+- pattern: The Declared Window
+  how: the window clause — synthesis over bounded lookback emits a window manifest
 type: orchestration-pattern
 ---
 
 ## Fan-out + Synthesis (Foundational Primitive)
 
 
-**Status:** Working. **Source:** ubiquitous; iterations 1–4, confirmed iteration 5 (all six expeditions were forbidden from returning it; the ban is the confirmation — every voice had to position its discoveries against this move, and all six reported the territory around it as saturated). Prior art: MapReduce.
+**Status:** Working. **Source:** ubiquitous; iterations 1–4, confirmed iteration 5 (all six expeditions were forbidden from returning it; the ban is the confirmation — every voice had to position its discoveries against this move, and all six reported the territory around it as saturated); re-confirmed iteration 6. Prior art: MapReduce.
 
 **Core Dynamic.** Split work into parallel independent streams, merge in a synthesis stage. The boundary condition the corpus earned in iteration 5 stands: fan-out answers *who does what in what order* — and the perpendicular questions (who is authorized, what evidence traveled, who owns failure, when to stop) are not answerable inside it. Every communication and adaptation pattern in this corpus is a wrapper around this move, not a replacement for it.
 
@@ -108,3 +112,5 @@ validations:
 ### Review Integration
 
 Iteration 5 reclassified this from a score-level peer pattern to a foundational primitive. The revision names its boundary: it allocates parallel work, but evidence, authority, custody, and termination require wrappers. During split curation, the monolith's G1–G6 draft label was mapped to the nearest generator in forces.md, and every stage now names a current profile: deterministic stages use an any-wrapped CLI profile; judgment stages name claude-code, codex-cli, or opencode as appropriate.
+
+Iteration 6: the v6 draft re-promoted this to a counted core pattern; Reviews 1 and 2 reversed the re-promotion unanimously ("a primitive, not a differentiated corpus pattern" / "keep it as syntax and remove it from the pattern count") — it remains a foundational primitive, uncounted. The two iteration-6 clauses survive as named contracts attached at the merge, not as reasons to re-count it: the **typing clause** (The Dropped Axiom's `{aggregation_rule, axioms_dropped, declared_authority}` header on every merge) and the **window clause** (The Declared Window's manifest on bounded-lookback synthesis). Both are recorded in `composes_with`.

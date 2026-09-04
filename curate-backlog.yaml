@@ -109,6 +109,21 @@ prompt:
       stagger_delay_ms, cross_sheet control, named movements, fan_out,
       spec_dir/spec_tags per-sheet filtering, learning store + budgets.
 
+      Primitive coverage refresh (2026-09-04, source-verified):
+      - self_healing: HEALING state after retry exhaustion (conductor amendment)
+      prompt_extensions (global then per-sheet directives); interactive_mode
+      (profile default or forced interactive/headless, with nudges);
+      mcp_shared_pool (one daemon-shared process per configured MCP server);
+      bridge (accepted config, currently conductor-unconsumed); code_execution
+      (opt-in classified blocks, require_sandbox fails closed); sheet_pacing;
+      relative_workspace_anchor (file parent vs string-load CWD); state_backends
+      (score json/sqlite surface, conductor registry remains SQLite);
+      entropy_response and learning_auto_apply (modeled, not consumed by current
+      per-score dispatch); agent_card (in-process A2A, memory-only state);
+      runtime_variables (mzt run --var, later wins, resume-persistent); cli_pause;
+      cli_resume; cli_modify; cli_cancel; cli_clear; conductor_lifecycle_cli;
+      clear_rate_limits_cli; prompt_preflight (daemon token thresholds).
+
       Instruments (profiles): claude-code, codex-cli (gpt-5.5), opencode
       (Z.AI GLM 5.x), goose, antigravity (Google; gemini-cli is DEAD),
       ollama (local), aider, cline-cli, crush, any-wrapped CLI.

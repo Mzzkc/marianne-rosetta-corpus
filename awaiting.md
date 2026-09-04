@@ -1,6 +1,6 @@
 # Patterns Awaiting Primitives
 
-Each row was rechecked against the source-verified Marianne primitives on 2026-09-03. A nearby mechanism is not treated as the missing primitive: `cost_limits` is per-job, `fan_out` is parse-time static, and ordinary parallelism does not provide consumer-driven backpressure or multi-host authority.
+Each row was rechecked against the source-verified Marianne primitives on 2026-09-03; iteration-6 rows added 2026-09-04 after three adversarial reviews (each blocked on a named absent primitive, per the corpus's no-fabrication rule). A nearby mechanism is not treated as the missing primitive: `cost_limits` is per-job, `fan_out` is parse-time static, and ordinary parallelism does not provide consumer-driven backpressure or multi-host authority.
 
 | Pattern | Blocked By | Buildable approximation / current boundary |
 |---|---|---|
@@ -17,6 +17,10 @@ Each row was rechecked against the source-verified Marianne primitives on 2026-0
 | True capability confinement | OS-level sandboxing of sheet filesystem and tool access | Designation Is Authorization confines delivered context, not process reach. |
 | Devolution Packet | Multi-host orchestration and delegated host authority | No faithful single-host approximation. Re-proposable when the multi-host primitive exists. |
 | Black Start | Multi-host capability discovery and dependency-ordered global restart | No faithful single-host approximation. Re-proposable when the multi-host primitive exists. |
+| Calling the Show (iteration 6) | A recurring per-cue state machine with overlapped standby and hold-and-proceed-around | Standby–GO invoked once per cue inside a bounded self-chain; cue ledger as a workspace artifact advanced by a CLI movement; holds recorded as visible skips — the pipelined overlap and the bypass lane are the blocked part. All three adversarial reviews concurred the continuous form is inexpressible in a linear movement DAG. |
+| Relieving the Watch (iteration 6) | Mid-sheet checkpointing (write-ahead hook or transactional sheet checkpoints) | Deck log as append-only JSONL written *as the sheet works*; movement-boundary reconciliation gates joining log claims to disk facts; `mzt recover` as the rehearsed spine. The Newcomer review's dissent is on record: "the crash-recovery pattern every long-running user needs" — re-enters core when the checkpoint primitive lands. |
+| The Strike Clock (iteration 6) | A timeout→tier transition (timeouts fail sheets; they select nothing — `max_wall_seconds` bounds a scheduled run and selects nothing) | Inverted-DAG teardown order derived from the assembly DAG; per-movement budgets via `instrument_config.timeout_seconds`; pack-for-next-run; curfew report as the successor's first input. The tier-arithmetic is the blocked half. |
+| Put-In (iteration 6) | Runtime seat remap (instrument assignment and `fan_out` expand at parse time) | Track-sheet compile from incumbent artifacts; shadow run as an isolated job writing alongside, never over; structured diff gate with `--require-bijection`; cutover as a versioned score edit with the incumbent written into the next version's fallback chain. The Newcomer review's dissent is on record. |
 
 ## Moved Out of Awaiting
 
