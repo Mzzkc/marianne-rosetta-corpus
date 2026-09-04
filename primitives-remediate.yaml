@@ -62,7 +62,7 @@ prompt:
     corpus_patterns_dir: "{{ score_dir }}/patterns"
     audit_script: "{{ score_dir }}/scripts/audit_primitives.py"
     repo_python: "{{ score_dir }}/../../.venv/bin/python"
-    compiler_patterns: "{{ score_dir }}/../../../compiler/src"
+    compiler_patterns: "{{ score_dir }}/../../compiler/src"
 
   template: |
     {% if stage == 1 %}
