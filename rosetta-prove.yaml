@@ -59,22 +59,26 @@ instrument_config:
 instrument_fallbacks: [codex-cli]
 
 # Vendor-diverse adversarial reviewers — independence by construction:
-# three different vendor families, not three runs of one model.
+# three different vendor families at the MODEL level, not three runs of one
+# model. (A claude-code reviewer would not add diversity here: this host's
+# claude-code routes through the Z.AI gateway, i.e. GLM under an
+# Anthropic-compatible interface.) Models refreshed 2026-09-04 against the
+# live CLIs: gemini-3.8-flash (agy 1.1.26), gpt-5.6 (codex), glm-5.3 (plan).
 instruments:
-  reviewer-opus:
-    profile: claude-code
+  reviewer-gemini:
+    profile: antigravity
     config:
-      model: claude-opus-4-7
+      model: gemini-3.8-flash-high
       timeout_seconds: 3600
   reviewer-codex:
     profile: codex-cli
     config:
-      model: "gpt-5.5"
+      model: "gpt-5.6-sol"
       timeout_seconds: 3600
   reviewer-glm:
     profile: opencode
     config:
-      model: "zai-coding-plan/glm-5.2"
+      model: "zai-coding-plan/glm-5.3"
       timeout_seconds: 3600
 
 # Fan-out survival: repeated instrument failures open the circuit instead of
@@ -99,9 +103,9 @@ sheet:
   total_items: 6
   fan_out:
     5: 3
-  # Movement-5 review voices: Anthropic / OpenAI / Z.AI (sheets 5-7)
+  # Movement-5 review voices: Google / OpenAI / Z.AI (sheets 5-7)
   instrument_map:
-    reviewer-opus: [5]
+    reviewer-gemini: [5]
     reviewer-codex: [6]
     reviewer-glm: [7]
   dependencies:
@@ -165,7 +169,9 @@ prompt:
       "everything is an LLM" thinking. The real world has thousands of tools.
       Reach for them.
 
-      **AI Agents:** claude-code, gemini-cli, aider, codex-cli, goose, cline
+      **AI Agents:** claude-code, codex-cli (gpt-5.6), opencode (Z.AI GLM
+      5.x), goose, antigravity (Google; gemini-cli is DEAD, sunset to
+      Antigravity), ollama (local), aider, cline-cli, crush
       **Creative — Visual:** DALL-E API, Midjourney API, Stable Diffusion, Flux, Leonardo.ai, Canva API, Figma API, ImageMagick, ffmpeg (thumbnails, composites)
       **Creative — Audio:** ElevenLabs (voice synthesis), Bark (TTS), Whisper (transcription), ffmpeg (audio processing), sox, Spotify API (metadata)
       **Creative — Video:** Runway, Sora, ffmpeg (editing, encoding, format conversion), yt-dlp (research)
