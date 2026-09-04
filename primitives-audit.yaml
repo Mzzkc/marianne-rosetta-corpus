@@ -1,0 +1,222 @@
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║  Rosetta Primitives Audit — is the corpus equipped with ALL Marianne         ║
+# ║  primitives and capabilities?                                                ║
+# ║                                                                              ║
+# ║  Campaign unit A (read-only). Three sheets:                                  ║
+# ║    1. Ground-truth inventory — enumerate EVERY score-facing primitive and    ║
+# ║       capability from the source models, cross-checked against the docs      ║
+# ║       reference; drift between them is recorded, source wins.                ║
+# ║    2. Corpus claims extraction — every primitive/capability claim the        ║
+# ║       corpus makes (dialect section, primitives manifests, pattern           ║
+# ║       attributions, awaiting blockers), each with a mapping attempt.         ║
+# ║    3. Deterministic diff — scripts/audit_primitives.py compares the two      ║
+# ║       artifacts. Judgment lives upstream (the inventory's alias map,         ║
+# ║       sheet 2's mappings); this stage is pure arithmetic in bash.            ║
+# ║                                                                              ║
+# ║  Unit B (primitives-remediate.yaml) is launched by the conductor only after  ║
+# ║  (a) this audit completes and the gap report passes conductor review, and    ║
+# ║  (b) rosetta-prove has released the corpus (no concurrent writers).          ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+name: rosetta-primitives-audit
+description: "Read-only audit: ground-truth Marianne primitives vs the corpus's claims, deterministic diff"
+
+# Workspace auto-derives to ~/workspaces/rosetta-primitives-audit (#58).
+# Unit B reads this run's artifacts from there.
+
+instrument: claude-code
+instrument_config:
+  timeout_seconds: 3600
+instrument_fallbacks: [codex-cli]
+
+sheet:
+  size: 1
+  total_items: 3
+  dependencies:
+    2: [1]
+    3: [2]
+  # Stage 3 is a deterministic shell diff — the Etiquette Law applies:
+  # raw cli with an EMPTY replacement chain, no AI reinterpretation.
+  per_sheet_instruments:
+    3: cli
+  per_sheet_fallbacks:
+    3: []
+
+cross_sheet:
+  auto_capture_stdout: true
+  max_output_chars: 4000
+  lookback_sheets: 2
+
+retry:
+  max_retries: 1
+  base_delay_seconds: 30
+
+stale_detection:
+  enabled: true
+  idle_timeout_seconds: 1200
+
+prompt:
+  variables:
+    repo_root: "{{ score_dir }}/../.."
+    repo_python: "{{ score_dir }}/../../.venv/bin/python"
+    corpus_monolith: "{{ score_dir }}/archive/rosetta-corpus.md"
+    corpus_awaiting: "{{ score_dir }}/awaiting.md"
+    corpus_patterns_dir: "{{ score_dir }}/patterns"
+    corpus_scores:
+      - "{{ score_dir }}/the-rosetta-score.yaml"
+      - "{{ score_dir }}/rosetta-prove.yaml"
+      - "{{ score_dir }}/curate-backlog.yaml"
+    audit_script: "{{ score_dir }}/scripts/audit_primitives.py"
+
+    inventory_schema: |
+      Write `01-primitives-inventory.yaml` EXACTLY in this shape (the audit
+      script parses it — breaking the shape breaks the diff):
+
+      ```yaml
+      schema_version: 1
+      generated: "2026-09-04"
+      primitives:
+        - name: schedule            # canonical short name, snake_case
+          kind: score-block         # score-block | sheet-feature | hook |
+                                   # instrument-system | cli-verb | technique |
+                                   # validation-type | execution-semantics
+          aliases: [recurrence, "leased recurrence", cron scheduling]
+          source_refs:              # where truth was read from
+            - "src/marianne/core/config/... (model+field)"
+            - "docs/configuration-reference.md#section"
+          notes: "one line: what it does, key constraints"
+      ```
+
+      RULES:
+      - One entry per DISTINCT capability, not per YAML field. `schedule`
+        is one primitive (cron/interval/timezone/overlap/misfire/jitter are
+        its facets, listed as aliases); `retry` and `completion mode` are
+        one entry (completion mode is retry's facet) unless you can defend
+        splitting them in `notes`.
+      - Include EXECUTION SEMANTICS the corpus can attribute work to:
+        durable failure hooks, score_dir anchoring, relative run_job
+        chaining, auto-derived workspaces, empty-fallback-chain gates,
+        circuit_breaker counting semantics, cost_limits pause semantics.
+      - Include CLI verbs that change score lifecycle: recover, resume,
+        resolve, pause, validate.
+      - Source models are TRUTH. Where docs/configuration-reference.md
+        disagrees (field in models missing from docs, or docs field absent
+        from models), keep the source verdict and add to notes:
+        "DOCS DRIFT: ...".
+
+  template: |
+    {% if stage == 1 %}
+    # Ground Truth — every Marianne primitive and capability
+
+    Enumerate the COMPLETE score-facing surface of Marianne from source.
+
+    Read (all of it — this is the truth set):
+    - `{{ repo_root }}/src/marianne/core/config/` — every module: job.py
+      (JobConfig, SheetConfig, InjectionItem, InstrumentDef, MovementDef),
+      execution.py, workspace.py, learning.py, orchestration.py, spec.py,
+      backend.py, techniques.py.
+    - `{{ repo_root }}/docs/configuration-reference.md` — the curated
+      extraction; cross-check it, do not trust it blindly.
+    - `{{ repo_root }}/src/marianne/utils/hooks.py` and the hook config
+      models it serves (on_success AND on_failure).
+
+    Then write `{{ workspace }}/01-primitives-inventory.yaml` following the
+    schema contract above. Cover at minimum: schedule/recurrence, on_success
+    AND on_failure hooks, concert chaining, movements, fan_out and stage
+    maps, per_sheet instruments/config/fallbacks and empty-chain gates,
+    instrument_map, skip_when, prelude/cadenzas (file AND directory modes,
+    required:true), spec_dir/spec_tags, techniques ECS, cross_sheet capture,
+    parallel/stagger, retry+completion mode, rate_limit, circuit_breaker,
+    cost_limits, stale_detection, isolation/worktrees, workspace_lifecycle,
+    checkpoints, ai_review, grounding hooks, feedback extraction, learning
+    store and budgets, notifications, conductor block, bridge, state
+    backends, interactive mode, MCP shared pool, score_dir anchoring,
+    relative run_job anchoring, auto-derived workspaces, the lifecycle CLI
+    verbs, and every distinct validation type.
+
+    Do NOT include things the source cannot back: no planned features, no
+    docs aspirations, no per-sheet budgets that do not exist. When unsure
+    whether something is real, read the model again — if a field or
+    execution path exists in code, it is real.
+
+    {% elif stage == 2 %}
+    # Corpus Claims — what the corpus says exists
+
+    Extract every primitive/capability CLAIM the corpus makes. Read:
+    - `{{ corpus_monolith }}` — especially "The Real Dialect" section and
+      every pattern's primitive attributions and instrument guidance.
+    - `{{ corpus_awaiting }}` — every blocked pattern's named blocking
+      primitive (capture the blocker as a claim; map it to the primitive
+      that WOULD unblock it, or null if unnameable).
+    - `{{ corpus_patterns_dir }}/` — EVERY pattern file: frontmatter
+      stages[].instrument_guidance and body attributions.
+    - The three corpus scores (paths in `{{ corpus_scores }}`): their
+      primitives/`existing:` manifest blocks are claims too.
+
+    Write `{{ workspace }}/02-corpus-claims.yaml`:
+
+    ```yaml
+    schema_version: 1
+    claims:
+      - claim: "leased recurrence"        # the corpus's wording, verbatim
+        where: ["patterns/canon-of-phases.md", "archive/rosetta-corpus.md"]
+        mapped_primitive: schedule        # canonical name from sheet 1's
+                                         # inventory; null ONLY if unnameable
+    ```
+
+    Rules:
+    - One claim per DISTINCT assertion; where the same wording repeats
+      across many files, list the strongest three `where` refs and move on.
+    - `mapped_primitive` must be a canonical name from the inventory when
+      you can map it. Use null sparingly — unresolved claims cost the
+      conductor judgment time.
+    - Awaiting blockers that name a primitive the inventory ALREADY carries
+      are stale blockers — record them as-is; the diff surfaces them.
+
+    {% elif stage == 3 %}
+    # Deterministic diff — pure shell, no judgment in this stage.
+    set -euo pipefail
+
+    {{ repo_python }} {{ audit_script }} \
+      01-primitives-inventory.yaml \
+      02-corpus-claims.yaml \
+      > 03-gap-report.md
+
+    tail -3 03-gap-report.md
+
+    {% endif %}
+
+validations:
+  - type: file_exists
+    path: "{workspace}/01-primitives-inventory.yaml"
+    condition: "stage == 1"
+    stage: 1
+  - type: command_succeeds
+    command: "{score_dir}/../../.venv/bin/python -c \"import yaml; d=yaml.safe_load(open('{workspace}/01-primitives-inventory.yaml')); assert d.get('schema_version')==1; assert len(d.get('primitives',[]))>=30, 'inventory too thin'\""
+    condition: "stage == 1"
+    stage: 1
+    description: "Inventory parses, schema 1, at least 30 primitives"
+  - type: file_exists
+    path: "{workspace}/02-corpus-claims.yaml"
+    condition: "stage == 2"
+    stage: 1
+  - type: command_succeeds
+    command: "{score_dir}/../../.venv/bin/python -c \"import yaml; d=yaml.safe_load(open('{workspace}/02-corpus-claims.yaml')); c=d.get('claims',[]); assert len(c)>=50, 'claims too thin'; assert all('claim' in x and 'where' in x for x in c)\""
+    condition: "stage == 2"
+    stage: 1
+    description: "Claims parse, at least 50 claims, each with provenance"
+  - type: file_exists
+    path: "{workspace}/03-gap-report.md"
+    condition: "stage == 3"
+    stage: 1
+  - type: content_regex
+    path: "{workspace}/03-gap-report.md"
+    pattern: "AUDIT COMPLETE"
+    condition: "stage == 3"
+    stage: 2
+  - type: content_regex
+    path: "{workspace}/03-gap-report.md"
+    pattern: "FINDINGS: \\d+ \\(missing=\\d+ fabricated=\\d+ unresolved=\\d+\\)"
+    condition: "stage == 3"
+    stage: 2
+    description: "Summary line present with all three counts"

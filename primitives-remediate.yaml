@@ -1,0 +1,184 @@
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║  Rosetta Primitives Remediate — close every gap the audit found               ║
+# ║                                                                              ║
+# ║  Campaign unit B. Launched by the conductor ONLY after:                      ║
+# ║    (a) rosetta-primitives-audit COMPLETED and its gap report passed           ║
+# ║        conductor review, and                                                 ║
+# ║    (b) rosetta-prove released the corpus (no concurrent writers).             ║
+# ║  Do not run this score on any other trigger.                                 ║
+# ║                                                                              ║
+# ║  Sheet 1 (judgment): apply the report's dispositions to the corpus —          ║
+# ║    the Real Dialect account, the three scores' primitives manifests,          ║
+# ║    awaiting.md resolutions, pattern attributions — and emit a                 ║
+# ║    remediated claims file plus a touched-file ledger.                         ║
+# ║  Sheet 2 (arithmetic, raw cli, empty fallback chain): re-run the audit        ║
+# ║    diff expecting ZERO findings, smoke-expand every pattern through the       ║
+# ║    real compiler, and grep for forbidden attributions. Hard PASS bar.         ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+name: rosetta-primitives-remediate
+description: "Apply the primitives-audit gap report to the corpus; deterministic zero-findings verification"
+
+instrument: claude-code
+instrument_config:
+  timeout_seconds: 3600
+instrument_fallbacks: [codex-cli]
+
+sheet:
+  size: 1
+  total_items: 2
+  dependencies:
+    2: [1]
+  prelude:
+    # Unit A's artifacts live in its auto-derived workspace (#58 default
+    # root), portable across machines with the same convention.
+    - file: "~/workspaces/rosetta-primitives-audit/01-primitives-inventory.yaml"
+      as: context
+      required: true
+    - file: "~/workspaces/rosetta-primitives-audit/02-corpus-claims.yaml"
+      as: context
+      required: true
+    - file: "~/workspaces/rosetta-primitives-audit/03-gap-report.md"
+      as: context
+      required: true
+  per_sheet_instruments:
+    2: cli
+  per_sheet_fallbacks:
+    2: []
+
+retry:
+  max_retries: 1
+  base_delay_seconds: 30
+
+stale_detection:
+  enabled: true
+  idle_timeout_seconds: 1200
+
+prompt:
+  variables:
+    audit_workspace: "~/workspaces/rosetta-primitives-audit"
+    corpus_monolith: "{{ score_dir }}/archive/rosetta-corpus.md"
+    corpus_awaiting: "{{ score_dir }}/awaiting.md"
+    corpus_patterns_dir: "{{ score_dir }}/patterns"
+    audit_script: "{{ score_dir }}/scripts/audit_primitives.py"
+    repo_python: "{{ score_dir }}/../../.venv/bin/python"
+    compiler_patterns: "{{ score_dir }}/../../../compiler/src"
+
+  template: |
+    {% if stage == 1 %}
+    # Apply the Gap Report
+
+    The injected gap report classifies findings as MISSING (primitive
+    exists, corpus never claims it), FABRICATED (corpus claims something
+    the inventory does not carry), and UNRESOLVED (claims that could not
+    be mapped). The injected inventory is ground truth; the injected
+    claims file is the pre-remediation state.
+
+    ## MISSING — equip the corpus
+
+    For every MISSING primitive, add it to the corpus's dialect account:
+    - `{{ corpus_monolith }}` "The Real Dialect" section: one row per
+      missing primitive in the section's own table format (read it first;
+      match its voice and density — no essays).
+    - If an Awaiting Primitives entry is blocked on a primitive that NOW
+      exists, resolve it in `{{ corpus_awaiting }}` per its own format
+      (the pattern is re-proposable next iteration — note that).
+    - The three scores' manifest blocks (`the-rosetta-score.yaml`,
+      `rosetta-prove.yaml`, `curate-backlog.yaml` — their `primitives` /
+      `existing:` variables): add the missing primitive in each list's
+      current phrasing. These blocks date fast; add a dated note line.
+
+    ## FABRICATED — correct the attribution
+
+    For every FABRICATED claim: find the pattern or dialect row that
+    carries it and correct the attribution to the nearest REAL primitive
+    from the inventory (the 2026-09-03 accounting's precedent: grounding
+    became guidance-only; per-sheet budgets became per-JOB cost_limits).
+    Record the correction in the pattern file's Review Integration section
+    if one exists; otherwise in the body nearest the claim.
+
+    ## UNRESOLVED — resolve every one
+
+    Map each unresolved claim to a real primitive or delete the claim as
+    unsupported. Nothing may remain unresolved; the verify stage enforces
+    unresolved=0.
+
+    ## Then emit two artifacts
+
+    1. `{{ workspace }}/claims-remediated.yaml` — the FULL claims file
+       (copy of the injected one) with every corrected mapping applied and
+       the new MISSING-primitive claims ADDED (the corpus now claims them,
+       with `where` pointing at the files you just edited). Same schema.
+    2. `{{ workspace }}/01-applied.md` — the ledger: every file touched,
+       what changed in it, one line each. End with
+       `Files changed: N` on its own line.
+
+    Do not touch pattern files beyond attribution corrections. Do not
+    renumber, restructure, or "improve" anything the report does not name.
+
+    {% elif stage == 2 %}
+    # Verify — arithmetic only, hard PASS bar.
+    set -euo pipefail
+
+    REPORT=02-verification.md
+
+    # 1. Re-run the audit diff: zero findings required.
+    {{ repo_python }} {{ audit_script }} \
+      {{ audit_workspace }}/01-primitives-inventory.yaml \
+      claims-remediated.yaml > recheck.md
+    tail -2 recheck.md | tee -a "$REPORT"
+
+    grep -q 'FINDINGS: 0 (missing=0 fabricated=0 unresolved=0)' recheck.md \
+      || { echo 'FAIL: audit recheck is not zero-findings' | tee -a "$REPORT"; exit 1; }
+
+    # 2. Compiler smoke: every pattern still expands.
+    {{ repo_python }} -c "
+    import sys; sys.path.insert(0, '{{ compiler_patterns }}')
+    from marianne_compiler.patterns import PatternExpander
+    loaded = PatternExpander().load_rosetta_corpus('{{ corpus_patterns_dir }}')
+    assert len(loaded) >= 100, f'only {len(loaded)} patterns load'
+    print(f'compiler smoke: {len(loaded)} patterns load')
+    " 2>&1 | tee -a "$REPORT"
+
+    # 3. Forbidden attributions: none may appear as active guidance.
+    if grep -rniE 'gemini-cli|grounding hooks (verify|as)|per-sheet (budget|cost)' \
+        {{ corpus_patterns_dir }} --include='*.md' | grep -viE 'dead|sunset|retired|never assign|guidance-only|approximation'; then
+      echo 'FAIL: forbidden active attributions found' | tee -a "$REPORT"
+      exit 1
+    fi
+    echo 'forbidden attributions: none active' | tee -a "$REPORT"
+
+    echo 'REMEDIATE: PASS' | tee -a "$REPORT"
+
+    {% endif %}
+
+validations:
+  - type: file_exists
+    path: "{workspace}/01-applied.md"
+    condition: "stage == 1"
+    stage: 1
+  - type: content_regex
+    path: "{workspace}/01-applied.md"
+    pattern: "^Files changed: \\d+$"
+    condition: "stage == 1"
+    stage: 1
+    description: "Ledger ends with a file count"
+  - type: file_exists
+    path: "{workspace}/claims-remediated.yaml"
+    condition: "stage == 1"
+    stage: 1
+  - type: command_succeeds
+    command: "{score_dir}/../../.venv/bin/python -c \"import yaml; d=yaml.safe_load(open('{workspace}/claims-remediated.yaml')); c=d.get('claims',[]); assert len(c)>=50, 'claims too thin'; assert all(x.get('mapped_primitive') is not None for x in c), 'unresolved claims remain'\""
+    condition: "stage == 1"
+    stage: 2
+    description: "Remediated claims all carry mappings"
+  - type: file_exists
+    path: "{workspace}/02-verification.md"
+    condition: "stage == 2"
+    stage: 1
+  - type: content_regex
+    path: "{workspace}/02-verification.md"
+    pattern: "REMEDIATE: PASS"
+    condition: "stage == 2"
+    stage: 2
+    description: "All three verification gates passed"
