@@ -20,7 +20,7 @@
 | **file_exists** | Validation: a workspace file was created |
 | **file_modified** | Validation: a workspace file was changed (requires user-supplied check script) |
 | **on_success** | What happens after completion — enables self-chaining and concert sequencing |
-| **on_failure** | What happens after failure — Aspirational: not yet implemented in Marianne |
+| **on_failure** | Durable job-level hooks run after terminal job failure, using the same actions and failure policy as `on_success` (`src/marianne/core/config/job.py`, `JobConfig.on_failure`). They do not run after each sheet attempt. |
 | **inherit_workspace** | Self-chain gets the same workspace, not fresh |
 | **max_chain_depth** | Safety bound on self-chaining iterations |
 | **Status: Working** | YAML in this pattern composes in Marianne today |

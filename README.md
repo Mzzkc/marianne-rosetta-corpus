@@ -13,7 +13,7 @@ A curated collection of 56 orchestration patterns for composing Marianne scores.
 | `composition-dag.yaml` | Machine-readable pattern composition graph |
 | `the-rosetta-score.yaml` | Pattern discovery engine (self-chaining, 6-domain fan-out) |
 | `rosetta-prove.yaml` | Pattern proof engine (composes demonstration scores) |
-| `proof-scores/` | 6 production-grade demonstration scores from research iterations |
+| `proof-scores/` | 17 production-grade demonstration scores from research iterations; see `examples/rosetta/README.md` in the parent repository for the indexed copies and corpus-only entries |
 | `archive/` | Original monolith corpus (preserved for reference) |
 
 ## Using the Corpus
