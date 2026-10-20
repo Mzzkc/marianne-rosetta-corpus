@@ -230,6 +230,13 @@ prompt:
       per-sheet filter which specs are relevant. Agents receive structured
       domain knowledge, not just prompts.
 
+      **Conductor support:** sheet descriptions (per-sheet status labels),
+      hook variables ({workspace}/{job_id}/{job_status}/{score_dir} in
+      hook commands), score logging (schema-level; conductor-unconsumed),
+      AI judgment (FERMATA auto-resolution, opt-in), schedule pinning
+      (byte-digest admission), structured output (response_format
+      json_object/json_schema). Gap-report additions 2026-10-20.
+
       **Agent tools:** vary by instrument profile — harness instruments
       (claude-code, codex-cli, goose) carry their own tool suites
       (Read/Write/Edit/Grep/Bash/WebSearch/subagents); custom CLI
@@ -322,6 +329,14 @@ prompt:
       - conductor_lifecycle_cli: mzt start/stop/restart/conductor-status
       - clear_rate_limits_cli: clear limits and redispatch WAITING sheets
       - prompt_preflight: daemon token warning/error thresholds; zero disables
+
+      **Primitive coverage gap-report additions (2026-10-20, source-verified):**
+      - sheet_descriptions: per-sheet status labels keyed by expanded sheet number
+      - hook_variables: {workspace}/{job_id}/{job_status}/{score_dir} expansion
+      - score_logging: score schema only; conductor-unconsumed
+      - judgment: opt-in AI resolution of escalated FERMATA sheets
+      - schedule_pinning: pin_source_digest refuses byte/identity drift per tick
+      - structured_output: response_format json_object/json_schema per scope
 
       **Practiced patterns from real scores:**
       - Verification loop (style-ghost: 23 sheets, triple fan-out)

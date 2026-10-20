@@ -124,6 +124,10 @@ prompt:
       cli_resume; cli_modify; cli_cancel; cli_clear; conductor_lifecycle_cli;
       clear_rate_limits_cli; prompt_preflight (daemon token thresholds).
 
+      Gap-report additions (2026-10-20, source-verified): sheet_descriptions;
+      hook_variables; score_logging; judgment; schedule_pinning;
+      structured_output.
+
       Instruments (profiles): claude-code, codex-cli (gpt-5.5), opencode
       (Z.AI GLM 5.x), goose, antigravity (Google; gemini-cli is DEAD),
       ollama (local), aider, cline-cli, crush, any-wrapped CLI.

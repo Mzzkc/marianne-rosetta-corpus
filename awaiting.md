@@ -1,6 +1,6 @@
 # Patterns Awaiting Primitives
 
-Each row was rechecked against the source-verified Marianne primitives on 2026-09-03; iteration-6 rows added 2026-09-04 after three adversarial reviews (each blocked on a named absent primitive, per the corpus's no-fabrication rule). A nearby mechanism is not treated as the missing primitive: `cost_limits` is per-job, `fan_out` is parse-time static, and ordinary parallelism does not provide consumer-driven backpressure or multi-host authority.
+Each row was rechecked against the source-verified Marianne primitives on 2026-09-03; iteration-6 rows added 2026-09-04 after three adversarial reviews (each blocked on a named absent primitive, per the corpus's no-fabrication rule). A nearby mechanism is not treated as the missing primitive: `cost_limits` is per-job, `fan_out` is parse-time static, and ordinary parallelism does not provide consumer-driven backpressure or multi-host authority. Rechecked 2026-10-20 during the primitives gap-report remediation (newly claimed: sheet_descriptions, hook_variables, score_logging, judgment, schedule_pinning, structured_output): no blocker is resolved — `schedule_pinning` is byte-digest admission, not offset scheduling; the `sheet_triggers` run action fires once on_fail and replaces retry, not per-attempt retry hooks; `checkpoints` are approval gates, not write-ahead mid-sheet state.
 
 | Pattern | Blocked By | Buildable approximation / current boundary |
 |---|---|---|

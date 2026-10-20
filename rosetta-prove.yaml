@@ -227,6 +227,15 @@ prompt:
       (return affected WAITING sheets to PENDING); prompt_preflight
       (daemon token warning/error thresholds, zero disables).
 
+      Gap-report additions (2026-10-20, source-verified): sheet_descriptions
+      (per-sheet status labels); hook_variables ({workspace}/{job_id}/
+      {job_status}/{score_dir} expansion in hook commands); score_logging
+      (score schema only, conductor-unconsumed); judgment (opt-in AI
+      resolution of escalated FERMATA sheets); schedule_pinning
+      (pin_source_digest byte-drift refusal); structured_output
+      (response_format json_object/json_schema at score/movement/sheet/
+      alias scope).
+
     # Adversarial reviewer voices
     reviewers:
       1:
