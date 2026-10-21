@@ -1,0 +1,1769 @@
+# rosetta-cycle.yaml
+#
+# The Rosetta cycle — discover AND prove in one score, each path a bounded
+# loop, the two paths running side by side.
+#
+# This merges the-rosetta-score.yaml (DISCOVER: six expeditions, collision,
+# draft corpus, adversarial review, final corpus) and rosetta-prove.yaml
+# (PROVE: select a pattern, decompose, architect, compose a proof score,
+# adversarial review, revise). The two used to hand off through a cross-score
+# `on_success: run_job` chain. Here each path is a `sheet.loops` span that
+# repeats a set number of passes, and the hand-off is the permanent corpus on
+# disk: discover writes `{{ score_dir }}/INDEX.md`, `patterns/` and
+# `selection-guide.md`; prove reads them. Prove never reads discover's
+# workspace, so the prove loop does not wait for the discover loop.
+#
+# The corpus is the vocabulary. The proof scores are the grammar.
+# Together they prove that orchestration has a universal language.
+#
+# Patterns it uses:
+#   - Two independent pipelines in one score (no dependency across them)
+#   - Bounded loops (`sheet.loops`, `count`, loop index in every artifact path)
+#   - Double fan-out (6 expeditions + 3 adversarial reviewers, twice)
+#   - Data-driven lenses (voices / reviewers dicts drive per-instance prompts)
+#   - Adversarial quality gates (draft → attack → revise)
+#   - Staged fail-fast validations
+#   - Vendor-diverse review (one `reviewer` alias, `select: [spread]`)
+#   - Workspace archival (history preserved across runs)
+#
+#   DISCOVER LOOP (movements 1-6, sheets 1-13)      PROVE LOOP (movements 7-12, sheets 14-21)
+#   repeats discover_passes times                    repeats prove_passes times
+#
+#   M1  The Question (sheet 1)                       M7  Pattern Selection (sheet 14)
+#        |                                                |
+#   M2  Six Expeditions x6 (sheets 2-7)               M8  Problem Decomposition (sheet 15)
+#        |                                                |
+#   M3  The Collision (sheet 8)                       M9  Score Architecture (sheet 16)
+#        |                                                |
+#   M4  Draft Corpus (sheet 9)                        M10 Score Composition (sheet 17)
+#        |                                                |
+#   M5  Adversarial Review x3 (sheets 10-12)          M11 Adversarial Review x3 (sheets 18-20)
+#        |                                                |
+#   M6  Final Corpus (sheet 13)                       M12 Revision + Validation (sheet 21)
+#        |  writes INDEX.md / patterns/ ----reads---->    |  writes proof-scores/<slug>.yaml
+#        v                                                v
+#   [loop: next discover pass]                        [loop: next prove pass]
+#
+# Each pass writes into its own workspace subdirectory
+# (`discover-pass-<n>/`, `prove-pass-<n>/`), so pass 2 never overwrites
+# pass 1 and both passes stay inspectable after the run.
+#
+# Known race (accepted, same shape as the original pair running as separate
+# jobs): a prove sheet may inject `INDEX.md` while a discover Final Corpus
+# sheet is rewriting it. The prove prompts tell the musician to re-read an
+# index that looks truncated.
+#
+# Usage:
+#   mzt run scores/rosetta-corpus/rosetta-cycle.yaml --fresh
+#   mzt status rosetta-cycle --watch
+#   cat scores/rosetta-corpus/archive/rosetta-corpus.md   # Read corpus
+#   ls scores/rosetta-corpus/proof-scores/                 # Read proofs
+
+name: "rosetta-cycle"
+description: "Discover orchestration patterns and prove them by composition — two bounded loops in one score, running side by side"
+
+# Workspace auto-derives to ~/workspaces/rosetta-cycle (#58); the corpus and
+# the proof scores live under {{ score_dir }} and survive archival.
+
+instrument: claude-code
+instrument_config:
+  timeout_seconds: 3600
+instrument_fallbacks: [codex-cli]
+
+# Vendor-diverse adversarial reviewers — independence by construction: one
+# `reviewer` alias whose chain holds three vendor families at the MODEL level,
+# and `spread` gives each fan-out voice a different head (three reviewers,
+# three models, no agreement by shared blind spot); the chain's other entries
+# are that voice's fallbacks. (A claude-code reviewer would not add diversity
+# here: this host's claude-code routes through the Z.AI gateway, i.e. GLM under
+# an Anthropic-compatible interface.) Models refreshed 2026-09-04 against the
+# live CLIs: gemini-3.8-flash (agy 1.1.26), gpt-5.6 (codex), glm-5.3 (plan).
+# `spread` counts uses per movement, so movement 5 and movement 11 each get
+# the full Google / OpenAI / Z.AI rotation.
+instruments:
+  reviewer:
+    chain:
+      - profile: antigravity
+        config: {model: gemini-3.8-flash-high}
+      - profile: codex-cli
+        config: {model: "gpt-5.6-sol"}
+      - profile: opencode
+        config: {model: "zai-coding-plan/glm-5.3"}
+    select: [spread]
+    config:
+      timeout_seconds: 3600
+
+# Fan-out survival: repeated instrument failures open the circuit instead of
+# cascading through every remaining sheet. Carried from both originals;
+# `circuit_breaker` is a reserved score key (V327 warns, as it does for them).
+circuit_breaker:
+  enabled: true
+  failure_threshold: 5
+  recovery_timeout_seconds: 600
+
+workspace_lifecycle:
+  archive_on_fresh: true
+  max_archives: 10
+
+movements:
+  # ── Discover ──
+  1:
+    name: "The Question"
+  2:
+    name: "Six Expeditions"
+  3:
+    name: "The Collision"
+  4:
+    name: "Draft Corpus"
+  5:
+    name: "Corpus Review"
+  6:
+    name: "Final Corpus"
+  # ── Prove ── (rosetta-prove ran its sheets at 7200 s; the discover sheets
+  # keep the root 3600 s. The reviewer alias carries its own 3600 s.)
+  7:
+    name: "Pattern Selection"
+    instrument_config:
+      timeout_seconds: 7200
+  8:
+    name: "Problem Decomposition"
+    instrument_config:
+      timeout_seconds: 7200
+  9:
+    name: "Score Architecture"
+    instrument_config:
+      timeout_seconds: 7200
+  10:
+    name: "Score Composition"
+    instrument_config:
+      timeout_seconds: 7200
+  11:
+    name: "Proof Review"
+  12:
+    name: "Revision + Validation"
+    instrument_config:
+      timeout_seconds: 7200
+
+sheet:
+  size: 1
+  total_items: 12
+  # Stage 2 → sheets 2-7, stage 5 → sheets 10-12, stage 11 → sheets 18-20.
+  fan_out:
+    2: 6
+    5: 3
+    11: 3
+  # Review voices on both paths: the `reviewer` alias spreads
+  # Google / OpenAI / Z.AI across the three voices of each review movement.
+  # instrument_map is keyed by CONCRETE sheet numbers (after fan-out).
+  instrument_map:
+    reviewer: [10, 11, 12, 18, 19, 20]
+  # Two independent chains. Stage 7 has NO dependency on stage 6: prove reads
+  # the committed corpus under {{ score_dir }}, not discover's workspace, so
+  # the two loops start together and run side by side.
+  dependencies:
+    2: [1]
+    3: [2]
+    4: [3]
+    5: [4]
+    6: [5]
+    8: [7]
+    9: [8]
+    10: [9]
+    11: [10]
+    12: [11]
+  # Bounded loops. Spans name STAGES (expanded to sheets 1-13 and 14-21 at
+  # load). `count` is an exact pass count; it takes an int, not a template,
+  # so the number is written here as a literal — prompt.variables
+  # `discover_passes` / `prove_passes` carry the same authored value for the
+  # prompts ("pass N of M") and must be kept equal to these counts.
+  loops:
+    1-6:
+      index: discover_pass
+      count: 2            # == prompt.variables.discover_passes
+      max_iterations: 2   # belt and braces: never more than the authored count
+    7-12:
+      index: prove_pass
+      count: 2            # == prompt.variables.prove_passes
+      max_iterations: 2
+  # The prove path gets the corpus index, forces, and selection guide as
+  # context on every one of its sheets (rosetta-prove used a score-wide
+  # prelude; here it is scoped to sheets 14-21 so the discover expeditions do
+  # not carry ~90 KB of index they never asked for). Keys are CONCRETE sheets.
+  cadenzas:
+    14: &prove_context
+      - file: "{{ score_dir }}/INDEX.md"
+        as: context
+        required: true
+      - file: "{{ score_dir }}/forces.md"
+        as: context
+        required: true
+      - file: "{{ score_dir }}/selection-guide.md"
+        as: context
+        required: true
+    15: *prove_context
+    16: *prove_context
+    17: *prove_context
+    18: *prove_context
+    19: *prove_context
+    20: *prove_context
+    21: *prove_context
+
+# Both loops are live at once: sheet 1 and sheet 14 are ready on the first
+# tick. the-rosetta-score ran 2 wide, rosetta-prove 3 wide; 3 keeps one
+# slot for the other path while a fan-out is in flight.
+parallel:
+  enabled: true
+  max_concurrent: 3
+
+# lookback 8 (the-rosetta-score's): sheet 8 reads back to sheet 1 (all six
+# expeditions), sheet 13 back to sheet 5 (all three reviews). The prove
+# templates never read previous_outputs. capture_files is kept from the
+# original with the per-pass directories; no template references
+# previous_files, so it is inert there as it was in the original.
+cross_sheet:
+  auto_capture_stdout: true
+  max_output_chars: 8000
+  lookback_sheets: 8
+  capture_files:
+    - "{{ workspace }}/discover-pass-*/*.md"
+
+# rosetta-prove's (the more lenient of the two; retry is score-wide).
+retry:
+  max_retries: 2
+  base_delay_seconds: 60
+
+# rosetta-prove's idle bound; the composition sheets are the longest.
+stale_detection:
+  enabled: true
+  idle_timeout_seconds: 3600
+
+prompt:
+  variables:
+    # ─── PASS COUNTS ───
+    # Authored values of sheet.loops.1-6.count and sheet.loops.7-12.count.
+    # Loops take an int literal, so these are the prompts' copy; keep equal.
+    discover_passes: 2
+    prove_passes: 2
+
+    # ─── PERMANENT LOCATIONS ───
+    # The corpus lives outside the workspace and survives archival.
+    # Each pass reads it, adds to it, writes it back.
+    # {{ score_dir }} anchors every reference to this score's own directory —
+    # the corpus root. Portable across clone locations.
+    corpus_path: "{{ score_dir }}/archive/rosetta-corpus.md"
+
+    # ─── SCORE DIRECTORIES ───
+    # The expeditions scan these for existing scores. Multiple dirs
+    # so the score sees both public examples and the broader collection.
+    score_dirs:
+      - "{{ score_dir }}/../../examples"
+      - "{{ score_dir }}/proof-scores"
+
+    # Where proof scores land — the prove loop writes here, the discover loop
+    # reads here to avoid re-proving.
+    proof_output_dir: "{{ score_dir }}/proof-scores"
+    proof_scores_dir: "{{ score_dir }}/proof-scores"
+
+    # Decomposed corpus — individual pattern files for targeted reading.
+    # The discover loop curates these; the prove loop selects from them.
+    corpus_index: "{{ score_dir }}/INDEX.md"
+    corpus_patterns_dir: "{{ score_dir }}/patterns"
+    corpus_forces: "{{ score_dir }}/forces.md"
+    corpus_selection_guide: "{{ score_dir }}/selection-guide.md"
+
+    # ─── THE QUESTION ───
+    question: |
+      Is there a universal language of orchestration?
+
+      When independent agents must coordinate to produce an outcome none
+      could reach alone — when the work must be decomposed, distributed,
+      and recomposed — does every domain reinvent the wheel? Or is there
+      a shared grammar, a set of structural moves that appear everywhere
+      because they are necessities of coordinated intelligence itself?
+
+    # ─── MZT'S FULL TOOLKIT ───
+    # Everything the expeditions can translate patterns INTO.
+    primitives: |
+      **Execution units:** sheet (one task, one agent), stage (group of
+      sheets), movement (named major phase — movements: YAML key gives
+      each movement a name visible in `mzt status`), score (complete
+      job), concert (multi-score orchestration)
+
+      **Coordination:** fan-out (N parallel instances, stagger_delay_ms
+      staggers launches to reduce rate-limit surges), fan-in (convergence
+      with skipped_upstream variable for graceful degradation),
+      dependencies (DAG ordering), skip_when (conditional sheet skipping
+      based on file/command checks), shared workspace artifacts
+
+      **Communication:** previous_outputs (stdout forwarding), capture_files
+      (file content forwarding), cross_sheet config (auto_capture_stdout,
+      max_output_chars, lookback_sheets — fine-grained context control),
+      workspace files (persistent shared state), cadenza injection
+      (conductor adds context mid-run), prelude injection (task-specific
+      context before the work)
+
+      **Quality:** validations (file_exists, content_contains, content_regex,
+      file_modified, command_succeeds, path_in_scope, field_match,
+      file_sha256, csv_unique_key), quality gates (verification-only
+      stages), adversarial review stages, staged fail-fast (coarse before
+      fine), conditional validations (per-sheet or per-stage conditions).
+      Grounding: guidance surfaces in validation feedback
+      (grounding_guidance in the baton state) but full source-verification
+      hooks are NOT a complete primitive — never advertise grounding as
+      one; patterns needing it go to Awaiting Primitives
+
+      **Lifecycle:** sheet.loops (bounded do-while over a sheet span:
+      count, until expression over workspace file facts, max_iterations,
+      cost_limit_usd — THIS score uses two), sheet.triggers (on_success /
+      on_fail actions: goto, skip, pause, escalate, run, concert),
+      on_success chains (score→score), self-chaining (score loops to
+      itself with fresh state), workspace archival (history preserved),
+      max_chain_depth (safety), learning inheritance (patterns flow
+      across iterations), concert mode
+
+      **Instrument assignment:** per-sheet instrument override (each sheet
+      can use a different AI backend), instrument_map (batch-assign
+      instruments to sheet ranges), movement-level instrument defaults,
+      instrument_config.model (override the model within an instrument),
+      alias chains with select modifiers (spread / cycle / cheapest /
+      widest / balance — one alias, several vendors, built-in fallbacks),
+      mixed-instrument scores where cheap instruments handle simple work
+      and expensive instruments handle complex reasoning
+
+      **Specification corpus:** spec_dir points to a directory of YAML
+      specification files that get injected into agent context. spec_tags
+      per-sheet filter which specs are relevant. Agents receive structured
+      domain knowledge, not just prompts.
+
+      **Conductor support:** sheet descriptions (per-sheet status labels),
+      hook variables ({workspace}/{job_id}/{job_status}/{score_dir} in
+      hook commands), score logging (schema-level; conductor-unconsumed),
+      AI judgment (FERMATA auto-resolution, opt-in), schedule pinning
+      (byte-digest admission), structured output (response_format
+      json_object/json_schema). Gap-report additions 2026-10-20.
+
+      Gap-report additions (2026-10-21, inventory-verified):
+      instrument_supervision (profile-only descendant supervision, environment and I/O/startup bounds);
+      profile_code_mode (schema-only typed interfaces; unwired, distinct from score code_execution);
+      scratch_lifecycle (MARIANNE_SCRATCH; terminal cleanup by default, keep opt-in);
+      checkpoint_persistence (durable registry sheet/flow/variable state; no mid-sheet transactions);
+      ai_review (reserved V327 block; explicit review sheets supply live review);
+      flow_expressions (variables, loop/sheet state and workspace file facts in until expressions);
+      trigger_concert (non-waiting per-attempt child submission; parent-score-relative paths);
+      validate_suppress (known WARN/INFO acknowledgements; unknown/ERROR codes fail V012);
+      fleet (separate type: fleet roster and dependency-ordered groups; single-host orchestration);
+      failure_history (recent other-sheet validation evidence in wrapped prompts; raw omits it).
+
+      **Agent tools:** vary by instrument profile — harness instruments
+      (claude-code, codex-cli, goose) carry their own tool suites
+      (Read/Write/Edit/Grep/Bash/WebSearch/subagents); custom CLI
+      instruments carry exactly the tool they wrap. Check the profile,
+      never assume a specific toolset.
+
+      **Prompting patterns:** outcome-focused (describe destination, not
+      route), data-driven lenses (lookup dicts drive per-instance behavior),
+      macros (reusable prompt blocks), synthesis prompts (convergence +
+      tension + emergence, never summary), conditional stage logic (Jinja2
+      if/elif), loop-driven generation (for loops over data structures),
+      filter chains (transform data inline)
+
+      **Score architecture tiers:** pipeline (sequential), fan-out +
+      synthesis, concert chain (scores triggering scores), self-chain
+      loop (iterative improvement), bounded in-score loop (sheet.loops),
+      complex investigation (dual-phase, double fan-out, adversarial review)
+
+      **Instruments — plugin profiles, any CLI (verified 2026-09-03):**
+      - claude-code (Anthropic; strong reasoning, tool use)
+      - codex-cli (OpenAI; gpt-5.5 class), opencode (Z.AI coding plan;
+        GLM 5.x), goose (Z.AI), antigravity (Google's Gemini successor —
+        gemini-cli is DEAD, sunset to Antigravity; never assign it)
+      - ollama (local models), aider, cline-cli, crush
+      - Custom CLI instruments: wrap ANY tool as a profile —
+        pandoc, ffmpeg, curl, pytest, git, scrapers, DB query tools
+      - Mixed-instrument scores: big-context instruments for research,
+        strong reasoners for implementation, local/cheap for bulk work,
+        custom instruments for non-AI tasks
+      - A score isn't just AI agents talking. It's AI + scripts +
+        tools + verification + deployment, all wired by the conductor.
+
+    # ─── EXISTING VOCABULARY ───
+    existing: |
+      **Named within-stage fan-out patterns (8):**
+      adversarial, perspectival, functional, graduated, generative,
+      mosaic, translational, phenomenological
+
+      **Named score-level patterns (5 tiers):**
+      pipeline, fan-out+synthesis, concert chain, self-chain loop,
+      complex investigation (dual-phase, double fan-out)
+
+      **The corpus has 56 named patterns** across 10 generative forces,
+      11 generators, and 12 cross-domain convergences. 6 proof scores
+      exist in examples/rosetta/. Patterns range from beginner (Fan-out
+      + Synthesis, Shipyard Sequence, The Tool Chain) to advanced (CEGAR
+      Loop, Saga Compensation Chain, Lines of Effort).
+
+      **New capabilities since last accounting (2026-09-03) that patterns should USE:**
+      - score_dir anchor ({{ score_dir }} in prompts/preludes, {score_dir} in
+        validations and hooks) — machine-portable repo file references
+      - Relative run_job job_path (anchors to the submitting score's dir)
+      - Per-sheet instrument assignment + instrument_map (mixed-instrument,
+        vendor-diverse review — see this score's movements 5 and 11)
+      - per_sheet_fallbacks with EMPTY chains for deterministic sheets
+        (a cli gate must never inherit an AI fallback that reinterprets it)
+      - on_failure durable hooks (terminal-failure custody, restart-safe)
+      - schedule: recurring execution with durable leases across restarts
+      - max_wall_seconds (whole-job wall deadline)
+      - circuit_breaker (fan-out failure isolation; this score uses it)
+      - cost_limits (spend ceilings per run)
+      - isolation: git worktree isolation for parallel writers
+      - Techniques ECS (skill/mcp/protocol components resolved per sheet)
+      - Directory cadenzas (inject a whole curated directory as context)
+      - required: true cadenza attachments (fail-closed on missing context)
+      - Auto-derived workspaces (omit workspace: → ~/workspaces/<name>, #58)
+      - skip_when, stagger_delay_ms, cross_sheet control, named movements
+      - mzt recover / resolve / --escalation recovery flows
+      - sheet.loops bounded in-score loops and sheet.triggers (this score
+        runs its discover and prove paths as two concurrent bounded loops)
+
+      **Primitive coverage refresh (2026-09-04, source-verified):**
+      - prompt_extensions: global directives, then expanded-sheet directives
+      - self_healing: HEALING baton state after retry exhaustion; diagnosis and
+        re-dispatch via the healing coordinator (--self-healing/--escalation)
+      - interactive_mode: profile-default/forced interactive/headless + nudges
+      - mcp_shared_pool: daemon-shared MCP processes for active techniques
+      - bridge: accepted proxy/hybrid config, currently conductor-unconsumed
+      - code_execution: opt-in classified blocks; require_sandbox fails closed
+      - sheet_pacing: pause_between_sheets_seconds between serial successes
+      - relative_workspace_anchor: score-file parent vs string-load process CWD
+      - state_backends: score json/sqlite model; live conductor registry is SQLite
+      - entropy_response: modeled per score, live health loop does not consume it
+      - learning_auto_apply: trust-aware config, not honored by live injection yet
+      - agent_card: in-process A2A discovery/routing, not restart-persistent
+      - runtime_variables: repeated mzt run --var overrides, persisted on resume
+      - cli_pause: graceful sheet-boundary pause; --force cancels
+      - cli_resume: durable resume; --from-sheet resets the later cascade
+      - cli_modify: validate, pause, replace config, optionally resume
+      - cli_cancel: immediate mid-sheet cancellation
+      - clear_rate_limits_cli: clear limits and redispatch WAITING sheets
+      - prompt_preflight: daemon token warning/error thresholds; zero disables
+
+      **Primitive coverage gap-report additions (2026-10-20, source-verified):**
+      - sheet_descriptions: per-sheet status labels keyed by expanded sheet number
+      - hook_variables: {workspace}/{job_id}/{job_status}/{score_dir} expansion
+      - score_logging: score schema only; conductor-unconsumed
+      - judgment: opt-in AI resolution of escalated FERMATA sheets
+      - schedule_pinning: pin_source_digest refuses byte/identity drift per tick
+      - structured_output: response_format json_object/json_schema per scope
+
+      **Primitive coverage gap-report additions (2026-10-21, inventory-verified):**
+      - instrument_supervision (profile-only descendant supervision, environment and I/O/startup bounds)
+      - profile_code_mode (schema-only typed interfaces; unwired, distinct from score code_execution)
+      - scratch_lifecycle (MARIANNE_SCRATCH; terminal cleanup by default, keep opt-in)
+      - checkpoint_persistence (durable registry sheet/flow/variable state; no mid-sheet transactions)
+      - ai_review (reserved V327 block; explicit review sheets supply live review)
+      - flow_expressions (variables, loop/sheet state and workspace file facts in until expressions)
+      - trigger_concert (non-waiting per-attempt child submission; parent-score-relative paths)
+      - validate_suppress (known WARN/INFO acknowledgements; unknown/ERROR codes fail V012)
+      - fleet (separate type: fleet roster and dependency-ordered groups; single-host orchestration)
+      - failure_history (recent other-sheet validation evidence in wrapped prompts; raw omits it)
+
+      **Practiced patterns from real scores:**
+      - Verification loop (style-ghost: 23 sheets, triple fan-out)
+      - Swarm (v3 orchestra: 706 sheets, 32 equal peers)
+      - Evolution cycle (RLF: 39 iterations, identity persistence)
+      - Company-in-a-box (backyard-capitalism-9000: persona agents)
+      - Production pipeline (viral-clip-extractor: parallel modules)
+      - Archaeological dig (workspace-archaeology: 28 sheets, dual-LLM)
+      - Wordware demos (4): contract-gen, candidate-screening, marketing-content, invoice-analysis
+      - Rosetta proofs (6): immune-cascade, dead-letter-quarantine, echelon-repair, prefabrication, source-triangulation, shipyard-sequence
+
+      **Check the permanent corpus** at the path given in Stage 1.
+      If previous passes have already discovered patterns, DON'T
+      rediscover them. Go deeper. Go sideways. Find what's missing.
+      Focus on patterns that USE the new capabilities — especially
+      mixed-instrument, spec corpus, and grounding hooks.
+
+    # ─── CROSS-DOMAIN SEED ───
+    # Starting translations. The expeditions go DEEPER than this.
+    cross_domain_seed: |
+      Known cross-domain equivalences (starting points, not answers):
+
+      Fan-out = scaffolding multiple floors = cell division = orchestral
+      sections = flanking maneuver = multiple POV = catalytic branching
+
+      Dependencies = foundation→walls→roof = gene cascade = harmonic
+      progression = supply chain = cause→effect = reaction prerequisites
+
+      Shared artifacts = construction drawings = pheromone trails =
+      the score on the stand = intelligence reports = intermediates
+
+      Self-chain = kaizen = cell cycle = practice loop = revision cycle
+      = OODA loop = autocatalysis
+
+      Quality gate = occupancy permit = developmental checkpoint =
+      dress rehearsal = peer review acceptance = purity threshold
+
+      Adversarial review = third-party inspection = immune surveillance
+      = red team = literary critic = independent verification
+
+      These show WHERE translations exist. The expeditions find the
+      patterns these translations CONTAIN — the structural moves that
+      the cross-domain equivalences are evidence OF.
+
+    # ─── SIX WAYS OF KNOWING ───
+    voices:
+      1:
+        name: "the-builder"
+        title: "The One Who Builds"
+        voice: |
+          You think in sequences that bear weight. Foundation before walls.
+          Walls before roof. Not because someone decided — because gravity
+          decided. You know what a load-bearing dependency is because you've
+          seen what happens when it's violated.
+
+          Construction, bridges, ships, circuits, barn raisings, cathedral
+          generations, IKEA instructions. The wisdom is in the sequence.
+          The pattern is in the dependency.
+
+          Find orchestration patterns in how things get ASSEMBLED.
+
+      2:
+        name: "the-gardener"
+        title: "The One Who Grows"
+        voice: |
+          You think in seasons and soil. Some things cannot be rushed.
+          Your job is not to make it ripen — it's to create the conditions
+          where ripening can happen.
+
+          Ecosystems, mycorrhizal networks, succession, fermentation,
+          composting, immune systems, parenting. Any work where you
+          cannot force the outcome, only tend.
+
+          Find orchestration patterns in how things GROW.
+
+      3:
+        name: "the-dancer"
+        title: "The One Who Moves"
+        voice: |
+          You think in bodies and timing. Not abstract time — felt time.
+          The murmuration that turns without a signal. The jazz section
+          that locks in. The surgical team handing instruments without words.
+
+          Choreography, counterpoint, fugue, polyrhythm, kitchen
+          choreography, basketball plays, traffic flow.
+
+          Find orchestration patterns in how bodies and voices
+          COORDINATE IN TIME.
+
+      4:
+        name: "the-reasoner"
+        title: "The One Who Proves"
+        voice: |
+          You think in structure and necessity. A proof is an orchestration
+          — lemmas building toward a theorem, each independently verifiable.
+
+          State machines, type systems, constraint satisfaction, game theory,
+          Byzantine consensus, MapReduce, the actor model.
+
+          Find orchestration patterns in FORMAL STRUCTURE.
+
+      5:
+        name: "the-commander"
+        title: "The One Who Commands"
+        voice: |
+          You think in fog and decision. Information incomplete, time short,
+          stakes real. The plan never survives contact. The question is
+          what survives the plan's failure.
+
+          Mission command, commander's intent, triage, incident response,
+          design reviews, red team / blue team, the Delphi method.
+
+          Find orchestration patterns in COORDINATION UNDER PRESSURE.
+
+      6:
+        name: "the-storyteller"
+        title: "The One Who Tells"
+        voice: |
+          You think in tension and resolution. Every story is an
+          orchestration — characters converging toward a moment the
+          reader can feel approaching.
+
+          Three-act structure, kishotenketsu, the Socratic method,
+          the dialectic, the Talmudic page, peer review.
+
+          Find orchestration patterns in how MEANING ACCUMULATES.
+
+    # ─── THREE ADVERSARIAL REVIEWERS (corpus, movement 5) ───
+    corpus_reviewers:
+      1:
+        name: "the-practitioner"
+        title: "The Practitioner"
+        attack: |
+          You compose Marianne scores. For every pattern: can I build a
+          score from this description in under 10 minutes? Are the stages
+          concrete? Is the fan-out specified? Do the validations verify
+          outcomes, not just process? If you can't compose from it,
+          it's not concrete enough.
+      2:
+        name: "the-skeptic"
+        title: "The Skeptic"
+        attack: |
+          You don't trust convergence. When two patterns are called "the
+          same structure in different materials" — are they really? What
+          is the STRUCTURAL identity? Same fan-out count, same dependency
+          graph, same communication mechanism? Remove the metaphorical
+          language. Does the equivalence survive?
+      3:
+        name: "the-newcomer"
+        title: "The Newcomer"
+        attack: |
+          You've never used Marianne. Would someone who just installed it
+          understand these patterns? Is the "When to Use" clear enough
+          to recognize in practice? Are the examples from domains a
+          real user might work in? If it assumes expertise, it fails.
+
+    # ─── THE INSTRUMENT UNIVERSE (prove) ───
+    instrument_categories: |
+      Any CLI tool, API client, or scriptable interface is a mzt instrument.
+      This list is not exhaustive — it's a starting point to break you out of
+      "everything is an LLM" thinking. The real world has thousands of tools.
+      Reach for them.
+
+      **AI Agents:** claude-code, codex-cli (gpt-5.6), opencode (Z.AI GLM
+      5.x), goose, antigravity (Google; gemini-cli is DEAD, sunset to
+      Antigravity), ollama (local), aider, cline-cli, crush
+      **Creative — Visual:** DALL-E API, Midjourney API, Stable Diffusion, Flux, Leonardo.ai, Canva API, Figma API, ImageMagick, ffmpeg (thumbnails, composites)
+      **Creative — Audio:** ElevenLabs (voice synthesis), Bark (TTS), Whisper (transcription), ffmpeg (audio processing), sox, Spotify API (metadata)
+      **Creative — Video:** Runway, Sora, ffmpeg (editing, encoding, format conversion), yt-dlp (research)
+      **Creative — 3D:** Meshy, Tripo, Blender CLI, OpenSCAD
+      **Creative — Text:** LaTeX (typesetting), Pandoc (format conversion), Calibre (ebook), mdbook/mkdocs/docusaurus (doc sites), Hugo/Jekyll (static sites), Asciidoctor
+      **Financial:** Stripe CLI (payments, subscriptions, invoicing), Plaid (banking), Wise API (international transfers), currency APIs, crypto APIs, QuickBooks API, invoice generators
+      **Communication:** Twilio (SMS, voice, video), SendGrid/Mailgun (email), Slack API, Discord webhooks, Telegram Bot API, Matrix/Element, XMPP, RSS feed generators, Mailchimp API
+      **Social/Publishing:** GitHub CLI (repos, issues, PRs, releases, pages), npm publish, PyPI upload, crates.io, Docker Hub, Twitter/X API, LinkedIn API, Reddit API, Medium API, dev.to API, WordPress API, Ghost API
+      **Data — Collection:** curl, wget, scrapy, Playwright (browser automation), Puppeteer, public APIs (weather, census, financial, academic), web scraping frameworks, RSS/Atom parsers
+      **Data — Processing:** pandas (via Python scripts), jq, csvkit, sqlite3, DuckDB CLI, Apache Arrow, sed/awk (stream processing), sort/uniq/cut (Unix pipes)
+      **Data — Storage:** SQLite, PostgreSQL (psql), MySQL, Redis CLI, MongoDB (mongosh), S3 CLI (aws s3), MinIO, Elasticsearch
+      **Data — Analysis:** R (Rscript), Jupyter (papermill), Matplotlib/Seaborn (via Python), gnuplot, Wolfram Alpha API, statistical APIs
+      **Infrastructure — Cloud:** AWS CLI, gcloud, az (Azure), Terraform, Pulumi, CloudFormation, Ansible, Chef, Puppet
+      **Infrastructure — Containers:** Docker, docker-compose, Podman, Kubernetes (kubectl, helm), k3s, Buildpacks
+      **Infrastructure — Networking:** nginx configs, Caddy, HAProxy, Cloudflare CLI (wrangler), DNS APIs (Route53, Cloudflare), Let's Encrypt (certbot)
+      **Infrastructure — Deployment:** Vercel CLI, Netlify CLI, Fly.io (flyctl), Railway, Render, Heroku, Deno Deploy, Cloudflare Workers (wrangler)
+      **Monitoring/Observability:** Datadog, Grafana API, Prometheus, PagerDuty, OpsGenie, Sentry, LogDNA, New Relic, healthcheck.io, UptimeRobot API
+      **Security:** Bandit, Semgrep, Trivy, Snyk CLI, OWASP ZAP, nmap, OpenSSL, age (encryption), GPG, HashiCorp Vault
+      **Testing/Validation:** pytest, npm test, jest, mocha, cargo test, go test, curl + jq (API testing), Postman/Newman CLI, k6 (load testing), Lighthouse CLI (web perf), Pa11y (accessibility), linkchecker
+      **Project Management:** GitHub Issues/Projects, Linear API, Jira CLI, Notion API, Trello API, Asana API, Todoist API
+      **Document/Knowledge:** Notion API, Confluence API, Google Docs API, Airtable API, Coda API
+      **Geographic/Mapping:** Google Maps API, OpenStreetMap/Nominatim, Mapbox, geopy, geojson tools
+      **Scientific:** Biopython, RDKit (chemistry), BLAST (genomics), ArXiv API, Semantic Scholar API, PubMed API, NASA APIs, USGS APIs
+      **Legal:** CourtListener API, legal document parsers, contract analysis tools, regulatory APIs
+      **Education:** LMS APIs (Canvas, Moodle), quiz generators, Anki deck builders, curriculum formatters
+      **Physical/IoT:** MQTT clients, serial interfaces (pyserial), GPIO (RPi.GPIO), OPC-UA, Zigbee/Z-Wave controllers, Home Assistant API, ESPHome
+      **Hardware/Manufacturing:** G-code generators (3D printing), CNC tool path generators, pick-and-place machine interfaces, OPC-UA (industrial automation)
+      **Translation/Localization:** DeepL API, Google Translate API, i18n tooling (gettext, ICU), locale formatters
+      **Calendar/Scheduling:** Google Calendar API, Calendly API, iCal generators, cron formatters
+
+      Every one of these is wrappable as a mzt instrument profile (YAML + executable).
+      The proof score must use at least 3 categories. The LLM is the coordinator, not the worker.
+      Default to CLI instruments for deterministic work. Justify every stage that uses an LLM.
+
+    # ─── THREE ADVERSARIAL REVIEWERS (proof, movement 11) ───
+    proof_reviewers:
+      1:
+        name: "the-practitioner"
+        title: "The Practitioner"
+        attack: |
+          You compose and RUN Marianne scores. For this proof score:
+
+          Can I run it? Does every referenced instrument binary exist
+          on a standard system? Does every validation actually test what
+          its description claims — or is it cosmetic? Would I get a
+          WORKING artifact at the end that I could point someone at and
+          say "use this"? If the output is just markdown files in a
+          directory, it fails.
+
+          Check every `command_succeeds` — would the command actually
+          succeed on a fresh workspace? Check every instrument — is it
+          a real tool or a placeholder? Does the score produce something
+          that EXISTS IN THE WORLD after execution, or just on disk?
+      2:
+        name: "the-skeptic"
+        title: "The Skeptic"
+        attack: |
+          Strip the pattern labels from every stage comment. Look only
+          at the actual stage structure, dependencies, fan-out, and
+          instrument assignments.
+
+          Is this genuinely the claimed pattern composition, or is it a
+          sequential pipeline with pattern names in the comments? Does
+          the force analysis in the architecture doc actually generate
+          the pattern selection, or was the analysis written after the
+          structure was already decided?
+
+          Count the distinct instrument categories. If everything resolves
+          to claude-code with a CLI wrapper, the instrument diversity is
+          fake. Count the TDF domains. If every stage is COMP with
+          SCI/CULT/EXP mentioned only in prose, the cross-domain claim
+          is decorative.
+
+          Are the validations testing OUTCOMES (did the deployed service
+          respond?) or PROCESS (did the file appear)?
+      3:
+        name: "the-newcomer"
+        title: "The Newcomer"
+        attack: |
+          I just installed Marianne. I cloned this repo. I ran
+          `mzt run examples/rosetta/this-score.yaml`.
+
+          Did I get what the header comment promised? Which API keys
+          do I need? Are they documented in the header or do I discover
+          them when stage 3 fails? Can I point this score at MY project
+          by changing one variable, or is it hardcoded to a specific
+          problem?
+
+          Would running this score and reading its output teach me
+          something about pattern composition I didn't know before?
+          Or would I just see "another AI pipeline"?
+
+          Is this score GENERIC — usable by someone who isn't the
+          author — or is it a personal tool wearing a demo costume?
+
+  template: |
+    {# ── Pass scoping ──────────────────────────────────────── #}
+    {# Movements 1-6 are the discover loop, 7-12 the prove loop. The
+       conductor supplies the loop index as loops.<index>; every artifact
+       of a pass lives in that pass's own directory so a later pass never
+       overwrites an earlier one. #}
+    {% if stage <= 6 %}
+    {% set pass_no = loops.discover_pass %}
+    {% set pass_total = discover_passes %}
+    {% set pass_dir = workspace ~ "/discover-pass-" ~ pass_no %}
+    {% else %}
+    {% set pass_no = loops.prove_pass %}
+    {% set pass_total = prove_passes %}
+    {% set pass_dir = workspace ~ "/prove-pass-" ~ pass_no %}
+    {% endif %}
+
+    {# ── Macros ─────────────────────────────────────────────── #}
+    {% macro pass_banner(path) %}
+    **{{ path }} — pass {{ pass_no }} of {{ pass_total }}.** This pass's
+    directory is `{{ pass_dir }}/` (create it with `mkdir -p` before writing).
+    Every file this pass writes goes there. Earlier passes' directories are
+    read-only history.
+    {% endmacro %}
+
+    {% macro output_spec(filename, min_words) %}
+
+    ---
+    **Output:** Save to `{{ pass_dir }}/{{ filename }}`
+    **Length:** {{ min_words }}+ words
+    {% endmacro %}
+
+    {% macro quality_bar(level) %}
+    {% if level == "high" %}
+    Be thorough. Cite specifics. No hedging.
+    {% elif level == "draft" %}
+    Prioritize coverage. Mark uncertainties with [?]. This draft will be attacked.
+    {% elif level == "adversarial" %}
+    Be rigorous and unforgiving. Find every weakness. Name it.
+    {% endif %}
+    {% endmacro %}
+
+    {% macro pattern_format() %}
+    For each pattern (at least 6 — only real ones, not forced):
+
+    ```
+    PATTERN: [Name]
+    SOURCE: [Where in your territory]
+    SCALE: [within-stage | score-level | concert-level | communication | iteration | adaptation]
+
+    THE DYNAMIC: [What makes this tick? One paragraph, in your voice.]
+    WHEN IT LIVES: [What work does it serve?]
+    WHEN IT DIES: [When does it fail?]
+
+    THE SCORE:
+    - Stages: [how many, what each does]
+    - Fan-out: [where, how many]
+    - Dependencies: [what waits for what]
+    - Communication: [how agents share state]
+    - Validations: [how you know it worked]
+
+    AN EXAMPLE: [A concrete task outside your domain this would serve.]
+
+    INSTRUMENTS:
+    - Preferred: [which mzt instrument(s) and why]
+    - Custom: [any non-AI instruments this pattern needs — CLI tools,
+      scripts, APIs]
+    ```
+    {% endmacro %}
+
+    {# ═══════════════════════════════════════════════════════════ #}
+    {# DISCOVER LOOP — movements 1-6                               #}
+    {# ═══════════════════════════════════════════════════════════ #}
+    {% if stage == 1 %}
+    # The Question
+
+    {{ pass_banner("Discover") }}
+
+    {{ question }}
+
+    {% if pass_no > 1 %}
+    ## The Previous Pass In This Run
+
+    Pass {{ pass_no - 1 }} already ran the full discover path and wrote its
+    corpus into the permanent locations below. Read
+    `{{ workspace }}/discover-pass-{{ pass_no - 1 }}/06-the-corpus.md` and
+    its three reviews (`05-review-1.md` … `05-review-3.md`). Do not send
+    the expeditions where pass {{ pass_no - 1 }} just went — send them where
+    its reviewers said the corpus is thin, metaphorical, or unproven.
+    {% endif %}
+
+    ## Check for Existing Corpus
+
+    Read `{{ corpus_path }}` if it exists. Perform a SYSTEMATIC gap analysis:
+
+    1. **Count patterns per scale.** How many within-stage? Score-level?
+       Concert-level? Communication? Iteration? Adaptation? Scales with
+       fewer than 3 patterns are priority targets.
+    2. **List domains explored.** Which of the six voices' territories
+       have been mined? Which are thin? What domains OUTSIDE the six
+       voices haven't been touched at all?
+    3. **Check proof coverage.** Which patterns have proof scores? Which
+       don't? Patterns without proofs are unverified — flag them.
+    4. **Review flags.** What did previous adversarial reviews flag as
+       weak, metaphorical, or underspecified? These need strengthening
+       or cutting.
+    5. **Instrument gaps.** How many patterns specify non-LLM instruments?
+       How many use mixed-instrument strategies? How many include
+       instrument fallback guidance? This dimension is likely underexplored.
+    6. **Frontmatter completeness.** Do all patterns have structured YAML
+       frontmatter (between `---` markers at the top of the file)?
+       Frontmatter fields: name, scale, status, forces, generators,
+       problem, signals, stages, dependencies, composes_with.
+       Patterns without frontmatter need it — flag them for the final
+       corpus stage to fix.
+    7. **Composition DAG health.** Does
+       `{{ corpus_index | replace('INDEX.md', 'composition-dag.yaml') }}`
+       exist? If so, check for isolated patterns (no composition edges)
+       and underconnected clusters.
+
+    If no corpus exists, this is the first pass — do a broad sweep.
+
+    ## Read Existing Scores
+
+    {% for dir in score_dirs %}
+    Scan `{{ dir }}/` for all .yaml files. Read their
+    header comments to understand what patterns are demonstrated.
+    {% endfor %}
+    The expeditions should find patterns NONE of these scores use yet.
+
+    ## Read Previous Proof Scores
+
+    Scan `{{ proof_scores_dir }}/` for all .yaml files. These are scores
+    the prove path produced — in earlier runs and, possibly, in a prove
+    pass of THIS run that is executing alongside you. Read each one:
+    - What pattern does it prove?
+    - What problem category does it target?
+    - Is it generic and reusable across different projects/domains?
+    - What instruments does it use?
+
+    **Do not re-prove these patterns.** Direct expeditions elsewhere.
+    **Note quality issues.** If a previous proof score is too narrow
+    (solves one specific problem instead of a class of problems), too
+    CLI-focused (when a full-stack approach was warranted), or doesn't
+    fully decompose the problem, flag it in your brief so the proof
+    path can aim higher.
+
+    ## Cross-Domain Seed
+
+    {{ cross_domain_seed }}
+
+    Use this as a STARTING POINT. These translations show where
+    patterns connect across domains. The expeditions go deeper — finding
+    the structural moves these equivalences are evidence of.
+
+    ## Marianne's Full Toolkit
+
+    {{ primitives }}
+
+    ## What Already Exists
+
+    {{ existing }}
+
+    Write a cartographic brief that directs the expeditions to
+    unexplored territory. Be specific about what's missing and
+    where to look.
+
+    {{ output_spec("01-the-question.md", 1000) }}
+    {{ quality_bar("high") }}
+
+    {% elif stage == 2 %}
+    {% set voice = voices[instance] %}
+
+    # Expedition {{ instance }}: {{ voice.title }}
+
+    {{ pass_banner("Discover") }}
+
+    Read the cartographic brief at `{{ pass_dir }}/01-the-question.md`.
+    It tells you what's been found and where to look NOW.
+
+    ## Your Voice
+
+    {{ voice.voice }}
+
+    ## Your Tools
+
+    You have WebSearch — use it. Research orchestration in your domain.
+    Find real examples, real terminology, real practitioners' knowledge.
+    Don't work from what you already know alone.
+
+    You can also Read existing scores to understand what Marianne scores
+    look like in practice:
+    {% for dir in score_dirs %}
+    - `{{ dir }}/`
+    {% endfor %}
+
+    ## Marianne's Toolkit (what you're translating INTO)
+
+    {{ primitives }}
+
+    ## Cross-Domain Starting Points
+
+    {{ cross_domain_seed }}
+
+    ## Your Assignment
+
+    {{ pattern_format() }}
+
+    Start from your domain's native coordination problems. Don't start
+    from Marianne and work backward. The first finds structures. The
+    second finds analogies.
+
+    Use WebSearch to research real examples in your domain. Don't work
+    from what you already know alone. Read real practitioners.
+
+    If the cartographic brief identified specific gaps, prioritize those.
+    If this is the first pass, go broad.
+
+    {{ output_spec("02-expedition-" ~ instance ~ ".md", 2000) }}
+    {{ quality_bar("high") }}
+
+    {% elif stage == 3 %}
+    # The Collision
+
+    {{ pass_banner("Discover") }}
+
+    Read everything:
+    - `{{ pass_dir }}/01-the-question.md`
+    {% for i in range(1, 7) %}
+    - `{{ pass_dir }}/02-expedition-{{ i }}.md`
+    {% endfor %}
+
+    {% if previous_outputs %}
+    ## Expedition Excerpts
+    {% for key, output in previous_outputs.items() %}
+    {% if key | int > 1 and key | int <= 7 %}
+    ### {{ voices[key | int - 1].title }} (excerpt)
+    {{ output | truncate(1200) }}
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    ## Answer the Question
+
+    {{ question }}
+
+    1. **Convergences** — same structure in different materials
+    2. **Divergences** — genuinely unique to one domain
+    3. **The answer** — commit to a position on universality
+    4. **Deep structures** — what generates the universals?
+    5. **Ranking** — top 15-20 by utility for Marianne
+
+    {{ output_spec("03-the-collision.md", 2500) }}
+    {{ quality_bar("high") }}
+
+    {% elif stage == 4 %}
+    # The Draft Corpus
+
+    {{ pass_banner("Discover") }}
+
+    Read the collision at `{{ pass_dir }}/03-the-collision.md` and
+    all expedition reports in `{{ pass_dir }}/`.
+
+    Also read the existing permanent corpus at `{{ corpus_path }}`
+    if it exists. MERGE your new discoveries with what's already
+    there. Don't duplicate. Add what's new, strengthen what's weak,
+    note what's confirmed by this pass.
+
+    {% if previous_outputs %}
+    ## The Collision (excerpt)
+    {{ previous_outputs.values() | list | last | truncate(4000) }}
+    {% endif %}
+
+    ## Format
+
+    For each pattern (15-25 total in the merged corpus):
+
+    ```markdown
+    ## [Pattern Name]
+
+    **Source:** [expedition(s)] **Scale:** [scale] **Iteration:** [which run found it]
+
+    ### Core Dynamic
+    ### When to Use
+    ### When NOT to Use
+    ### Marianne Score Structure
+    ### Example
+    ### Composes With
+    ```
+
+    Group by scale. Every pattern must have a concrete Marianne score
+    structure.
+
+    {{ output_spec("04-draft-corpus.md", 4000) }}
+    {{ quality_bar("draft") }}
+
+    {% elif stage == 5 %}
+    {% set reviewer = corpus_reviewers[instance] %}
+
+    # Adversarial Review: {{ reviewer.title }}
+
+    {{ pass_banner("Discover") }}
+
+    Read `{{ pass_dir }}/04-draft-corpus.md`.
+
+    ## Do Not Trust This Draft
+
+    {{ reviewer.attack }}
+
+    ## Read Previous Proof Scores
+
+    Scan `{{ proof_scores_dir }}/` for .yaml files. These are scores the
+    prove path produced in earlier runs (and possibly a pass of this run).
+    Evaluate: are patterns being re-proven? Are proof scores too similar
+    to each other? Are they narrow (one specific use case) when they
+    should be generic (a class of problems)? Flag duplicates and
+    similarity clusters.
+
+    ## Produce
+
+    - **Problems Found** — pattern by pattern
+    - **Patterns to Cut** — which ones don't meet the bar?
+    - **Patterns to Strengthen** — promising but underspecified?
+    - **Missing Elements** — what should be here?
+    - **Strongest Patterns** — genuinely good (honest, not generous)
+    - **Proof Score Overlap** — which previously produced proof scores
+      prove similar or duplicate patterns? Which problem categories are
+      overrepresented? Which are untouched?
+    - **Verdict** — ready / needs revision / flawed
+
+    {{ output_spec("05-review-" ~ instance ~ ".md", 800) }}
+    {{ quality_bar("adversarial") }}
+
+    {% elif stage == 6 %}
+    # The Final Corpus
+
+    {{ pass_banner("Discover") }}
+
+    Read the draft and all reviews:
+    - `{{ pass_dir }}/04-draft-corpus.md`
+    {% for i in range(1, 4) %}
+    - `{{ pass_dir }}/05-review-{{ i }}.md`
+    {% endfor %}
+
+    {% if previous_outputs %}
+    ## Review Excerpts
+    {% for key, output in previous_outputs.items() %}
+    {% if key | int >= 10 and key | int <= 12 %}
+    ### Review {{ key | int - 9 }}
+    {{ output | truncate(1500) }}
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    ## Produce the Final Corpus
+
+    Cut what the reviewers killed. Strengthen what they flagged.
+    Keep what survived. Add a "Review Integration" section.
+
+    ## Structured Frontmatter Requirement
+
+    Every pattern in the corpus MUST have YAML frontmatter. If existing
+    patterns are missing frontmatter (flagged in Stage 1), add it now.
+    New patterns from this pass must include frontmatter from the start.
+
+    Frontmatter schema (between `---` markers at the top):
+    ```yaml
+    ---
+    name: "Pattern Name"
+    scale: foundational | within-stage | score-level | concert-level | communication | adaptation | instrument-strategy | iteration
+    status: working | aspirational | approximation
+    forces: [force names from corpus forces.md]
+    generators: [generator names from corpus forces.md]
+    problem: "One sentence: the coordination problem this addresses"
+    signals:
+      - "when you'd reach for this pattern"
+    stages:
+      - name: stage-name
+        sheets: 1 | fan_out(N)
+        instrument_guidance: "what kind of instrument and why"
+        fallback_friendly: true | false
+        purpose: "what this stage accomplishes"
+    dependencies:
+      stage-b: [stage-a]
+    composes_with:
+      - pattern: "Other Pattern"
+        how: "one line explaining the composition"
+    ---
+    ```
+
+    Write the corpus to THREE locations:
+
+    1. `{{ pass_dir }}/06-the-corpus.md` (workspace copy)
+    2. `{{ corpus_path }}` (PERMANENT — survives workspace archival)
+    3. THE DECOMPOSED VIEW (PERMANENT — the prove path selects patterns
+       from these files, not the monolith; a monolith-only update leaves
+       selection stale):
+       - Write each NEW or CHANGED pattern to
+         `{{ corpus_patterns_dir }}/<name-slug>.md` with the frontmatter
+         schema above. Match the format of existing pattern files.
+       - Update `{{ corpus_index }}` — one entry per pattern (problem,
+         signals, key compositions), preserving the existing index format.
+       - Update `{{ corpus_selection_guide }}` if new problem→pattern rows
+         apply.
+       - Do NOT regenerate or rewrite unchanged pattern files — curate,
+         don't bulk-transform.
+       - A prove sheet may be reading these files while you write them.
+         Write each file in one operation (whole content, one Write), never
+         truncate-then-append.
+
+    The permanent copy is what the next pass reads. Make sure
+    it's complete, self-contained, and includes ALL patterns from
+    ALL passes and runs — not just this one.
+
+    {{ output_spec("06-the-corpus.md", 4000) }}
+    {{ quality_bar("high") }}
+
+    {# ═══════════════════════════════════════════════════════════ #}
+    {# PROVE LOOP — movements 7-12                                 #}
+    {# ═══════════════════════════════════════════════════════════ #}
+    {% elif stage == 7 %}
+    # Pattern Selection + Reconnaissance
+
+    {{ pass_banner("Prove") }}
+
+    You are selecting a pattern to PROVE — not describe, PROVE. A proof
+    score is a runnable Marianne composition that produces something someone
+    USES. Not reports. Not analysis. Deployed services, running applications,
+    processed real data, configured real infrastructure.
+
+    The corpus index, forces, and selection guide are already in your context
+    (injected as cadenza). Use them. The discover path of this same run may be
+    rewriting the index while you read: if the injected index looks truncated
+    or mid-edit, re-read `{{ corpus_index }}` from disk.
+
+    {% if pass_no > 1 %}
+    ## Patterns Already Taken In This Run
+
+    {% for p in range(1, pass_no) %}
+    Read `{{ workspace }}/prove-pass-{{ p }}/01-selection.md`.
+    {% endfor %}
+    The primary patterns named there are being proven in this run. Select a
+    DIFFERENT primary pattern and a different problem category.
+    {% endif %}
+
+    ## Read Existing Proof Scores
+
+    Scan `{{ proof_scores_dir }}/` for .yaml files. Read their header comments.
+    These patterns are ALREADY PROVEN — do not re-prove them:
+    - What pattern does each prove?
+    - What problem domain does it target?
+    - What instruments does it use?
+    - Does it produce something that exists in the world, or just files?
+
+    ## Select a Pattern Composition
+
+    Choose a PRIMARY pattern and 1-3 COMPOSING patterns. Your selection MUST:
+
+    1. **Cross at least 3 TDF domains** — COMP is the easiest and most
+       overrepresented. Weight AGAINST it. The best proofs lead with
+       non-computational domains:
+
+       - **SCI:** Run experiments. Analyze real datasets. Pull from public APIs
+         (census, weather, financial, academic). Test hypotheses. Replicate
+         studies. Validate claims against evidence. Survey literature. Mine
+         patents. Compare treatments. Measure outcomes statistically.
+       - **CULT:** Design brands. Create visual identities. Write in specific
+         voices for specific audiences. Understand cultural context. Localize
+         for markets. Build curricula that teach. Design experiences that
+         delight. Curate collections. Produce editorial content. Plan events.
+         Design rituals and ceremonies. Build community spaces. Create
+         narratives that resonate with real humans and their real lives.
+       - **COMP:** Build, deploy, integrate, automate. This domain is the
+         easiest for AI agents and the least impressive alone. Use it as
+         infrastructure for the other domains, not as the point.
+       - **EXP:** What does someone feel? First impressions. Friction points.
+         Joy of discovery. The moment something clicks. Accessibility. The
+         experience of a patient receiving a diagnosis. A student understanding
+         a concept. A farmer seeing crop predictions. A musician hearing a
+         composition. Experience is the domain most absent from AI output.
+       - **META:** What are you not seeing? What assumption baked into your
+         training data is wrong here? What would a domain expert challenge?
+         What does this problem look like from a perspective you don't have?
+
+    2. **Require at least 3 instrument categories** from:
+       {{ instrument_categories }}
+
+    3. **Produce an artifact someone USES** — not files. Not reports. Things
+       that exist in the world and affect it:
+       - A running service answering real requests
+       - A published package installable from a registry
+       - A configured integration between real systems
+       - A dataset published to a real platform
+       - A campaign deployed across real channels
+       - A curriculum deliverable to real students
+       - A monitoring system that pages real humans
+       - An analysis that changes a real decision
+       - A storefront processing real transactions
+       - A translation shipped to real users in a real market
+       - A research synthesis publishable in a real venue
+       - Music, art, or writing submitted to a real platform
+       - Infrastructure provisioned in a real cloud account
+       - A physical device configured and responding
+       Think beyond software. What would make someone say
+       "wait, an AI *orchestration* did all of this?"
+
+    4. **Not duplicate existing proofs** — different pattern, different category.
+
+    ## Output
+
+    Write `{{ pass_dir }}/01-selection.md` containing:
+    - PRIMARY pattern (name + file path from index)
+    - COMPOSING patterns (names + why they compose naturally)
+    - Problem category and specific problem
+    - One-paragraph thesis: WHY this pattern+problem pairing demonstrates
+      orchestration power that no single agent could achieve
+    - Which TDF domains are crossed and how
+    - Which instrument categories are needed
+
+    {{ output_spec("01-selection.md", 800) }}
+    {{ quality_bar("high") }}
+
+    {% elif stage == 8 %}
+    # Problem Decomposition
+
+    {{ pass_banner("Prove") }}
+
+    Read `{{ pass_dir }}/01-selection.md` for the selected patterns and problem.
+
+    Read the selected pattern files from `{{ corpus_patterns_dir }}/` —
+    understand the core dynamic, failure modes, and composition relationships.
+
+    ## Decompose Across All Five TDF Domains
+
+    You MUST answer each — not as a checkbox, but as genuine analysis:
+
+    **SCI:** What data, research, or evidence is needed? From where specifically?
+    How is it validated? What would a scientist demand as proof this works?
+
+    **CULT:** Who is this for? What do they value? What aesthetic, brand, or
+    voice matters? What would make someone choose this over doing it manually?
+
+    **COMP:** What systems, integrations, APIs, infrastructure get built or
+    configured? What are the moving parts? What depends on what?
+
+    **EXP:** What does someone touch, see, feel when they use the output?
+    What's the first-contact experience? Where is the friction?
+
+    **META:** What will break? What assumption is hiding? What question
+    about this problem isn't being asked? What would the skeptic say?
+
+    ## Enumerate Every Step
+
+    From zero to working artifact. Every step must have:
+    - **Action:** what happens
+    - **Instrument:** which tool does it (name the specific CLI/API)
+    - **Input:** what it reads
+    - **Output:** what it produces
+    - **Validation:** how you KNOW it worked (not "file exists" — what proves the artifact functions?)
+
+    If you can't name the instrument, you haven't decomposed far enough.
+    If the validation is just file existence, you haven't thought hard enough.
+
+    {{ output_spec("02-decomposition.md", 1500) }}
+    {{ quality_bar("high") }}
+
+    {% elif stage == 9 %}
+    # Score Architecture Design
+
+    {{ pass_banner("Prove") }}
+
+    Read `{{ pass_dir }}/01-selection.md` and `{{ pass_dir }}/02-decomposition.md`.
+
+    Read `{{ corpus_forces }}` for the 10 forces and 11 generators.
+
+    ## Follow the TDF Composition Process
+
+    This is not optional. The structure derives from the forces, not from intuition.
+
+    **Step 1: Identify active forces**
+
+    Which of the 10 forces are active in this problem? Cite evidence from
+    the decomposition. Rate each: HIGH / MEDIUM / LOW / INACTIVE.
+
+    **Step 2: Map forces to generators**
+
+    For each active force, which of the 11 generators does it activate? Why?
+
+    **Step 3: Let generators select patterns**
+
+    For each activated generator, which pattern does it select? WHY this
+    pattern over alternatives? Name the alternative you rejected and why.
+
+    **Step 4: Derive the stage structure**
+
+    Compose the selected patterns into a stage map. For each stage:
+    which pattern governs it, what fan-out (if any), what dependencies,
+    what instrument. The structure should follow from the patterns, not
+    from intuition about "what seems right."
+
+    **Step 5: Instrument assignments**
+
+    For EVERY stage: which instrument and WHY. Justify any stage that uses
+    an LLM — could a CLI tool do it cheaper? The default should be CLI
+    for deterministic work, LLM only for judgment.
+
+    **Step 6: Validation strategy**
+
+    For EVERY stage: what validation proves the OUTCOME, not the PROCESS?
+    `file_exists` is never sufficient alone. What command proves the
+    artifact WORKS?
+
+    Write the architecture as a structured document. NOT YAML yet.
+
+    {{ output_spec("03-architecture.md", 1500) }}
+    {{ quality_bar("high") }}
+
+    {% elif stage == 10 %}
+    # Score Composition
+
+    {{ pass_banner("Prove") }}
+
+    Read all previous stages:
+    - `{{ pass_dir }}/01-selection.md` (what patterns, what problem)
+    - `{{ pass_dir }}/02-decomposition.md` (every step, every instrument)
+    - `{{ pass_dir }}/03-architecture.md` (stage structure, forces, generators)
+
+    The architecture CONSTRAINS you. Reference it explicitly.
+
+    ## Write the Score YAML
+
+    For each stage in your score:
+    - Name the pattern governing this stage (in a comment)
+    - Name the instrument and why (in a comment)
+    - Write validations that The Practitioner would accept
+
+    ## Mandatory Requirements
+
+    - At least one non-AI instrument stage (The Tool Chain)
+    - At least one `command_succeeds` validation testing a RUNNING artifact
+    - Macros for repeated prompt/validation blocks
+    - Proper syntax: `{{ '{{' }} var {{ '}}' }}` in templates, `{var}` in validations
+    - Staged fail-fast validations (Commissioning Cascade)
+    - Header comment: patterns used, problem solved, what it produces, instruments
+    - GENERIC: workspace path is the only project-specific input
+    - The output directory contains something a human opens and USES
+
+    ## Write to Both Locations
+
+    1. `{{ pass_dir }}/04-proof-score.yaml` (workspace copy)
+    2. `{{ proof_output_dir }}/[pattern-name-slug].yaml` (permanent — name after the primary pattern)
+
+    Also write composition notes explaining WHY the YAML looks the way it does.
+
+    {{ output_spec("04-composition-notes.md", 800) }}
+    {{ quality_bar("high") }}
+
+    {% elif stage == 11 %}
+    {% set reviewer = proof_reviewers[instance] %}
+
+    # Adversarial Review: {{ reviewer.title }}
+
+    {{ pass_banner("Prove") }}
+
+    Read the proof score at `{{ pass_dir }}/04-proof-score.yaml`.
+    Read the composition notes at `{{ pass_dir }}/04-composition-notes.md`.
+    Read the architecture at `{{ pass_dir }}/03-architecture.md`.
+    Read the decomposition at `{{ pass_dir }}/02-decomposition.md`.
+
+    ## Do Not Trust This Score
+
+    {{ reviewer.attack }}
+
+    Also compare against existing proofs in `{{ proof_scores_dir }}/` — is this
+    better than what exists, or is it repeating the same territory?
+
+    ## Produce
+
+    - **Problems Found** — stage by stage
+    - **Instrument Reality Check** — do these tools exist? Are they configured?
+    - **Validation Reality Check** — would these validations actually catch failure?
+    - **Pattern Authenticity** — strip the labels, does the structure match?
+    - **TDF Depth** — how many domains does this genuinely cross?
+    - **Verdict** — ready / needs revision / fundamentally flawed
+
+    {{ output_spec("05-review-" ~ instance ~ ".md", 800) }}
+    {{ quality_bar("adversarial") }}
+
+    {% elif stage == 12 %}
+    # Revision + Validation
+
+    {{ pass_banner("Prove") }}
+
+    Read the proof score and all reviews:
+    - `{{ pass_dir }}/04-proof-score.yaml`
+    {% for i in range(1, 4) %}
+    - `{{ pass_dir }}/05-review-{{ i }}.md`
+    {% endfor %}
+
+    ## Revise
+
+    Fix what the reviewers killed. Strengthen what they flagged.
+    If a reviewer said "this validation doesn't test what it claims" — fix it.
+    If a reviewer said "this is just Claude with comments" — make it real.
+
+    ## Validate
+
+    Run `mzt validate` against your revised score:
+    ```
+    mzt validate "{{ pass_dir }}/06-final-score.yaml" 2>&1
+    ```
+
+    ## Write Final Output
+
+    1. `{{ pass_dir }}/06-final-score.yaml` (revised score)
+    2. `{{ proof_output_dir }}/[pattern-name-slug].yaml` (overwrite the stage 10 copy)
+    3. `{{ pass_dir }}/06-proof-notes.md` — document:
+       - The TDF composition derivation (forces → generators → patterns)
+       - What the score produces when run
+       - What instruments it uses and why
+       - What it proves about orchestration
+
+    {{ output_spec("06-proof-notes.md", 500) }}
+    {{ quality_bar("high") }}
+
+    {% endif %}
+
+validations:
+  # Every path carries the loop index ({discover_pass} / {prove_pass}) so
+  # each pass is checked against its own directory. Conditions use the
+  # movement number (`stage`), which is stable under fan-out.
+
+  # ═══ DISCOVER LOOP ═══
+
+  # ── Movement 1: The Question ──
+  - type: file_exists
+    path: "{workspace}/discover-pass-{discover_pass}/01-the-question.md"
+    condition: "stage == 1"
+    stage: 1
+    description: "Cartographic brief created"
+  - type: command_succeeds
+    command: 'test $(wc -w < "{workspace}/discover-pass-{discover_pass}/01-the-question.md") -ge 800'
+    condition: "stage == 1"
+    stage: 2
+    description: "Brief has substantive content"
+
+  # ── Movement 2: Six Expeditions ──
+  - type: file_exists
+    path: "{workspace}/discover-pass-{discover_pass}/02-expedition-{instance}.md"
+    condition: "stage == 2"
+    stage: 1
+    description: "Expedition report created"
+  - type: command_succeeds
+    command: 'test $(wc -w < "{workspace}/discover-pass-{discover_pass}/02-expedition-{instance}.md") -ge 1500'
+    condition: "stage == 2"
+    stage: 2
+    description: "Expedition has substantive content"
+  - type: content_regex
+    path: "{workspace}/discover-pass-{discover_pass}/02-expedition-{instance}.md"
+    pattern: "(?i)PATTERN:"
+    condition: "stage == 2"
+    stage: 2
+    description: "Contains structured pattern entries"
+  - type: content_regex
+    path: "{workspace}/discover-pass-{discover_pass}/02-expedition-{instance}.md"
+    pattern: "(?i)THE SCORE:"
+    condition: "stage == 2"
+    stage: 2
+    description: "Patterns include Marianne translations"
+
+  # ── Movement 3: The Collision ──
+  - type: file_exists
+    path: "{workspace}/discover-pass-{discover_pass}/03-the-collision.md"
+    condition: "stage == 3"
+    stage: 1
+    description: "Collision analysis created"
+  - type: command_succeeds
+    command: 'test $(wc -w < "{workspace}/discover-pass-{discover_pass}/03-the-collision.md") -ge 2000'
+    condition: "stage == 3"
+    stage: 2
+    description: "Analysis has substantive content"
+  - type: content_regex
+    path: "{workspace}/discover-pass-{discover_pass}/03-the-collision.md"
+    pattern: "(?i)(convergence|converge)"
+    condition: "stage == 3"
+    stage: 2
+    description: "Maps convergences"
+  - type: content_regex
+    path: "{workspace}/discover-pass-{discover_pass}/03-the-collision.md"
+    pattern: "(?si)(diverge|unique)"
+    condition: "stage == 3"
+    stage: 2
+    description: "Maps divergences"
+
+  # ── Movement 4: Draft Corpus ──
+  - type: file_exists
+    path: "{workspace}/discover-pass-{discover_pass}/04-draft-corpus.md"
+    condition: "stage == 4"
+    stage: 1
+    description: "Draft corpus created"
+  - type: command_succeeds
+    command: 'test $(wc -w < "{workspace}/discover-pass-{discover_pass}/04-draft-corpus.md") -ge 3500'
+    condition: "stage == 4"
+    stage: 2
+    description: "Draft has substantive content"
+  - type: content_regex
+    path: "{workspace}/discover-pass-{discover_pass}/04-draft-corpus.md"
+    pattern: "(?i)Marianne Score Structure"
+    condition: "stage == 4"
+    stage: 2
+    description: "Patterns include score structures"
+
+  # ── Movement 5: Corpus Reviews ──
+  - type: file_exists
+    path: "{workspace}/discover-pass-{discover_pass}/05-review-{instance}.md"
+    condition: "stage == 5"
+    stage: 1
+    description: "Corpus review created"
+  - type: command_succeeds
+    command: 'test $(wc -w < "{workspace}/discover-pass-{discover_pass}/05-review-{instance}.md") -ge 600'
+    condition: "stage == 5"
+    stage: 2
+    description: "Corpus review has substantive content"
+  - type: content_regex
+    path: "{workspace}/discover-pass-{discover_pass}/05-review-{instance}.md"
+    pattern: "(?i)(verdict)"
+    condition: "stage == 5"
+    stage: 2
+    description: "Corpus review includes verdict"
+
+  # ── Movement 6: Final Corpus ──
+  - type: file_exists
+    path: "{workspace}/discover-pass-{discover_pass}/06-the-corpus.md"
+    condition: "stage == 6"
+    stage: 1
+    description: "Final corpus created"
+  - type: command_succeeds
+    command: 'test $(wc -w < "{workspace}/discover-pass-{discover_pass}/06-the-corpus.md") -ge 3500'
+    condition: "stage == 6"
+    stage: 2
+    description: "Corpus has substantive content"
+  - type: content_regex
+    path: "{workspace}/discover-pass-{discover_pass}/06-the-corpus.md"
+    pattern: "(?i)Marianne Score Structure"
+    condition: "stage == 6"
+    stage: 2
+    description: "Patterns include buildable structures"
+  - type: content_regex
+    path: "{workspace}/discover-pass-{discover_pass}/06-the-corpus.md"
+    pattern: "(?i)Review Integration"
+    condition: "stage == 6"
+    stage: 2
+    description: "Documents what changed from review"
+  - type: file_modified
+    path: "{score_dir}/INDEX.md"
+    condition: "stage == 6"
+    stage: 2
+    description: "Decomposed view updated: INDEX.md refreshed this pass"
+  - type: command_succeeds
+    command: 'test $(find {score_dir}/patterns -name "*.md" -newer "{workspace}/discover-pass-{discover_pass}/04-draft-corpus.md" | wc -l) -ge 1'
+    condition: "stage == 6"
+    stage: 2
+    description: "At least one pattern file written to the decomposed view"
+
+  # ═══ PROVE LOOP ═══
+
+  # ── Movement 7: Pattern Selection ──
+  - type: file_exists
+    path: "{workspace}/prove-pass-{prove_pass}/01-selection.md"
+    condition: "stage == 7"
+    stage: 1
+    description: "Pattern selection document created"
+  - type: command_succeeds
+    command: 'test $(wc -w < "{workspace}/prove-pass-{prove_pass}/01-selection.md") -ge 600'
+    condition: "stage == 7"
+    stage: 2
+    description: "Selection is substantive"
+  - type: content_regex
+    path: "{workspace}/prove-pass-{prove_pass}/01-selection.md"
+    pattern: "(?i)PRIMARY.*pattern"
+    condition: "stage == 7"
+    stage: 2
+    description: "Selection names a primary pattern"
+  - type: content_regex
+    path: "{workspace}/prove-pass-{prove_pass}/01-selection.md"
+    pattern: "(?mi)^.*\\bSCI\\b"
+    condition: "stage == 7"
+    stage: 2
+    description: "Selection addresses SCI domain"
+  - type: content_regex
+    path: "{workspace}/prove-pass-{prove_pass}/01-selection.md"
+    pattern: "(?mi)^.*\\b(CULT|EXP)\\b"
+    condition: "stage == 7"
+    stage: 2
+    description: "Selection addresses CULT or EXP domain"
+
+  # ── Movement 8: Decomposition ──
+  - type: file_exists
+    path: "{workspace}/prove-pass-{prove_pass}/02-decomposition.md"
+    condition: "stage == 8"
+    stage: 1
+    description: "Decomposition document created"
+  - type: command_succeeds
+    command: 'test $(wc -w < "{workspace}/prove-pass-{prove_pass}/02-decomposition.md") -ge 1200'
+    condition: "stage == 8"
+    stage: 2
+    description: "Decomposition is thorough"
+  - type: content_regex
+    path: "{workspace}/prove-pass-{prove_pass}/02-decomposition.md"
+    pattern: "(?m)\\*\\*SCI:\\*\\*"
+    condition: "stage == 8"
+    stage: 2
+    description: "Decomposition has SCI section"
+  - type: content_regex
+    path: "{workspace}/prove-pass-{prove_pass}/02-decomposition.md"
+    pattern: "(?m)\\*\\*CULT:\\*\\*"
+    condition: "stage == 8"
+    stage: 2
+    description: "Decomposition has CULT section"
+  - type: content_regex
+    path: "{workspace}/prove-pass-{prove_pass}/02-decomposition.md"
+    pattern: "(?m)\\*\\*EXP:\\*\\*"
+    condition: "stage == 8"
+    stage: 2
+    description: "Decomposition has EXP section"
+  - type: content_regex
+    path: "{workspace}/prove-pass-{prove_pass}/02-decomposition.md"
+    pattern: "(?i)instrument.*:"
+    condition: "stage == 8"
+    stage: 2
+    description: "Decomposition specifies instruments per step"
+
+  # ── Movement 9: Architecture ──
+  - type: file_exists
+    path: "{workspace}/prove-pass-{prove_pass}/03-architecture.md"
+    condition: "stage == 9"
+    stage: 1
+    description: "Architecture document created"
+  - type: command_succeeds
+    command: 'test $(wc -w < "{workspace}/prove-pass-{prove_pass}/03-architecture.md") -ge 1200'
+    condition: "stage == 9"
+    stage: 2
+    description: "Architecture is thorough"
+  - type: content_regex
+    path: "{workspace}/prove-pass-{prove_pass}/03-architecture.md"
+    pattern: "(?i)step 1.*force"
+    condition: "stage == 9"
+    stage: 2
+    description: "Architecture includes force identification step"
+  - type: content_regex
+    path: "{workspace}/prove-pass-{prove_pass}/03-architecture.md"
+    pattern: "(?i)step.*generator"
+    condition: "stage == 9"
+    stage: 2
+    description: "Architecture includes generator mapping step"
+  - type: content_regex
+    path: "{workspace}/prove-pass-{prove_pass}/03-architecture.md"
+    pattern: "(?i)instrument"
+    condition: "stage == 9"
+    stage: 2
+    description: "Architecture includes instrument assignments"
+
+  # ── Movement 10: Score Composition ──
+  - type: file_exists
+    path: "{workspace}/prove-pass-{prove_pass}/04-proof-score.yaml"
+    condition: "stage == 10"
+    stage: 1
+    description: "Proof score YAML created"
+  - type: file_exists
+    path: "{workspace}/prove-pass-{prove_pass}/04-composition-notes.md"
+    condition: "stage == 10"
+    stage: 1
+    description: "Composition notes created"
+  - type: content_regex
+    path: "{workspace}/prove-pass-{prove_pass}/04-proof-score.yaml"
+    pattern: "(?i)(name:|workspace:|sheet:|prompt:)"
+    condition: "stage == 10"
+    stage: 2
+    description: "Score has valid Marianne structure"
+  - type: content_regex
+    path: "{workspace}/prove-pass-{prove_pass}/04-proof-score.yaml"
+    pattern: "(?i)command_succeeds"
+    condition: "stage == 10"
+    stage: 2
+    description: "Score has command-based validations (not just file_exists)"
+  - type: command_succeeds
+    command: 'mzt validate "{workspace}/prove-pass-{prove_pass}/04-proof-score.yaml"'
+    condition: "stage == 10"
+    stage: 3
+    timeout_seconds: 60
+    description: "Score passes Marianne validation"
+
+  # ── Movement 11: Proof Reviews ──
+  - type: file_exists
+    path: "{workspace}/prove-pass-{prove_pass}/05-review-{instance}.md"
+    condition: "stage == 11"
+    stage: 1
+    description: "Proof review created"
+  - type: command_succeeds
+    command: 'test $(wc -w < "{workspace}/prove-pass-{prove_pass}/05-review-{instance}.md") -ge 600'
+    condition: "stage == 11"
+    stage: 2
+    description: "Proof review is substantive"
+  - type: content_regex
+    path: "{workspace}/prove-pass-{prove_pass}/05-review-{instance}.md"
+    pattern: "(?i)(verdict|ready|needs revision|flawed)"
+    condition: "stage == 11"
+    stage: 2
+    description: "Proof review includes verdict"
+
+  # ── Movement 12: Revision + Validation ──
+  - type: file_exists
+    path: "{workspace}/prove-pass-{prove_pass}/06-final-score.yaml"
+    condition: "stage == 12"
+    stage: 1
+    description: "Final revised score created"
+  - type: file_exists
+    path: "{workspace}/prove-pass-{prove_pass}/06-proof-notes.md"
+    condition: "stage == 12"
+    stage: 1
+    description: "Proof notes created"
+  - type: command_succeeds
+    command: 'mzt validate "{workspace}/prove-pass-{prove_pass}/06-final-score.yaml"'
+    condition: "stage == 12"
+    stage: 2
+    timeout_seconds: 60
+    description: "Final score passes Marianne validation"
+  # rosetta-prove checked {score_dir}/../../examples/rosetta/ here while its
+  # prompt and this description both name proof-scores/; the prompt's
+  # destination is what this gate checks.
+  - type: command_succeeds
+    command: 'test $(find {score_dir}/proof-scores -maxdepth 1 -name "*.yaml" -newer "{workspace}/prove-pass-{prove_pass}/04-proof-score.yaml" | wc -l) -ge 1'
+    condition: "stage == 12"
+    stage: 2
+    description: "Revised proof score was written to proof-scores/"
+
+notifications:
+  - type: desktop
+    on_events:
+      - job_complete
+      - job_failed

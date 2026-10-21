@@ -13,6 +13,7 @@ A curated collection of 56 orchestration patterns for composing Marianne scores.
 | `composition-dag.yaml` | Machine-readable pattern composition graph |
 | `the-rosetta-score.yaml` | Pattern discovery engine (self-chaining, 6-domain fan-out) |
 | `rosetta-prove.yaml` | Pattern proof engine (composes demonstration scores) |
+| `rosetta-cycle.yaml` | Discover and prove in one score: each path a bounded loop (`sheet.loops`, `count`), the two running side by side; the hand-off is the corpus on disk |
 | `proof-scores/` | 17 production-grade demonstration scores from research iterations; see `examples/rosetta/README.md` in the parent repository for the indexed copies and corpus-only entries |
 | `archive/` | Original monolith corpus (preserved for reference) |
 
@@ -23,6 +24,8 @@ A curated collection of 56 orchestration patterns for composing Marianne scores.
 **For discovering new patterns:** Run `the-rosetta-score.yaml` via `mzt run`.
 
 **For proving patterns:** Run `rosetta-prove.yaml` via `mzt run`. Proof scores land in `proof-scores/`.
+
+**For a bounded cycle of both:** Run `rosetta-cycle.yaml` via `mzt run`. Each path repeats its authored pass count (`prompt.variables.discover_passes` / `prove_passes`, mirrored by `sheet.loops.*.count`); pass artifacts land in `discover-pass-N/` and `prove-pass-N/` in the workspace. Requires Marianne ≥ 6717158d (V105 accepts loop indices in validation paths).
 
 ## Pattern Format
 
