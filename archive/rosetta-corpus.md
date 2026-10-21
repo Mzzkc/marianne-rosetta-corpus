@@ -180,8 +180,6 @@ validations:                           # flat list; FORMAT-STRING paths ({worksp
 | `cli_resume` | `mzt resume` continues paused/failed/chain-held state; `--from-sheet` deliberately resets that sheet and every later sheet. |
 | `cli_modify` | `mzt modify` validates a replacement score, pauses a running job, swaps its config, and may resume it. |
 | `cli_cancel` | `mzt cancel` interrupts the active sheet and marks the job `CANCELLED`; it is not graceful boundary pause. |
-| `cli_clear` | `mzt clear` removes eligible terminal job state; it does not clear instrument rate limits. |
-| `conductor_lifecycle_cli` | `mzt start`, `stop`, `restart`, and `conductor-status` operate the single conductor daemon. |
 | `clear_rate_limits_cli` | `mzt clear-rate-limits` clears one/all instrument limit records and returns affected `WAITING` sheets to `PENDING`. |
 | `prompt_preflight` | Daemon-level token preflight warns or rejects at configured thresholds; zero disables a threshold and warning must remain below error. |
 | `self_healing` | After retry exhaustion a sheet enters the HEALING baton state: the healing coordinator diagnoses (context, diagnosis, remedies registry) and re-dispatches with a repaired prompt; the `--self-healing`/`--escalation` run paths select it. Conductor-amended row 2026-09-04 — the inventory's 21st primitive, added during gap-report review. |
@@ -191,6 +189,23 @@ validations:                           # flat list; FORMAT-STRING paths ({worksp
 | `judgment` | Opt-in score-scoped AI judgment resolves escalated FERMATA sheets through an allowlist, confidence gate, timeout, and durable per-sheet cap; failures defer to the composer, and accept/skip are excluded by default. Gap-report row 2026-10-20. |
 | `schedule_pinning` | `schedule.pin_source_digest` records the score's byte digest at registration and every tick refuses byte or identity drift before registry upsert and submission; unpinned schedules keep operator-managed re-bind semantics. Gap-report row 2026-10-20. |
 | `structured_output` | `instrument_config.response_format` opts a sheet into OpenAI-compatible `json_object`/`json_schema` output at score/movement/sheet/alias scope; headless CLI schemas need a profile-declared `json_schema_flag`, and CLI structured results are validated against the schema. Gap-report row 2026-10-20. |
+
+**Primitive coverage gap-report additions (2026-10-21, inventory-verified):**
+
+| Primitive | Real dialect account |
+|---|---|
+| `instrument_supervision` | CLI profiles can supervise descendants with Linux subreaping, filter inherited environment, set I/O priority and file-descriptor bounds, and bound first-output/post-exit drain waits; profile settings, not arbitrary score overrides. |
+| `profile_code_mode` | Profile `code_mode` declares typed interfaces, runtime and execution bounds but is schema-only and unwired; distinct from active score `code_execution`. |
+| `scratch_lifecycle` | Every instrument receives `MARIANNE_SCRATCH` at `workspace/.marianne-scratch`; `workspace_lifecycle.scratch` removes it on COMPLETED/FAILED by default, or `keep` preserves it. |
+| `checkpoint_persistence` | Conductor-registry checkpoints durably retain sheet/attempt, loop/trigger and runtime-variable state; restart recovery preserves paused status and settled work, independently of reserved approval gates. |
+| `ai_review` | Reserved score block (V327): score thresholds, review template and retry/warn/fail policy parse, but no reviewer pass runs; author an explicit review sheet for live review. |
+| `flow_expressions` | Loop `until` expressions read variables, scoped loop indices, sheet state and workspace-relative file facts with `{name}` path expansion; syntax is checked at load, while validation()/output() forms remain reserved. |
+| `trigger_concert` | A `sheet.triggers` concert action submits a child without waiting; relative score paths anchor to the parent score directory, with workspace/fresh options and concert depth bounds, not a `detached` field. |
+| `validate_suppress` | `validate.suppress` acknowledges known WARN/INFO V-codes; unknown or ERROR codes produce V012, JSON retains the suppressed list, and strict validation ignores acknowledged warnings. |
+| `fleet` | A separate `type: fleet` document admits a score roster with relative member paths and dependency-ordered groups; one fleet→score→sheet nesting level, not a nested JobConfig block or multi-host authority. |
+| `failure_history` | Wrapped prompts may receive recent other-sheet validation failures, excluding the current sheet; separate from learned global patterns and current-attempt completion feedback, and omitted in raw mode. |
+
+Accounting boundary (2026-10-21): daemon lifecycle/deletion CLI entries were removed from this inventory account because the supplied inventory has no counterpart. Blocked claims below name nearby real surfaces without asserting their absent capability.
 
 **Verified real, additions since v5.1:** `voices` as movement-level fan-out shorthand; `per_sheet_instruments` (expanded-sheet-keyed); `instrument_map` with the duplicate-assignment rejection; `skip_when` in command form (per movement, exit 0 = skip, fail-open on error); `concert`/`on_success` typed hooks (`run_job` + `job_path`, `run_command`, `run_script`, with `hold` semantics for pause-at-chain); job-level `max_wall_seconds` for *scheduled runs* (ge 60; bounds the run, selects nothing); `instrument_config.timeout_seconds` for per-movement budgets; `mzt validate` three-layer static validation.
 
@@ -2351,7 +2366,7 @@ Added to `awaiting.md`, each with its blocking primitive and buildable approxima
 
 | Pattern | Blocked By | Buildable approximation / current boundary |
 |---|---|---|
-| Calling the Show | A recurring per-cue state machine with overlapped standby and hold-and-proceed-around | Standby–GO invoked once per cue inside a bounded self-chain; cue ledger as a workspace artifact advanced by a CLI movement; holds recorded as visible skips — the pipelined overlap and the bypass lane are the blocked part. |
+| Calling the Show | A recurring per-cue state machine with overlapped standby and hold-and-proceed-around | Standby–GO invoked once per cue inside a bounded self-chain; cue ledger as a workspace artifact advanced by a CLI movement; holds recorded as visible skips — the pipelined overlap and the bypass lane are the blocked part. `sheet.loops` repeats bounded spans; it supplies no recurring per-cue state machine with overlapped standby and hold-and-proceed-around. |
 | Relieving the Watch | Mid-sheet checkpointing (write-ahead hook or transactional sheet checkpoints) | Deck log as append-only JSONL written *as the sheet works*; movement-boundary reconciliation gates joining log claims to disk facts; `mzt recover` as the rehearsed spine. Review 3's dissent on record: "the crash-recovery pattern every long-running user needs." |
 | The Strike Clock | A timeout→tier transition (timeouts fail sheets; they select nothing) | Inverted-DAG teardown order derived from the assembly DAG; per-movement budgets via `instrument_config.timeout_seconds`; job-level `max_wall_seconds` for scheduled runs; pack-for-next-run; curfew report as the successor's first input. The tier-arithmetic is the blocked half. |
 | Put-In | Runtime seat remap (instrument assignment expands at parse time) | Track-sheet compile from incumbent artifacts; shadow run as an isolated job writing alongside, never over; structured diff gate with `--require-bijection`; cutover as a versioned score edit with the incumbent written into the next version's fallback chain. Review 3's dissent on record. |

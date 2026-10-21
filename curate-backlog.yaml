@@ -121,12 +121,24 @@ prompt:
       entropy_response and learning_auto_apply (modeled, not consumed by current
       per-score dispatch); agent_card (in-process A2A, memory-only state);
       runtime_variables (mzt run --var, later wins, resume-persistent); cli_pause;
-      cli_resume; cli_modify; cli_cancel; cli_clear; conductor_lifecycle_cli;
+      cli_resume; cli_modify; cli_cancel;
       clear_rate_limits_cli; prompt_preflight (daemon token thresholds).
 
       Gap-report additions (2026-10-20, source-verified): sheet_descriptions;
       hook_variables; score_logging; judgment; schedule_pinning;
       structured_output.
+
+      Gap-report additions (2026-10-21, inventory-verified):
+      instrument_supervision (profile-only descendant supervision, environment and I/O/startup bounds);
+      profile_code_mode (schema-only typed interfaces; unwired, distinct from score code_execution);
+      scratch_lifecycle (MARIANNE_SCRATCH; terminal cleanup by default, keep opt-in);
+      checkpoint_persistence (durable registry sheet/flow/variable state; no mid-sheet transactions);
+      ai_review (reserved V327 block; explicit review sheets supply live review);
+      flow_expressions (variables, loop/sheet state and workspace file facts in until expressions);
+      trigger_concert (non-waiting per-attempt child submission; parent-score-relative paths);
+      validate_suppress (known WARN/INFO acknowledgements; unknown/ERROR codes fail V012);
+      fleet (separate type: fleet roster and dependency-ordered groups; single-host orchestration);
+      failure_history (recent other-sheet validation evidence in wrapped prompts; raw omits it).
 
       Instruments (profiles): claude-code, codex-cli (gpt-5.5), opencode
       (Z.AI GLM 5.x), goose, antigravity (Google; gemini-cli is DEAD),
@@ -134,8 +146,9 @@ prompt:
 
       NOT primitives (never attribute to them): grounding as full
       source-verification hooks (guidance-only in validation feedback),
-      per-SHEET resource budgets (cost_limits is per-JOB), OS-level
-      capability confinement, offset-from-artifact scheduling.
+      per-SHEET resource budgets (cost_limits is per-JOB), offset-from-artifact
+      scheduling. Attribution boundary (2026-10-21):
+      code_execution bounds generated code blocks, not sheet filesystem/tool access.
 
   template: |
     {% if stage == 1 %}

@@ -58,27 +58,25 @@ instrument_config:
   timeout_seconds: 7200
 instrument_fallbacks: [codex-cli]
 
-# Vendor-diverse adversarial reviewers — independence by construction:
-# three different vendor families at the MODEL level, not three runs of one
-# model. (A claude-code reviewer would not add diversity here: this host's
-# claude-code routes through the Z.AI gateway, i.e. GLM under an
-# Anthropic-compatible interface.) Models refreshed 2026-09-04 against the
+# Vendor-diverse adversarial reviewers — independence by construction: one
+# `reviewer` alias whose chain holds three vendor families at the MODEL level,
+# and `spread` gives each fan-out voice a different head (three reviewers,
+# three models, no agreement by shared blind spot); the chain's other entries
+# are that voice's fallbacks. (A claude-code reviewer would not add diversity
+# here: this host's claude-code routes through the Z.AI gateway, i.e. GLM under
+# an Anthropic-compatible interface.) Models refreshed 2026-09-04 against the
 # live CLIs: gemini-3.8-flash (agy 1.1.26), gpt-5.6 (codex), glm-5.3 (plan).
 instruments:
-  reviewer-gemini:
-    profile: antigravity
+  reviewer:
+    chain:
+      - profile: antigravity
+        config: {model: gemini-3.8-flash-high}
+      - profile: codex-cli
+        config: {model: "gpt-5.6-sol"}
+      - profile: opencode
+        config: {model: "zai-coding-plan/glm-5.3"}
+    select: [spread]
     config:
-      model: gemini-3.8-flash-high
-      timeout_seconds: 3600
-  reviewer-codex:
-    profile: codex-cli
-    config:
-      model: "gpt-5.6-sol"
-      timeout_seconds: 3600
-  reviewer-glm:
-    profile: opencode
-    config:
-      model: "zai-coding-plan/glm-5.3"
       timeout_seconds: 3600
 
 # Fan-out survival: repeated instrument failures open the circuit instead of
@@ -103,11 +101,10 @@ sheet:
   total_items: 6
   fan_out:
     5: 3
-  # Movement-5 review voices: Google / OpenAI / Z.AI (sheets 5-7)
+  # Movement-5 review voices (sheets 5-7): the `reviewer` alias spreads
+  # Google / OpenAI / Z.AI across the three voices.
   instrument_map:
-    reviewer-gemini: [5]
-    reviewer-codex: [6]
-    reviewer-glm: [7]
+    reviewer: [5, 6, 7]
   dependencies:
     2: [1]
     3: [2]
@@ -222,8 +219,7 @@ prompt:
       runtime_variables (mzt run --var, later wins, resume-persistent); cli_pause
       (sheet-boundary pause); cli_resume (--from-sheet resets later work);
       cli_modify (validate/pause/replace/resume); cli_cancel (immediate);
-      cli_clear (terminal state only); conductor_lifecycle_cli
-      (mzt start/stop/restart/conductor-status); clear_rate_limits_cli
+      clear_rate_limits_cli
       (return affected WAITING sheets to PENDING); prompt_preflight
       (daemon token warning/error thresholds, zero disables).
 
@@ -235,6 +231,18 @@ prompt:
       (pin_source_digest byte-drift refusal); structured_output
       (response_format json_object/json_schema at score/movement/sheet/
       alias scope).
+
+      Gap-report additions (2026-10-21, inventory-verified):
+      instrument_supervision (profile-only descendant supervision, environment and I/O/startup bounds);
+      profile_code_mode (schema-only typed interfaces; unwired, distinct from score code_execution);
+      scratch_lifecycle (MARIANNE_SCRATCH; terminal cleanup by default, keep opt-in);
+      checkpoint_persistence (durable registry sheet/flow/variable state; no mid-sheet transactions);
+      ai_review (reserved V327 block; explicit review sheets supply live review);
+      flow_expressions (variables, loop/sheet state and workspace file facts in until expressions);
+      trigger_concert (non-waiting per-attempt child submission; parent-score-relative paths);
+      validate_suppress (known WARN/INFO acknowledgements; unknown/ERROR codes fail V012);
+      fleet (separate type: fleet roster and dependency-ordered groups; single-host orchestration);
+      failure_history (recent other-sheet validation evidence in wrapped prompts; raw omits it).
 
     # Adversarial reviewer voices
     reviewers:

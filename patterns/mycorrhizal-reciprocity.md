@@ -99,7 +99,9 @@ The ledger becomes a social score with no allocatable scarcity, or contribution 
 
 ### Review Integration
 
-Archived as an approximation because current scores have budgets and learning records but no general exchange market. The pattern must not imply a nonexistent scheduler allocation primitive. The split file uses only verified Marianne surfaces and current profiles. It does not claim runtime support for operating-system confinement, artifact-offset scheduling, or concurrent shared-workspace backpressure.
+Attribution correction (2026-10-21): the nearby real surface is `parallel`, whose static job ceiling supplies no reciprocity-driven allocation policy.
+
+Archived as an approximation because current scores have budgets and learning records but no general exchange market. `parallel.max_concurrent` bounds job concurrency; it is not a scheduler allocation primitive. The split file uses only verified Marianne surfaces and current profiles. It does not claim runtime support for operating-system confinement, artifact-offset scheduling, or concurrent shared-workspace backpressure.
 
 ### Composes With
 
