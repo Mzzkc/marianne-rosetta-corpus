@@ -4,6 +4,10 @@ This index is what agents read FIRST when selecting patterns. It conveys WHEN an
 
 **Iteration 6 additions (2026-09-04):** four foundational laws (The Validity Window, The Freeze, Typed Force, The Write-Time Record), three communication patterns (Monitor Mix, Condorcet's Premise, The Declared Window), two score-level (The Gas-Free Certificate, Top-Down Demolition Order), three adaptation (Rent-Then-Commit, Vintage Overlay, The Economic Injury Line), two concert-level (The Precedent Bench, Demobilization Checkout), one iteration (The Unprimed Falsifier), one within-stage (The Dropped Axiom). Calling the Show, Relieving the Watch, The Strike Clock, and Put-In moved to Patterns Awaiting Primitives; Command by Negation is an idiom under Mission Command; The ATO Cycle and Cluster Lead are archived. Core count: 17 counted entries + Fan-out + Synthesis as uncounted primitive.
 
+**Iteration 7 additions (2026-10-26, discover pass 1 of cycle 7):** sixteen patterns from six cross-domain expeditions, survived three adversarial reviews (all NEEDS REVISION, integrated): three communication (Readback Before Commit, The Poisoned-Artifact Advisory, The Sealed Dissent), two within-stage (The Misclosure Ledger, One Field Many Cores), four adaptation (The Graded Ladder, Transfer of Command at the Seam, The Acknowledged False Alarm, The Near-Miss Ledger [aspirational]), one score-level (The Serial Troponin), two iteration (The Negative Ledger, The Watch Rollover), four concert-level (The Capability Census, The Fleet Receipt Ledger, The Non-Waiting Hand, Admission by First Cycle). Nine draft entries demoted: Aged Lead and Held-State Clock folded into The Validity Window as profiles; Graded Net folded into Immune Cascade as the priced variant; Automatic Curriculum folded into Dead Letter Quarantine; Anthesis Window folded into Sign-Off Chain Against the Hard Date as the ripening face; Anonymous Rounds folded into Delphi Convergence; Wordless Manual dissolved into Prefabrication (desk-design section) and others; Watch Bill and Commander's Budget cut to candidates. Pattern-file count: 127.
+
+**Iteration 7.1 additions (2026-10-26, discover pass 2 of cycle 7):** twenty-one patterns from six expeditions, drafted (24), attacked by three adversarial reviews (Practitioner NEEDS REVISION, Skeptic FLAWED, Newcomer NEEDS REVISION), and integrated: 21 survive; **Firing the Pass evicted as a duplication** of the proven `proof-scores/firing-the-pass.yaml` and recorded as a confirmation (its `stagger_delay_ms` clock half remains unproven); **Staggered Quorum Spend cut** (staggering cannot cancel launches — zero spend saved) and benched as The Phased Quorum Wave; **The Recovery Arc cut to bench** (checkpoint persistence unwired) and now names The Checkpoint Re-Anchor; **The Shared Pulse ⊕ The Datum Grid folded into The Shared Reference** (two profiles: immutable datum, monotone-versioned pulse); **Hotwash Dispatch & Spent Lesson Checkout split** into two independently provable patterns; **The Watchman's Gate polarity inversion fixed** — `skip_when` skips on success, so permission predicates must be written as refusals (now corpus Composition Doctrine); **The Contamination Wire rewritten off `failure_history`** onto typed verdict artifacts (the engine transport is sheet-local, not cross-sheet); **The Dispatch Catalogue's mel.yaml made an authoring-time asset** (no runtime LLM generation of the authority it governs by); **The Midseason Pivot Ledger reframed concert-level** (a running score cannot splice its own DAG). The Cue Light is recorded as a **confirmation + extension of Standby–GO**. Pattern-file count: 148. Proof-status vocabulary split per the Skeptic: primitives-proven / approximation / aspirational — "native-proven" is retired.
+
 Each entry shows:
 - **Problem**: The coordination problem this pattern addresses
 - **Signals**: When you would reach for this pattern (symptoms or situations)
@@ -53,6 +57,22 @@ Primitive coordination moves that other patterns wrap or specialize.
 
 Patterns that structure a single sheet's prompt content or behavior.
 
+**Unison Drift**
+- Problem: Replicas that should be identical diverge silently, and the divergence point — the defect location — is never localized.
+- Signals: an expensive fan-out is about to run on an untested prompt+toolchain; instrument/vendor swaps may have changed behavior; reproducibility is assumed, never measured
+- Key compositions: Rashomon Gate (routing rule: unison → drift-diff; Rashomon → compare), Readback Before Commit, The Independence Law
+
+**The Dialectical Pair**
+- Problem: Two-agent debate collapses into position-holding by silence unless engagement is mechanically checkable and the stalemate is a typed terminal (TEYKU).
+- Signals: risk concentrates in one contested judgment; a full jury is overkill but one voice is not enough; "agree to disagree" with no record of what was contested
+- Key compositions: Rejoinder Ledger, Rashomon Gate, The Editor's Disposition, The Sealed Dissent
+
+**The Torque-Verify Pass**
+- Problem: Schema-valid garbage propagates silently because schemas cannot express the semantic invariants that make output true.
+- Signals: structured-output producers at volume; a sampled deep check over a systematically mis-generated population; cheap complete coverage possible but unclaimed
+- Key compositions: Immune Cascade, Concurrent Count, Readback Before Commit, The Mock-Up Bay
+
+
 **Commander's Intent Envelope**
 - Problem: Instruction-based prompts break when the agent encounters conditions the prompt author didn't anticipate.
 - Signals: task has more than one valid approach; inputs are variable-format or unpredictable; different instruments would solve this differently; want to validate outcomes, not methods
@@ -88,11 +108,62 @@ Patterns that structure a single sheet's prompt content or behavior.
 - Signals: sheets expressing rankings, priorities, or multi-premise verdicts; a synthesis that believes it is "just combining"; an unlabelled "consensus" output
 - Key compositions: Typed Force, Fan-out + Synthesis, Sugya Weave (Editorial Synthesis)
 
+**The Misclosure Ledger**
+- Problem: N parallel measurements of an additive quantity disagree within tolerance, and the system fights over which is right or averages the disagreement away, when the residual is a system-level quantity to measure, publish, and allocate by declared weight.
+- Signals: N independent estimates of the same closed total; a fan-in tempted to average, vote, or argue; disagreement budget declarable in advance
+- Key compositions: Concurrent Count, Condorcet's Premise, The Dropped Axiom
+
+**One Field, Many Cores**
+- Problem: Survey-the-territory tasks are sized by feel — 400 full reviews or one spot-check dressed as a survey — when the load-bearing decision is the sampling plan authored before any sampling.
+- Signals: scan a codebase / review a document set / triage an inbox; fan-out width chosen by intuition; between-cell differences matter more than any single core
+- Key compositions: Immune Cascade (priced variant), First Article Characterization
+
 ---
 
 ## Score-Level
 
 Patterns that arrange multiple sheets within a single score.
+
+**Keystone-First Sequencing**
+- Problem: Construction intuition builds big-to-small, so the artifacts that parameterize the most downstream prompts are built late and every earlier sheet worked under wrong conditions.
+- Signals: a small upstream artifact (schema, rubric, lexicon) changes many downstream prompts; merge stages reconcile hundreds of preventable inconsistencies; the expensive instrument's output would amortize first
+- Key compositions: Cathedral Construction, Prefabrication, The Attested Merge Gate, The Priced Verification Ladder
+
+**The Watchman's Gate**
+- Problem: Destructive execution must never depend on a check that fails open, so the veto lives in a dedicated, deterministic, independently-instrumented sheet.
+- Signals: any AI → destructive-action seam (deploys, mass rewrites, publication, external sends); a broken predicate would admit unvetted work silently; gate and gated share an instrument
+- Key compositions: Readback Before Commit, The Cue Light, The Hold-Point Witness, Capability Census
+
+**The Editor's Disposition**
+- Problem: Multi-advisory fan-ins fail by advice-drowning or advice-collapse because "what did reviewers think?" and "what do we do?" are conflated.
+- Signals: multiple independent evaluations must produce ONE action; reviewers negotiate into mushy consensus; authors optimize for appeasement across incompatible standards
+- Key compositions: Rejoinder Ledger, Condorcet's Premise, Dead Letter Quarantine, The Dialectical Pair
+
+**The Mock-Up Bay** *(the newcomer's first score — five sheets, the designated `sheet.loops` proof)*
+- Problem: The cost of discovering a detail defect at unit N=400 exceeds one observed unit N=1, but volume production starts without a representative first article under independent inspection.
+- Signals: mass generation, template instantiation, codegen rollout, migration waves; a detail defect would replicate silently; acceptance criteria negotiated after candidates exist
+- Key compositions: The Serial Troponin, The Unprimed Falsifier, First Article Characterization, Unison Drift
+
+**The Midseason Pivot Ledger** *(concert-level — a running score cannot splice its own DAG)*
+- Problem: Campaigns long enough that the plan can be wrong pivot by thrash or by retcon-that-discards; neither reconciles the new frame with completed evidence.
+- Signals: multi-movement scores/self-chains where mid-flight discovery re-shapes later phases; completed movements' artifacts still true; plans are hypotheses
+- Key compositions: Season Bible, Continuity Ledger, The Graded Ladder, Fork-Evident History, The Change-Order Ledger
+
+**Facilitator-First Decomposition**
+- Problem: Dependency edges are unclassified, so environmental preparation, independent coexistence, and blocking early commitments look identical in the DAG.
+- Signals: two-wave scores (scaffolding before implementation, fixtures before testing); a premature schema freeze inhibiting the better late design; the first act must be REMOVING a commitment
+- Key compositions: Keystone-First Sequencing, The Attested Merge Gate, The Change-Order Ledger
+
+**Dispatch with Declared Penalty (CDL)**
+- Problem: Deviations are checked per-row, so two individually tolerable deviations jointly breach a margin without anyone seeing the sum.
+- Signals: a cheap instrument down lowers guarantees without canceling the run; fleet members accumulate small deviations; the individually-tolerable-jointly-not check is nobody's job
+- Key compositions: The Dispatch Catalogue (MEL), The Priced Verification Ladder, Capability Census, Rent-Then-Commit
+
+**The Inspection and Redline Stakes**
+- Problem: "All upstream fully green" (the engine's only fleet semantics, V3) is stricter than downstream work often needs, so partial evidence is silently starved or silently consumed.
+- Signals: downstream wants to begin on partial upstream evidence; starved groups logged as warnings nobody surfaces; crawl-then-summarize / migration-then-verification chains
+- Key compositions: Admission by First Cycle (demoted; this is its successor), Fleet Receipt Ledger, The Validity Window, The Dispatch Catalogue (MEL)
+
 
 **Barn Raising**
 - Problem: Parallel work streams produce inconsistent structure and style when each agent makes independent convention choices.
@@ -224,6 +295,11 @@ Patterns that arrange multiple sheets within a single score.
 - Signals: release date cannot move; several reviewers own disjoint risk classes; some defects may be waived but must remain attributable
 - Key compositions: The Attested Merge Gate
 
+**The Serial Troponin**
+- Problem: Verification regimes test-to-complete when most artifacts can be conclusively cleared cheaply but not conclusively convicted cheaply.
+- Signals: logs, generated configs, dependency trees — one grep can clear, no grep can convict; the negative case is common and the expensive cascade should be rare, priced, pre-declared
+- Key compositions: Immune Cascade (priced variant), Circuit Breaker, Sign-Off Chain Against the Hard Date
+
 **Source Triangulation**
 - Problem: Single-source analysis cannot detect contradictions between what code does, documentation says, and tests prove.
 - Signals: technical claims need independent verification; multiple source types exist (code, docs, tests, benchmarks); single perspective might miss contradictions; need to categorize claims as corroborated vs uncorroborated
@@ -274,6 +350,26 @@ Patterns that arrange multiple sheets within a single score.
 ## Concert-Level
 
 Patterns that coordinate multiple scores in a campaign.
+
+**The Capability Census**
+- Problem: A fleet roster is a claim; a census is a proof — and the two artifacts must never merge because they are produced by different authorities and fail differently.
+- Signals: fleet launch with decaying prerequisites (credentials, data drops, sibling services); surge readiness in seconds; instrument drift between authorship and run N+50
+- Key compositions: Concurrent Count, Dormancy Gate, Admission by First Cycle
+
+**The Fleet Receipt Ledger**
+- Problem: Every fleet member ends in one of four states — completed, failed, never-started, unaccounted — and only the fourth is invisible without a ledger.
+- Signals: any fleet run auditable; unaccounted members hiding partial failure; non-waiting children without receipts
+- Key compositions: The Non-Waiting Hand, Demobilization Checkout, Rejoinder Ledger
+
+**The Non-Waiting Hand**
+- Problem: A parent that waits on N sequential children lives N lifetimes and its cadence breaks; spawning without a contract is fire-and-forget.
+- Signals: continuous producers with derivative work (monitoring spawning investigations, digests spawning deep-dives); the parent's rhythm is the product
+- Key compositions: The Fleet Receipt Ledger, Is-Line-Clear, Canon of Phases
+
+**Admission by First Cycle** *(DEMOTED, cycle 7 pass 2 — V3 refutes its premise: `fleet.depends_on` gates on full successful completion, not first cycle; use **The Inspection and Redline Stakes** for tolerance-declared partial admission)*
+- Problem: A fleet bets repetition on a member after one instance — sound only if the instance ran at full validation strength and the proof is fresh.
+- Signals: fleet groups consuming one another's outputs; fleet-growth moments; members whose "worked last week" is a claim, not evidence
+- Key compositions: Capability Census, Sign-Off Chain Against the Hard Date, The Validity Window, The Inspection and Redline Stakes (successor)
 
 **Canon of Phases**
 - Problem: A continuous stream of work outlives any single worker's endurance — context, budget, or lease — and restarts from zero at every boundary.
@@ -335,6 +431,42 @@ Patterns that coordinate multiple scores in a campaign.
 ## Communication
 
 Patterns that enable coordination through durable workspace state and evidence.
+
+**The Cue Light** *(confirmation + extension of Standby–GO)*
+- Problem: A parent score must change the behavior of already-running siblings without blocking them on a decision not yet made.
+- Signals: a late decision (human sign-off, slow validation) must stall commits but not work; siblings need a mode switch, not a briefing; consumers must be provably aware before the irreversible step fires
+- Key compositions: Standby–GO, The Watchman's Gate, The Graded Ladder, The Sealed Dissent
+
+**The Contamination Wire**
+- Problem: Contamination evidence found after consumers started must travel forward, on a channel every future consumer reads, with the consumer holding routing authority.
+- Signals: a multi-consumer artifact fails validation after some consumers built on it; one consumer's failure is evidence about the artifact; rerouting is genuinely possible
+- Key compositions: Dead Letter Quarantine, The Validity Window, Readback Before Commit, The Cue Light
+
+**The Shared Reference** *(folds the pass-2 Datum Grid and Shared Pulse; two profiles)*
+- Problem: N independent workers must agree on terms without converging on content, without O(N²) pairwise chatter.
+- Signals: wide fan-outs needing shared terminology/schema/phase; stragglers from an earlier regime would merge silently; mixed instruments need cheap interoperability
+- Key compositions: The Misclosure Ledger, Serial Troponin, Prefabrication, Delphi Convergence
+
+**The Change-Order Ledger**
+- Problem: Mid-run plan mutations are reconstructible only by diffing prompts, so no sheet knows what it was authorized to do.
+- Signals: cadenza injections or redlines change scope mid-run; sheets running under a plan version that no longer exists; authorization must bind before consumption
+- Key compositions: The Negative Ledger, Configuration Control Board, Commander's-Intent Envelope, The Midseason Pivot Ledger
+
+
+**Readback Before Commit**
+- Problem: A sender cannot observe whether a receiver understood an instruction, so misreads surface at commit time when they cost the whole downstream subtree.
+- Signals: every fan-in consuming AI output; cross-stage contracts; differentiated fan-outs where each instance must understand its own lens
+- Key compositions: Fan-out + Synthesis, The Poisoned-Artifact Advisory, Closed-Loop Call
+
+**The Poisoned-Artifact Advisory**
+- Problem: Upstream failure contaminates artifacts that already propagated, and downstream agents treat the workspace as ground truth because nothing tells them what is poisoned.
+- Signals: shared artifacts with late validation; a subtle early failure surfacing three stages later; gates that cannot run before every consumer
+- Key compositions: Dead Letter Quarantine, The Validity Window, The Sealed Dissent
+
+**The Sealed Dissent**
+- Problem: Systems erase rejected candidates, forcing every future chooser to pay full rediscovery price for the reasons the alternatives lost.
+- Signals: selection stages where the N−1 candidates vanish; self-chains re-deriving what a prior iteration rejected
+- Key compositions: The Negative Ledger, Variant Apparatus, Rejoinder Ledger
 
 **Continuity Ledger**
 - Problem: Parallel authors silently contradict shared world facts because prose canon has no typed, serialized assertion boundary.
@@ -417,6 +549,17 @@ Patterns that enable coordination through durable workspace state and evidence.
 
 Patterns that adjust behavior mid-execution based on runtime conditions.
 
+**The Dispatch Catalogue (MEL)**
+- Problem: "Skip it this run" is decided ad hoc under pressure; degraded operation needs ex-ante authorization with compensation and expiry, not runtime judgment.
+- Signals: known partial-failure modes tolerable for one run but not forever; the same degradation decision remade every run; authorization should expire, not persist silently
+- Key compositions: Capability Census, The Validity Window, Dispatch with Declared Penalty, The Graded Ladder
+
+**The Hold-Point Witness**
+- Problem: Some seams must STOP — not fail, not retry — until an authority outside the score signs, and the score must not manufacture that signature.
+- Signals: deployment/publication gates, destructive-test authorization, privacy sends; the authority is human or external; a paused job nobody notices is a deadlock
+- Key compositions: Transfer of Command at the Seam, The Graded Ladder, The Change-Order Ledger, The Watchman's Gate
+
+
 **Allostatic Setpoint**
 - Problem: A system holds a fixed quality or throughput target while cumulative wear rises invisibly until performance collapses.
 - Signals: meeting the target consumes a degrading reserve; maintenance debt accumulates across cycles; the safe target should change with measured wear
@@ -492,11 +635,43 @@ Patterns that adjust behavior mid-execution based on runtime conditions.
 - Signals: real unit costs on both sides — intervening and damage; most intervals honestly deserve NO action; a bounded sampling protocol can estimate the pressure cheaply
 - Key compositions: Rent-Then-Commit, Hutchinson's Warning, Immune Cascade
 
+**The Graded Ladder**
+- Problem: Untyped escalation forces every interruption to be maximally expensive (always human) or maximally cheap (always auto) — both wrong at scale.
+- Signals: mixed AI/human scores; retries that could silently absorb a real problem; WARN codes someone must adjudicate
+- Key compositions: Transfer of Command at the Seam, The Acknowledged False Alarm, Rejoinder Ledger
+
+**Transfer of Command at the Seam**
+- Problem: When work escalates from machine to human, the pause is the trivial half — what's missing is the briefing artifact that lets the receiver act without archaeology.
+- Signals: every pause/escalate trigger; human-in-the-loop approval gates; resume-after-overnight; AI-adjudicator handoffs
+- Key compositions: Transfer of Command, The Write-Time Record, The Black-Box Ledger
+
+**The Acknowledged False Alarm**
+- Problem: Suppression lists rot — entries accumulate silently until the suppressed set includes the code that meant the roof was on fire.
+- Signals: repeated runs with documented benign WARN codes; brownfield pipelines shipping with honest debt; an ignore list never reviewed since written
+- Key compositions: Configuration Control Board, The Validity Window, The Graded Ladder
+
+**The Near-Miss Ledger**
+- Problem: Validation near-passes — the retry that succeeded on attempt 2, the check that passed by luck, the sheet at 95% of its timeout — are silent holes in the defenses.
+- Signals: repeated runs of the same score; luck-dependent validations; duration-near-limit as tomorrow's outage
+- Key compositions: After-Action Review, The Unprimed Falsifier
+- Status: aspirational — blocked on a documented conductor status export
+
 ---
 
 ## Instrument-Strategy
 
 Patterns that match instrument capabilities and authority to task requirements.
+
+**The Priced Verification Ladder with Budget-Forced Degradation** *(approximation — descent behavior unverified until its sentinel pair runs)*
+- Problem: Verification spend compounds unbounded when every artifact gets the deepest affordable check, and degradation under budget pressure is silent.
+- Signals: verification is a real fraction of total cost; N× adversarial review for everything kills the economics; budget pressure has quietly downgraded review with no record
+- Key compositions: Echelon Repair, Immune Cascade, Rent-Then-Commit, Dispatch with Declared Penalty
+
+**The Continuous Pour Schedule**
+- Problem: A homogeneous fan-out against a rate-limited vendor hits the limit mid-wave, and the interruption (a cold joint) leaves partial generation of inconsistent vintage.
+- Signals: "how fast we can dispatch" hits "how fast the vendor can absorb"; a mid-wave 429 would split the vintage; rate-limit receipts show unplanned interruptions
+- Key compositions: The Rostered Watch, The Watch Rollover, Circuit Breaker, Firing the Pass
+
 
 **Commissioning Cascade**
 - Problem: Different validation scopes require different tools; single-pass validation misses issues or wastes resources.
@@ -548,6 +723,17 @@ Patterns that match instrument capabilities and authority to task requirements.
 ## Iteration
 
 Patterns that structure repeated refinement and learning across execution cycles.
+
+**The Hotwash Dispatch (Lesson Routing)**
+- Problem: Failure evidence accumulates in run records but no downstream sheet has committed to change behavior on it, so lessons dispatch into the void as context noise.
+- Signals: self-improvement loops where iteration N+1 should learn from N's actual validation failures; failure logs grow while prompts stay identical; evidence carried forward with no consumer
+- Key compositions: After-Action Review (capture-side neighbor), The Paid Question, Serial Troponin, The Spent Lesson Checkout
+
+**The Spent Lesson Checkout**
+- Problem: An automatic failure channel with no checkout is a context-debt machine: iteration 30's prompt carries iterations 1–29's failures, most long remediated.
+- Signals: long self-chains where per-iteration context cost grows; prompts carry failures no current sheet fails; lessons leave by silence, not receipt
+- Key compositions: The Hotwash Dispatch, The Validity Window, Watch Rollover, After-Action Review
+
 
 **After-Action Review**
 - Problem: Execution insights are lost between iterations because no systematic reflection captures what worked, what failed, and why.
@@ -613,6 +799,16 @@ Patterns that structure repeated refinement and learning across execution cycles
 - Problem: Makers cannot perceive their finished artifact — fluency hides the claims it makes — and internal evaluation shares the blind spot.
 - Signals: anything read by humans whose makers are too close to it; "we think it's clear" has ever been wrong; self-evaluation and structural-equality checks both passing while users misread the thing
 - Key compositions: The Freeze, Rehearsal Spotlight, The Declared Window
+
+**The Negative Ledger**
+- Problem: Falsified approaches are forgotten between runs, so later scores re-burn full runs to rediscover known incompatibilities.
+- Signals: long-lived workspaces; the same vendor/endpoint incompatibility rediscovered by a new score; integration scouting that should take minutes and takes a run
+- Key compositions: The Sealed Dissent, Dead Letter Quarantine, Fork-Evident History
+
+**The Watch Rollover**
+- Problem: State that must cross an iteration boundary survives only as an external, typed, bounded artifact — context windows die and ledgers persist.
+- Signals: long self-chaining loops; expensive iterations where restart state loss matters; any score whose period-ending deserves a durable answer
+- Key compositions: Transfer of Command, Cathedral Construction, checkpoint_persistence
 
 ---
 

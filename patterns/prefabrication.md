@@ -89,3 +89,21 @@ Iteration 5.1 narrows this pattern's authority. Prefabrication remains sufficien
 ### Composes With
 
 The Attested Merge Gate, Barn Raising, Clash Detection, Mission Command
+
+### Discover Pass 1, Cycle 7 — Prevention by Desk Design (Wordless Manual Fold)
+
+This pass dissolved the draft's **Wordless Manual** (Review 2: "a bundle of three techniques — least-context manifests, output scaffolds, negative examples — not one state machine"; Review 1: compile-time `spec_tags` cannot be authored by a runtime sheet). The techniques distribute to their real owners: output scaffolds → Readback Before Commit and The Attested Merge Gate; negative examples refreshed from failure receipts → Dead Letter Quarantine's curriculum fold (the curriculum teaches the sheet; the crossed-out examples teach the desk — same `failure_history` substrate). What lands *here* is the ex-ante discipline — recorded because Review 3 dissented: "the only pattern in the draft that reduces error ex ante rather than policing it ex post."
+
+**The worker packet as the contract's worker face.** Prefabrication's interface contract, instantiated per worker, is: (a) a **manifest** — the exact input files this instance needs, checked by hash, nothing else in view; (b) a **fixture** whose shape admits only the intended output (schema, strict scaffold); (c) **negative examples** — two or three crossed-out artifacts showing the characteristic wrong answers, drawn from real prior failures and refreshed by loop iteration, never boilerplate (a crossed-out drawing of a failure nobody makes anymore wastes attention while the *new* failure ships uncrossed).
+
+The IKEA discipline this encodes: design the *parts and the page* so the wrong assembly is hard to attempt — the Allen key fits one way; each step shows exactly its stage's components; impossible configurations are preemptively crossed out. Every gate pattern polices error *after* the attempt; the worker packet removes the attempt. Wire it honestly: stage 1 emits packets into `workspace/workers/{id}/packet.json` (a runtime artifact), and stage 2 sheets bind to those paths — never to compile-time context filters.
+
+```yaml
+  - name: manual-press
+    prompt: "Author the worker packet: manifest with sha256 per input, output scaffold, 2-3 crossed-out negative examples sourced from the previous iteration's failure receipts. Write workers/{{ instance_id }}/packet.json."
+  - name: assembly
+    capture_files: ["workers/{{ instance_id }}/packet.json"]
+    prompt: "Work ONLY from your packet manifest. Write into your scaffold exactly."
+```
+
+Failure mode: the packet goes stale — negative examples rot exactly as suppressions do. The refresh loop is not optional; a QC sweep that has never caught a seeded bad scaffold is a receipt.

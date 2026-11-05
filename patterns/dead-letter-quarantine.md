@@ -110,3 +110,13 @@ Quarantine analysis finds no patterns — items failed for unrelated reasons. Th
 ### Composes With
 
 Triage Gate (BLACK category feeds quarantine), Screening Cascade (rejected items go to quarantine for pattern analysis), Circuit Breaker (circuit-tripped failures enter quarantine)
+
+### Discover Pass 1, Cycle 7 — The Automatic Curriculum Fold
+
+This pass folded the draft's **Automatic Curriculum** into this pattern (Reviews 1 and 2: "substantially re-proves Dead Letter Quarantine — failure → analyze/carry evidence → adapted regeneration → revalidate; transport is not a new control structure"; "literally a one-line YAML key"). DLQ already proves batch quarantine, cross-failure analysis, adapted reprocessing, and final verification; the fold adds what the draft got right:
+
+**Conductor-mediated failure transport.** A `sheet.loops` generate→validate pair where the generate sheet's wrapped prompt carries `failure_history` — the conductor injects it; no human copies anything. The moment a human must move the lesson from log to prompt, the loop leaks. This is DLQ's evidence-carrying stage with the transport made automatic. Honest relation to Back-Slopping: same shape, but Back-Slopping is *curated* seed transfer; this is conductor-mediated and therefore cannot be forgotten.
+
+**Failure direction is the test.** Iteration N+1's output must differ from iteration N *in the direction the feedback pointed* — the corrected control (Review 2: stochastic generation owes direction, not byte-identical recurrence): assert the *omission of the cited violation*, never the reproduction of the exact prior failure string. Negative control: the same score under `raw` prompt mode (which omits `failure_history`) must reproduce the *class* of failure — the sentinel asserts the round-1 violation's signature reappears — while the wrapped mode's round-2 output passes the violation-absence check.
+
+**Context budget and the zero trap.** Bound history with a small positive `lookback_sheets` — **0 means ALL completed sheets, not none** (workspace.py:346, per the v6 archive) — and record the failure *class*, not the incident, so transient noise doesn't teach superstition.

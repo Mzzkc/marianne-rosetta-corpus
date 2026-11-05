@@ -94,3 +94,28 @@ Retained in the archive because its deadline-and-waiver discipline is useful but
 ### Composes With
 
 - **The Attested Merge Gate:** layering — supplies disjoint pre-merge sign-offs and explicit waivers.
+
+### Discover Pass 1, Cycle 7 — The Ripening Face (Anthesis Window Fold)
+
+This pass folded the draft's **Anthesis Window** into this pattern as its ripening face (Review 3: "mechanically it is an until loop over a file-fact probe + a hard date + a recorded fallback waiver… if the corpus is willing to fold Pre-Load, consistency demands the same treatment here"). The face keeps the two-sided failure geometry as its teaching frame: gate on the *one living prerequisite's own observable marker*, not the calendar — but the calendar's end forces the declared cruder fallback, never an extension. Distinct from the deadline itself (this pattern) and from Quorum Trigger (enough parties): this asks whether *the prerequisite has finished becoming what the next stage needs* — measured in it, not in votes.
+
+The executable face (composable in ~8 minutes per Review 1):
+
+```yaml
+  - name: declare
+    instrument: cli
+    command: "python3 scripts/declare_window.py --marker 'schema_probe.sh' --budget 6 --hard-date 'trading-open' --fallback 'frozen-schema' --out window.yaml"
+  - name: wait
+    instrument: cli
+    loops:
+      count: 6
+      until: "workspace:phenology-log.jsonl:marker_pass == 'true'"
+    command: "scripts/schema_probe.sh && printf 'marker_pass: true\\n' >> phenology-log.jsonl || printf 'marker_pass: false\\n' >> phenology-log.jsonl"
+    validations:
+      - type: content_regex
+        pattern: "marker_pass: (true|false)"   # exactly one reading per pass; observation SUCCEEDS while result stays not_ready
+  - name: act
+    skip_when: "test ! -f waiver.json -a ! grep -q 'marker_pass: true' phenology-log.jsonl"
+```
+
+Repairs carried into the fold (Review 2): observation execution succeeding while its *result* remains `not_ready` are separate fields — a passing probe run with an unmet marker is the normal loop condition, not a validation failure. Negative controls: premature marker, absent marker at deadline (must fire the FALLBACK sheet, never a loop extension; undecided-at-deadline is a human finding), **forged waiver on the marker path is perjury** (`file_exists` on `waiver.json` asserted ONLY on the fallback path), and marker regression (a passing marker that later fails re-opens the wait). The waiver joins the sign-off record — attributable, dated, never silent.

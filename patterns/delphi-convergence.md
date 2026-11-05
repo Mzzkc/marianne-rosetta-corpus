@@ -80,3 +80,17 @@ Agents anchor on first-round assessments and never genuinely update. Validate th
 ### Composes With
 
 Source Triangulation, Rashomon Gate
+
+### Discover Pass 1, Cycle 7 — The Anonymous Rounds Fold
+
+This pass folded the draft's **Anonymous Rounds** into this pattern (a collision the reviews did not flag; repaired under the standard Review 3 set at the Graded Net). Delphi already owns the structure — independent rounds, aggregate feedback, convergence detection; the fold adds four sections:
+
+**1. Mechanically computed aggregates as the ONLY between-round feedback.** Each round's panelists see per-item median + interquartile range + an anonymized outlier-reason digest, computed by a CLI stats sub-step — never a sibling's prose. The aggregate IS the metered tap: panelists drink from the median, not the firehose.
+
+**2. The anonymity gate, honestly scoped.** Disjoint output paths in one shared workspace are convention, not access control — the anonymity wall requires path-scoped visibility or per-sheet workspaces for the claim to hold. Within what the engine gives, enforce mechanically: a `content_regex` validation that no aggregate (or panelist output) contains a sibling sheet id — quote a sibling and it trips.
+
+**3. The honest stopping rule.** Stop when the IQR stabilizes across rounds (round-over-round delta below a declared threshold), and **stability itself is the published finding** — a panel that never converges has told you something true about the question. Non-convergence is published, never hidden, and never manufactured away by pressure.
+
+**4. The round cap is load-bearing.** 3–4 rounds; unbounded rounds is deliberation drift.
+
+Boundary paragraph (the newcomer's question, answered): **frames differ → Rashomon Gate; same question over rounds → this pattern; parallel measurements with a declarable additive tolerance → The Misclosure Ledger.** Identical correlated inputs yielding IQR 0 tests the statistic only — the anonymity negative control must instead plant an identifiable sibling answer and assert the aggregate cannot quote it.

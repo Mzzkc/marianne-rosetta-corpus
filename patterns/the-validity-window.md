@@ -127,3 +127,26 @@ Layering over every carrier pattern (Gas-Free at destructive boundaries, Declare
 ### Review Integration
 
 Iteration 6: survived all three reviews; the transition table and the gate-adjacency rule were added on Reviews 1 and 2's finding that the draft conflated elapsed TTL, minimum age, and accumulated maturity without precedence, and validated the window after rather than before consumption.
+
+### Discover Pass 1, Cycle 7 — Two New Profiles
+
+This pass folded two draft patterns into this law as **profiles** (structural-identity test: same DAG shape — attach a time bound to evidence, change eligibility after expiry — different evidence classes). Both folds were review-driven (Review 2: "this is The Validity Window applied to failure records, not a distinct graph"; "hash equality proves unchanged bytes, not continuing external validity").
+
+**Profile: Failure-Evidence Aging (folds The Aged Lead).** Failure evidence has a half-life: a validation failure from 30 seconds ago is urgent, actionable context; the same payload from three runs ago is history. Without aging, systems oscillate between **amnesia** (stale evidence never consulted) and **panic** (ancient failures suppressing approaches the environment has since un-broken). The response table is keyed on age — fresh (act now: quarantine, retry, wait), recent (constrain your approach), stale (mine for statistics and curriculum, take no per-run action) — and the half-life is **per failure-class** (transient errors age fast; structural failures age slow; a 403 ages differently than a timeout). The half-life table is a committed artifact with declared first-run seed values and a retuning loop that writes dated amendments — never vibes-chosen constants, and never meaningful inside a single 3-minute run: this profile requires a workspace persistence contract across runs (self-chained scores, long-lived workspaces, or an external ledger), or the aging script is evaluating a static list of same-run timestamps.
+
+**Profile: Held-State Pinning (folds The Held-State Clock).** A hold is not a freeze-frame: while a sheet pauses for escalation, everything upstream keeps being true only as long as it was true. At pause time, *pin* the validity evidence of every load-bearing input (literal digests at authorship; runtime digests via a written digest file checked by `sha256sum -c`); at resume, *re-verify before consuming*; expired evidence is not trusted and not mourned — re-derive or re-fetch. Critically, digest equality is **byte-truth, not world-truth**: a mutable API can remain represented by an unchanged stale extract, so live-horizon inputs get **source re-observation** at resume, not just re-hashing. Scope pinning at authorship to inputs with real horizons, each declared immutable / bounded / live; hermetic scores with immutable inputs need no clock.
+
+Structure for the held-work profile (composed and validated in under 5 minutes, per Review 1's assessment):
+
+```yaml
+  - name: pin-at-pause        # fired by the failing path before the hold
+    instrument: cli
+    command: "sha256sum inputs/*.json > hold-evidence.json && date -Is >> hold-evidence.json"
+  - name: verify-at-resume    # first sheet after resume; every consumer depends on it
+    instrument: cli
+    command: "sha256sum -c hold-evidence.json"
+    validations:
+      - type: command_succeeds
+```
+
+Negative control: a fixture where a dependency mutates *during* the simulated pause must fail resume-verify and route to re-derivation; remove the verify stage and the score happily consumes the mutated input — the discriminating failure.

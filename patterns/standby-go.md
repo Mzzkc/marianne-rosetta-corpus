@@ -49,6 +49,8 @@ composes_with:
   how: prerequisite — characterize buffer B before arming
 - pattern: Hutchinson's Warning
   how: substitution — the hold is degradation rung zero
+- pattern: The Cue Light
+  how: child — the Cue Light is this pattern's arm/ack/hold/fire machine extended with a cycle freshness counter, broadcast-polled mode semantics, and non-blocking consumers (cycle 7, discover pass 2)
 type: orchestration-pattern
 ---
 
@@ -124,3 +126,5 @@ validations:
 ### Review Integration
 
 Review 2 reduced the metaphor to a two-phase arm/fire protocol. Review 3 required runnable score dialect and command-form readiness checks; Sighted Versions survives as the promotion-authority and visibility-ledger seam. During split curation, the monolith's G1–G6 draft label was mapped to the nearest generator in forces.md, and every stage now names a current profile: deterministic stages use an any-wrapped CLI profile; judgment stages name claude-code, codex-cli, or opencode as appropriate.
+
+**Cycle 7, discover pass 2:** re-derived independently by Expedition 3/4 as "The Cue Light." The pass-2 collision flagged the fingerprint match; three reviews confirmed it. Recorded as confirmation + extension — no change to this pattern's own semantics; see `patterns/cue-light.md`.

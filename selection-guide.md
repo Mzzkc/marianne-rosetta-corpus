@@ -20,6 +20,60 @@ If you're new to orchestration, start with these five patterns in order. They co
 
 ---
 
+## Iteration 7.1 Problem → Pattern Additions (Discover Pass 2, Cycle 7)
+
+Twenty-one new patterns after three adversarial reviews (Practitioner, Skeptic, Newcomer); from 24 drafted — Firing the Pass evicted as a duplication (proven Sep 4), Staggered Quorum Spend cut (launches cannot be cancelled; benched as The Phased Quorum Wave), The Recovery Arc benched (checkpoint persistence unwired), The Shared Pulse ⊕ Datum Grid folded into The Shared Reference, Hotwash split in two. Problem-first, per this guide's rule.
+
+| If your problem is… | Start with | Compose with |
+|---|---|---|
+| A late decision (human sign-off, slow validation) must stall commits but not work. | **The Cue Light** | Standby–GO (its parent), The Graded Ladder |
+| Contamination is found after consumers already started, and rerouting is possible. | **The Contamination Wire** | Dead Letter Quarantine, The Validity Window |
+| N parallel workers must agree on terms, schema, or phase without agreeing on content. | **The Shared Reference** (datum: immutable; pulse: versioned) | The Misclosure Ledger, Prefabrication |
+| The plan changes mid-run and sheets are running under a version that no longer exists. | **The Change-Order Ledger** | The Negative Ledger, Configuration Control Board |
+| About to spend on a large fan-out with an untested prompt+toolchain. | **Unison Drift** | Rashomon Gate, First Article Characterization |
+| One contested judgment where a single reviewer's blind spot is the danger. | **The Dialectical Pair** | Rejoinder Ledger, The Editor's Disposition |
+| Schema-valid garbage looks exactly like truth at volume. | **The Torque-Verify Pass** | Immune Cascade, Concurrent Count |
+| "Skip it this run" is being decided ad hoc, under pressure, every run. | **The Dispatch Catalogue (MEL)** | Capability Census, The Validity Window |
+| Small deviations individually fine but jointly breaching a declared margin. | **Dispatch with Declared Penalty (CDL)** | The Dispatch Catalogue (MEL), Capability Census |
+| Verification spend compounds; budget pressure silently downgrades review. | **The Priced Verification Ladder** | Immune Cascade, Echelon Repair |
+| Failure evidence accumulates with no consumer committed to act on it. | **The Hotwash Dispatch (Lesson Routing)** | After-Action Review, The Spent Lesson Checkout |
+| Prompts carry remediated failures from many iterations back — context debt. | **The Spent Lesson Checkout** | The Hotwash Dispatch, The Validity Window |
+| A small upstream artifact (schema, rubric, lexicon) parameterizes everything downstream. | **Keystone-First Sequencing** | Cathedral Construction, Prefabrication |
+| An AI seam touches something irreversible and the check must never fail open. | **The Watchman's Gate** | Readback Before Commit, The Hold-Point Witness |
+| A seam only an external human authority may open; the score must not self-sign. | **The Hold-Point Witness** | Transfer of Command at the Seam, The Graded Ladder |
+| Many advisories, but the output must be ONE action, not one document. | **The Editor's Disposition** | Rejoinder Ledger, Condorcet's Premise |
+| Volume production should be gated on one inspected representative first article. | **The Mock-Up Bay** | The Serial Troponin, The Unprimed Falsifier |
+| A long campaign's plan is a hypothesis; pivots must not orphan completed evidence. | **The Midseason Pivot Ledger** | Season Bible, Continuity Ledger, Fork-Evident History |
+| Wave-1 output is soil (fixtures, stubs, schemas), not deliverables. | **Facilitator-First Decomposition** | Keystone-First Sequencing, The Attested Merge Gate |
+| Downstream can honestly begin on partial upstream evidence; engine fleet semantics are all-or-nothing. | **The Inspection and Redline Stakes** | Fleet Receipt Ledger, Admission by First Cycle (successor) |
+| A vendor rate limit mid-wave would leave a cold joint of inconsistent vintage. | **The Continuous Pour Schedule** | The Rostered Watch, Circuit Breaker |
+
+**Pass-2 corrections to existing guidance:** `skip_when` skips on command *success* — write permission predicates as refusals (absent/invalid artifact ⇒ command succeeds ⇒ skip), and never let a load-bearing check live only in `skip_when` (V1: evaluation errors proceed). Parallel workers never append to one shared file: per-worker files, one aggregating writer, write-temp-then-rename. `failure_history` is sheet-local retry state, not a cross-sheet broadcast — use typed verdict artifacts. Proof-status vocabulary: primitives-proven / approximation / aspirational ("native-proven" is retired).
+
+## Iteration 7 Problem → Pattern Additions (Discover Pass 1, Cycle 7)
+
+Sixteen new patterns after three adversarial reviews; nine draft entries folded or cut (folds noted where they landed). Problem-first, per this guide's rule.
+
+| If your problem is… | Start with | Compose with |
+|---|---|---|
+| A receiver may have misunderstood an instruction, and the misread would surface at commit time. | **Readback Before Commit** | Fan-out + Synthesis, The Poisoned-Artifact Advisory |
+| An upstream failure contaminated artifacts that downstream work already consumed. | **The Poisoned-Artifact Advisory** | Dead Letter Quarantine, The Validity Window |
+| Rejected candidates vanish, and future choosers re-pay the rediscovery price. | **The Sealed Dissent** (within-run) / **The Negative Ledger** (cross-run) | Variant Apparatus, Fork-Evident History |
+| N parallel estimates of an additive total disagree within tolerance, and the fan-in is about to average or argue. | **The Misclosure Ledger** | Concurrent Count, Condorcet's Premise |
+| A survey task's fan-out width is being sized by feel. | **One Field, Many Cores** | Immune Cascade (priced variant), First Article Characterization |
+| Interruptions are all priced the same — always human, or always auto. | **The Graded Ladder** | Transfer of Command at the Seam, The Acknowledged False Alarm |
+| Work escalates to a human who must act without archaeology. | **Transfer of Command at the Seam** | The Write-Time Record, The Black-Box Ledger |
+| A suppression/ignore list is rotting with no expiry. | **The Acknowledged False Alarm** | Configuration Control Board, The Validity Window |
+| Near-passes (lucky validations, near-limit durations) are silently ignored. | **The Near-Miss Ledger** *(aspirational)* | After-Action Review, The Unprimed Falsifier |
+| Verification runs every check to completion when most cases clear cheaply. | **The Serial Troponin** | Immune Cascade (priced variant), Circuit Breaker |
+| Iteration state must survive a boundary or restart as an external artifact. | **The Watch Rollover** | Transfer of Command, Cathedral Construction |
+| A fleet roster says members are ready, but readiness has decayed since authorship. | **The Capability Census** | Concurrent Count, Dormancy Gate |
+| Fleet members end unaccounted — partial failure hides at fleet scale. | **The Fleet Receipt Ledger** | The Non-Waiting Hand, Demobilization Checkout |
+| A parent must spawn derivative work without waiting, without fire-and-forget. | **The Non-Waiting Hand** | The Fleet Receipt Ledger, Is-Line-Clear |
+| A fleet should admit a member only on fresh, full-strength proof. | **Admission by First Cycle** | Capability Census, Sign-Off Chain Against the Hard Date |
+
+Iteration-7 folds (reach the parent pattern, not a new name): failure evidence aging and held-work pinning → **The Validity Window** (two new profiles); tiered verification with committed price tables → **Immune Cascade** (priced variant); conductor-mediated failure transport in loops → **Dead Letter Quarantine**; waiting on a ripening prerequisite against a hard date → **Sign-Off Chain Against the Hard Date** (ripening face); anonymous multi-round estimation with mechanical aggregates → **Delphi Convergence**; least-context worker packets and negative examples → **Prefabrication** (prevention by desk design).
+
 ## Iteration 6 Problem → Pattern Additions
 
 Rows for the iteration-6 core: four laws, twelve patterns. Problem-first, per this guide's rule.

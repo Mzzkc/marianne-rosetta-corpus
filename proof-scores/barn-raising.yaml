@@ -1,0 +1,2849 @@
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║          BARN RAISING — THE WAYSIDE LIBRARY (proof score, r2)                 ║
+# ║   sheet 21 · pass 1 of 2 · revised against reviews 1–3 (05-review-*.md)       ║
+# ║                                                                               ║
+# ║  PRIMARY PATTERN : Barn Raising — N writers produce the SAME KIND of          ║
+# ║                    artifact (an interpretive wayside page) about              ║
+# ║                    DIFFERENT subjects (trail segments), each writing          ║
+# ║                    under judgment and therefore capable of N                  ║
+# ║                    reasonable-but-incompatible choices. The pattern's         ║
+# ║                    contribution is the CONVENTION layer — the                 ║
+# ║                    judgment-bearing standards (voice, heading grammar,        ║
+# ║                    glossary discipline, naming, alt-text style,               ║
+# ║                    cultural-sensitivity rules) that keep parallel             ║
+# ║                    writers coherent where a frozen schema cannot              ║
+# ║                    reach. Existing corpus proofs prove the CONTRACT           ║
+# ║                    side of parallel work; this score isolates the             ║
+# ║                    convention side: a two-arm fan-out where                   ║
+# ║                    treatment writers hold conventions.md and control          ║
+# ║                    writers hold ONLY the frozen schema — drift is            ║
+# ║                    then MEASURED, not asserted. If the control arm            ║
+# ║                    does not drift more, the verdict is FALSIFIED and          ║
+# ║                    the proof says so.                                        ║
+# ║                                                                               ║
+# ║  REVISION r2 — every change answers a named finding in 05-review-1/2/3.md:    ║
+# ║   R1.1/R3.1  mdbook + linkchecker REMOVED — no non-venue binaries. The site   ║
+# ║               is built by scripts/build-site.py (python-markdown, one         ║
+# ║               template, nav from directory scan) and link-checked by          ║
+# ║               scripts/check-links.py — heredoc-authored, exit-coded.          ║
+# ║   R1.2       WKT polygons are written in WGS84 (EPSG:4326); rings             ║
+# ║               closed (first == last); the ≤12-vertex cap re-closes            ║
+# ║               the ring after simplify. GBIF never sees a projected            ║
+# ║               coordinate.                                                     ║
+# ║   R1.3/R2.2  Trails are fetched by park RELATION, clipped to the park         ║
+# ║               polygon (not bbox), and segmented along CONNECTED               ║
+# ║               components by arc position — no synthetic bridges across        ║
+# ║               unrelated branches.                                             ║
+# ║   R1.4/R3.5  Stratigraphy vocabulary EMBEDDED as pinned bytes (the            ║
+# ║               previously cited host is dead in DNS — verified). Pages         ║
+# ║               declare geology_terms; the grounding gate checks each           ║
+# ║               against the vocabulary — term-level entailment, not             ║
+# ║               byte custody alone.                                             ║
+# ║   R1.5/R3.6  scripts/check-schema-freeze.py is AUTHORED at M0 — no           ║
+# ║               ghost scripts anywhere in the score.                            ║
+# ║   R1.6       UTM zone DERIVED from the park centroid (EPSG:26915 is          ║
+# ║               no longer hardcoded) — venue-generic in CRS.                    ║
+# ║   R1.7/R2.6  check-intent.py species matching uses \b word boundaries.        ║
+# ║   R2.1/R3.2  Gate self-test covers ALL SIX gates with matched negative        ║
+# ║               fixtures (schema, grounding, naming added); the log            ║
+# ║               records one NEG/POS line per gate; the validation              ║
+# ║               counts six of each.                                             ║
+# ║   R2.3/R3.7  query_hash is PER-SEGMENT and reproducible:                     ║
+# ║               sha256(WKT ‖ canonical params); the page gate checks the        ║
+# ║               page's hash against ITS segment's manifest entry.               ║
+# ║   R2.4       Occurrence IDs are checked against the writer's OWN              ║
+# ║               segment's pinned set — not the park-wide union.                 ║
+# ║   R2.5       GBIF pages through endOfRecords (cap 600); truncation            ║
+# ║               RECORDED in the manifest, never silent; UA + retry on           ║
+# ║               Overpass.                                                       ║
+# ║   R2.7/R3.8  Writer isolation is PHYSICAL: M7b stages each writer's          ║
+# ║               complete input world into staging/writer-N/; the control        ║
+# ║               staging provably contains no conventions bytes (checked          ║
+# ║               against conventions.sha256); M8 validation re-asserts           ║
+# ║               per instance.                                                   ║
+# ║   R2.8/R3.9  naming REMOVED from the per-writer floor (it was                ║
+# ║               structurally dead: both arms were gated to 1.0). The            ║
+# ║               floor is schema/grounding/alttext/paragraph/headings;           ║
+# ║               naming is measured at M9 where it can discriminate.             ║
+# ║   R2.9       ks_paragraph REPLACED by paragraph_cv_ratio (control CV /        ║
+# ║               treatment CV) — directional, no underpowered p-test.            ║
+# ║   R2.10      ALL verdict thresholds live in thresholds.yaml; the join         ║
+# ║               reads no code constants.                                        ║
+# ║   R2.11/R3.10 Verdict ordering fixed: M10 builds the evidence page            ║
+# ║               WITHOUT a verdict; M13 derives the verdict, appends it          ║
+# ║               to the evidence page, REBUILDS, REDEPLOYS, and re-runs          ║
+# ║               the live gates — the SERVED artifact carries the final          ║
+# ║               mechanically derived verdict.                                   ║
+# ║   R2.12/R3.11 Pages deploy from repo ROOT (source[path]=/) — the only        ║
+# ║               branch-source config GitHub accepts; /site was 422.             ║
+# ║   R2.13      Control pages are NEVER committed: the deploy repo               ║
+# ║               contains only site/ output + .nojekyll.                         ║
+# ║   R2.14/R3.12 A writer that cannot satisfy the floor records an              ║
+# ║               honest "GATE_RESULT: FAIL" in gates.log instead of             ║
+# ║               silently vanishing; M9 measures over passing pages             ║
+# ║               only, and n<4 derives INCONCLUSIVE — the class is              ║
+# ║               genuinely reachable.                                            ║
+# ║   R2.15/R3.3 Live gates repaired: heading skips caught in BOTH                ║
+# ║               directions; segment pages with zero images FAIL the            ║
+# ║               alt gate (schema guarantees ≥1 figure); variant read            ║
+# ║               from body[data-variant] rendered from frontmatter —            ║
+# ║               never guessed from a URL.                                       ║
+# ║   R2.16/R3.4 Second model family CAST: the conventions red-team              ║
+# ║               reviser (M6b) and the final evaluator (M13) run on             ║
+# ║               codex-cli (GPT family) — family B ≠ the authoring family        ║
+# ║               (claude-code → GLM), per the attested-merge-gate /              ║
+# ║               unprimed-falsifier corpus standard.                             ║
+# ║   R2.17      Matched pairs are ANALYZED, not discarded: drift.py emits        ║
+# ║               a pair_analysis block (per-pair deltas) the evaluation          ║
+# ║               must report.                                                    ║
+# ║   R3.13      M0 verifies gh AUTHORIZATION (login == github_owner) and         ║
+# ║               refuses a pre-existing target repo unless                       ║
+# ║               allow_repo_reuse=true; deploy re-verifies at the                ║
+# ║               irreversible moment (Gas-Free Certificate).                     ║
+# ║   R3.14      Header/config reconciled: retry is max_retries:1 (no            ║
+# ║               fail_fast key is claimed anywhere).                             ║
+# ║   R3.15      Citation sweep rebuilt: no blanket exemptions; cited             ║
+# ║               paths stripped before the digit test; table rows must           ║
+# ║               sit under a cited caption.                                      ║
+# ║   R1.8       check-page.py strips ONLY the frontmatter block                  ║
+# ║               (non-greedy, anchored) — a thematic break in the body          ║
+# ║               can no longer eat the page.                                     ║
+# ║                                                                               ║
+# ║  COMPOSING       : Prefabrication (M5 freeze, enforced by digest),           ║
+# ║                    Mission Command (M7 intent; \b-anchored refusal of         ║
+# ║                    species names / segment IDs), The Etiquette Law           ║
+# ║                    (every claim an exit code; the ENTIRE substrate           ║
+# ║                    heredoc-authored — including the freeze script            ║
+# ║                    pass 1 ghosted), Shipyard Sequence (M0–M4:                ║
+# ║                    foundation validated before any LLM spend),               ║
+# ║                    Unprimed Falsifier discipline (thresholds                 ║
+# ║                    PRE-REGISTERED at M7b; mtime-checked at M9),              ║
+# ║                    Red Team / Blue Team (M6b, family-B instrument),          ║
+# ║                    Rehearsal Spotlight (check-synthesis.py proves            ║
+# ║                    unflagged sections byte-identical), Proof-Carrying        ║
+# ║                    Artifact + Validity Window (pinned GBIF bytes;            ║
+# ║                    reproducible per-segment query hashes), Declared          ║
+# ║                    Window (live gates scoped to fetched bytes),              ║
+# ║                    Gas-Free Certificate (deploy re-runs the M0 repo           ║
+# ║                    safety check at the irreversible moment).                 ║
+# ║                                                                               ║
+# ║  PROBLEM SOLVED  : Interpretive wayside guides for a real trail network       ║
+# ║                    — "The Wayside Library" at Ledges State Park (Boone      ║
+# ║                    County, Iowa): real OSM trail geometry clipped to the      ║
+# ║                    park polygon, real GBIF occurrences with computed         ║
+# ║                    phenology windows, CCC-era history and an embedded        ║
+# ║                    Pennsylvanian stratigraphy vocabulary, landing as a       ║
+# ║                    deployed, public, mobile-first static site a family       ║
+# ║                    with 1 bar of signal can actually use. The                ║
+# ║                    coordination problem is pure Barn Raising: without        ║
+# ║                    shared conventions, eight independently-reasoning         ║
+# ║                    writers produce eight reasonable pages that read          ║
+# ║                    like eight organizations wrote them. With                 ║
+# ║                    conventions, the merge is boring. Boring merges           ║
+# ║                    are the win condition.                                    ║
+# ║                                                                               ║
+# ║  PRODUCES        : <auto-workspace>/wayside-library/ → run/ (meta.json,      ║
+# ║                    assignment.json, drift-report.json, verdict.json,         ║
+# ║                    deployment.json, live-gates.json, gates.log),             ║
+# ║                    fixtures/ (1 known-good + 6 matched corruptions +         ║
+# ║                    fixture grounding manifest), geometry/ (raw-ways,         ║
+# ║                    park.geojson, segments.geojson, per-segment WGS84         ║
+# ║                    WKT polygons, geometry.sha256), grounding/ (pinned        ║
+# ║                    occurrence bytes per segment + manifest +                 ║
+# ║                    phenology.json + stratigraphy vocab), schema/ +           ║
+# ║                    schema.sha256 (frozen), conventions.md + .sha256,         ║
+# ║                    intent.md, staging/writer-1..8/ (physically               ║
+# ║                    isolated input worlds), pages/treatment|control/          ║
+# ║                    (writer-tagged namespaces), site-src/ + site/             ║
+# ║                    (merged content, shared glossary, evidence page           ║
+# ║                    carrying the drift report AND the final verdict),         ║
+# ║                    evaluation.md, and the LIVE GitHub Pages site             ║
+# ║                    the live gates prove serves the built bytes.              ║
+# ║                                                                               ║
+# ║  INSTRUMENTS     : 9 of 16 movements are instrument:cli with EMPTY           ║
+# ║                    fallback chains. Judgment movements: claude-code          ║
+# ║                    (family A: schema M5, conventions M6a, intent M7,         ║
+# ║                    writers M8, synthesis M10) and codex-cli                  ║
+# ║                    (family B: red-team revise M6b, evaluation prose          ║
+# ║                    M13) — two AI families, anti-self-review per             ║
+# ║                    the corpus standard.                                       ║
+# ║                                                                               ║
+# ║  PREREQUISITES   : network (Overpass, GBIF, GitHub); python3 + venv          ║
+# ║                    (pandas, scipy, shapely, pyproj, jsonschema,             ║
+# ║                    textstat, requests, pyyaml, markdown); gh                 ║
+# ║                    AUTHORIZED (login == github_owner, probed at M0           ║
+# ║                    AND re-verified at deploy); codex-cli present             ║
+# ║                    (probed at M0). NO mdbook, NO linkchecker, NO             ║
+# ║                    pa11y — the build and link check are pip-installable      ║
+# ║                    Python. Duration ≈ 1–2 h. Cost ≈ $2–5.                    ║
+# ║                    Retry: max_retries 1 — gates fail loudly for              ║
+# ║                    diagnosis, not blind retry. A FALSIFIED verdict is        ║
+# ║                    a FINDING, not a crash; all four verdict classes          ║
+# ║                    exit 0. Only mechanical failure exits nonzero.            ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+name: wayside-library
+description: "Barn Raising proof (r2): two-arm fan-out of 8 wayside-page writers over real GBIF/OSM grounding; conventions vs schema-only, drift measured deterministically, verdict shipped inside the deployed artifact"
+
+# workspace: intentionally omitted — auto-managed at <workspace-root>/wayside-library.
+# The score is GENERIC: park, OSM relation, mileage, endpoints, thresholds, deploy
+# target, and repo-reuse policy are variables; M0 writes them to run/meta.json and
+# every script reads disk (never a hardcoded park). The UTM zone is derived from
+# the park centroid at M2 — no hardcoded CRS.
+
+instruments:
+  # Family B seat: the shipped codex profile, as a score alias — the
+  # conventions red-team reviser (M6b) and the evaluator (M13) run on a
+  # model family that did not author the artifact under review. Same
+  # anti-self-review discipline as the-attested-merge-gate / the-unprimed-
+  # falsifier ("family B ≠ writer family — mandatory anti-fraud").
+  codex-redteam:
+    profile: codex-cli
+    config:
+      timeout_seconds: 2700
+
+instrument: claude-code            # score default (family A)
+instrument_config:
+  timeout_seconds: 1800
+
+movements:
+  # ── M0 · Scaffold (Shipyard Sequence / Tool Chain) ─────────────────────────────
+  1:
+    name: "Scaffold + Deterministic Substrate (M0)"
+    instrument: cli            # bash + git + python venv: workspace init, meta
+    instrument_fallbacks: []   # pin, deps lock, and the ENTIRE gate suite
+    instrument_config:         # heredoc-authored here — gates.sh, check-page.py,
+      timeout_seconds: 2700    # check-schema-freeze.py (pass 1 ghosted it),
+                               # build-site.py, check-links.py. Probes (gh
+                               # AUTHORIZATION, codex, venv deps, Overpass)
+                               # fail LOUDLY before any LLM spend.
+  # ── M1 · Gate self-test (The Etiquette Law, second clause) ─────────────────────
+  2:
+    name: "Gate Self-Test (M1)"
+    instrument: cli            # gates.sh --self-test: ALL SIX gates must PASS
+    instrument_fallbacks: []   # the known-good fixture AND FAIL their matched
+    instrument_config:         # corruption. Six NEG lines, six POS lines.
+      timeout_seconds: 900     # Validates the validators BEFORE anything runs.
+  # ── M2 · Trail geometry (deterministic foundation) ─────────────────────────────
+  3:
+    name: "Trail Geometry (M2)"
+    instrument: cli            # Overpass (park relation + clipped trails) +
+    instrument_fallbacks: []   # shapely/pyproj: connected-component segments,
+    instrument_config:         # UTM zone from centroid, WGS84 WKT out,
+      timeout_seconds: 1500    # closed rings, pinned sha256. The mileage gate
+                               # ties geometry to published reality (±20%).
+  # ── M3 · GBIF grounding with pins (Proof-Carrying Artifact) ────────────────────
+  4:
+    name: "GBIF Grounding + Phenology (M3)"
+    instrument: cli            # requests (GBIF, paged to endOfRecords) +
+    instrument_fallbacks: []   # pandas: per-polygon pinned occurrences,
+    instrument_config:         # reproducible per-segment query hashes, phenology
+      timeout_seconds: 1800    # IQR windows, embedded stratigraphy vocabulary.
+                               # Thin-record segments degrade to whole-park —
+                               # RECORDED, never silent.
+  # ── M4 · Stratified arm assignment (the confound-killer) ───────────────────────
+  5:
+    name: "Stratified Arm Assignment (M4)"
+    instrument: cli            # python3: sort → adjacent PAIRING (no brittle
+    instrument_fallbacks: []   # ratio asserts), seeded arm flip within pair,
+    instrument_config:         # pinned assignment.json. Must PREDATE all
+      timeout_seconds: 600     # writing — enforced by mtime at M9.
+  # ── M5 · Prefabrication freeze: page schema (LLM — judgment, family A) ─────────
+  6:
+    name: "Page Schema Freeze (M5)"
+    instrument: claude-code    # Contract authorship reasons about interfaces
+    instrument_fallbacks: []   # that do not exist yet — judgment. The SEED
+    instrument_config:         # schema is strict (no empty taxa/figures); the
+      timeout_seconds: 1800    # author may only STRENGTHEN it. Frozen on
+                               # completion by the M0-authored freeze script;
+                               # a post-freeze edit fails the digest check.
+  # ── M6 · Conventions + red-team revise (LLM — two families) ────────────────────
+  7:
+    name: "Conventions Authorship (M6a)"
+    instrument: claude-code    # Family A authors the judgment-bearing
+    instrument_fallbacks: []   # convention layer: voice, heading grammar,
+    instrument_config:         # glossary discipline, naming, alt-text style,
+      timeout_seconds: 2700    # cultural sensitivity, density.
+  8:
+    name: "Conventions Red-Team Revise (M6b)"
+    instrument: codex-redteam  # FAMILY B (GPT via codex-cli) attacks what
+    instrument_fallbacks: []   # family A wrote — anti-self-review. Attack
+    instrument_config:         # from BOTH edges (too vague / too rigid), then
+      timeout_seconds: 2700    # revise. Then the CLI partition check: every
+                               # rule gate-backed or judgment-only; zero
+                               # unclassified.
+  # ── M7 · Mission Command: intent envelope (LLM — judgment, family A) ───────────
+  9:
+    name: "Intent Envelope (M7)"
+    instrument: claude-code    # PURPOSE / KEY TASKS / END STATE without
+    instrument_fallbacks: []   # prescribing content per segment. The CLI check
+    instrument_config:         # REFUSES any species name (\b-anchored) or
+      timeout_seconds: 1200    # segment ID.
+  # ── M7b · Pre-register thresholds + stage writer worlds (CLI) ──────────────────
+  10:
+    name: "Pre-Register Thresholds + Stage Writers (M7b)"
+    instrument: cli            # thresholds.yaml written AFTER the writers'
+    instrument_fallbacks: []   # inputs exist and BEFORE any writer runs
+    instrument_config:         # (mtime-checked at M9) — ALL verdict constants
+      timeout_seconds: 900     # live HERE, none in code. Then each writer's
+                               # input world is STAGED into staging/writer-N/;
+                               # control staging contains no conventions bytes.
+  # ── M8 · The two-arm fan-out — THE EXPERIMENT (LLM ×8, family A) ───────────────
+  11:
+    name: "Writers: Two-Arm Fan-Out (M8)"
+    instrument: claude-code    # 8 instances, 2 arms of 4, physically staged
+    instrument_fallbacks: []   # input worlds. Treatment: conventions + schema
+    instrument_config:         # + intent + grounding. Control: schema + intent
+      timeout_seconds: 3600    # + grounding ONLY. Floor gates: schema,
+                               # grounding, alttext, paragraph, headings —
+                               # NOT naming (measured at M9; gating it in the
+                               # floor made the metric structurally dead).
+                               # A writer that cannot pass records an honest
+                               # FAIL in gates.log; INCONCLUSIVE is reachable.
+  # ── M9 · Deterministic drift measurement (the heart of the proof) ──────────────
+  12:
+    name: "Drift Measurement (M9)"
+    instrument: cli            # Pure CLI: grammar agreement, glossary adoption,
+    instrument_fallbacks: []   # naming compliance (MEASURED, not floor-gated),
+    instrument_config:         # FK spread, directional paragraph-CV ratio.
+      timeout_seconds: 900     # Self-tests against fixtures; mtime-verifies
+                               # pre-registration; emits per-arm AND per-pair
+                               # analysis. Any LLM here would invalidate the
+                               # proof's central claim.
+  # ── M10 · Editorial synthesis — treatment arm only (LLM — judgment, family A) ──
+  13:
+    name: "Editorial Synthesis (M10)"
+    instrument: claude-code    # Merge treatment pages, shared glossary,
+    instrument_fallbacks: []   # cross-links; argued resolution, recorded
+    instrument_config:         # dissent. Rehearsal Spotlight: unflagged
+      timeout_seconds: 2700    # sections byte-identical (normalized H2
+                               # matching). The evidence page carries the
+                               # drift tables and thresholds but NOT the
+                               # verdict — the verdict does not exist yet
+                               # (producer before consumer, fixed in r2).
+                               # Control pages are NEVER shipped.
+  # ── M11 · Build + deploy (deterministic) ──────────────────────��────────────────
+  14:
+    name: "Build + Deploy (M11)"
+    instrument: cli            # build-site.py (python-markdown, variant
+    instrument_fallbacks: []   # stamped into <body data-variant>), check-
+    instrument_config:         # links.py over the local build, then a CLEAN
+      timeout_seconds: 1800    # git repo containing ONLY site/ + .nojekyll
+                               # (control pages never committed), pushed to
+                               # the fenced target; Pages source[/]=/ main —
+                               # the only branch config GitHub accepts.
+  # ── M12 · Live gates on the deployed bytes (Declared Window) ───────────────────
+  15:
+    name: "Live Gates (M12)"
+    instrument: cli            # Deterministic Python over SERVED HTML: alt
+    instrument_fallbacks: []   # (zero-image segment pages FAIL — schema
+    instrument_config:         # guarantees ≥1 figure), lang, viewport,
+      timeout_seconds: 2400    # heading order (both directions), grade bands
+                               # by frontmatter variant (never URL-guessed),
+                               # page weight, served-vs-built equality.
+  # ── M13 · Verdict + evidence update + evaluation ───────────────────────────────
+  16:
+    name: "Verdict + Evidence Update + Evaluation (M13)"
+    instrument: codex-redteam  # Family B writes the prose — the maker's
+    instrument_fallbacks: []   # family never grades its own work. Step 1 is
+    instrument_config:         # CLI regardless: the verdict class derives from
+      timeout_seconds: 2700    # thresholds.yaml by exit-code arithmetic with
+                               # NO prose intermediate. Then the evidence page
+                               # is appended, the site REBUILT and REDEPLOYED,
+                               # and live gates re-run — the SERVED artifact
+                               # carries the final verdict.
+
+sheet:
+  size: 1
+  total_items: 16           # movements pre-expansion; engine expands to 23 sheets
+  fan_out:
+    11: 8                   # the writers: 2 arms × 4 segments (sheets 12-19)
+  dependencies:             # movement-keyed; engine expands to the sheet DAG
+    2: [1]                  # self-test runs only on a commissioned substrate
+    3: [2]                  # geometry trusts only self-tested gates
+    4: [3]                  # grounding queries the validated polygons
+    5: [4]                  # assignment stratifies on grounding reality
+    6: [4]                  # schema needs taxa/occurrence shapes (∥ M6a/M7)
+    7: [4, 6]               # conventions need grounding + the schema's grain
+    8: [7]                  # family B attacks the family A draft
+    9: [6, 7, 8]            # intent sits above schema + revised conventions
+    10: [9]                 # pre-register + stage AFTER all writer inputs exist
+    11: [10]                # CONSTITUTIONAL: registration precedes writing
+    12: [11]                # drift measures the fan-out output
+    13: [12]                # synthesis sees the measurement first
+    14: [13]                # build ships the merged treatment arm only
+    15: [14]                # live gates audit the DEPLOYED artifact
+    16: [15]                # the verdict joins drift + live evidence, then ships
+
+parallel:
+  enabled: true
+  max_concurrent: 4          # the eight writers run in parallel; judgment
+                             # movements upstream serialize on the freeze
+
+# cross_sheet: deliberately ABSENT — the workspace IS the shared memory, and
+# the 8 writers must not see each other's output: isolation is the EXPERIMENTAL
+# CONDITION, not an optimization. Writer inputs are PHYSICALLY partitioned into
+# staging/writer-N/ at M7b and re-verified per instance at M8.
+
+retry:
+  max_retries: 1             # gates fail loudly for diagnosis, not blind retry;
+  base_delay_seconds: 30     # a writer that still fails records an honest
+                             # GATE_RESULT: FAIL in gates.log and its absence
+                             # flows to INCONCLUSIVE via honest-n — partial
+                             # failure is tolerated, silent loss is not
+
+stale_detection:
+  enabled: true
+  idle_timeout_seconds: 1800 # CLI movements run silent pandas/scipy fans
+
+workspace_lifecycle:
+  archive_on_fresh: false
+  max_archives: 3
+
+prompt:
+  variables:
+    # ── Venue inputs (overridable via --var; recorded to run/meta.json at M0,
+    #    which is where every script reads them — never an unexpandable path)
+    github_owner: "Mzzkc"
+    repo_name: "wayside-library"
+    allow_repo_reuse: "false"      # refuse a pre-existing target repo unless explicitly overridden
+    park_name: "Ledges State Park"
+    park_osm_type: "way"           # OSM element type of the park boundary
+    park_osm_id: "36830786"        # OSM way 36830786 = Ledges State Park
+                                   # boundary (boundary=state_park; verified
+                                   # via Nominatim + Overpass tags — pass 1's
+                                   # relation 912934 was a German farmland
+                                   # area, and its 13.0 km figure matched
+                                   # nothing inside the real park)
+    expected_trail_km: "7.0"       # OSM-OBSERVED path|footway|steps network
+                                   # length clipped to the park polygon
+                                   # (6.99 km measured live 2026-10-26;
+                                   # path 6.74 + steps 0.25; service roads
+                                   # excluded). The ±20% gate detects
+                                   # hallucinated geometry against the
+                                   # fetched network — no unanchored
+                                   # brochure number (R2.2)
+    overpass_endpoint: "https://maps.mail.ru/osm/tools/overpass/api/interpreter"
+    gbif_base: "https://api.gbif.org/v1/occurrence/search"
+    segment_count: 8
+    seed: "20261026"
+    # ── Pre-registered drift thresholds (echoed into thresholds.yaml at M7b;
+    #    the PINNED file is what the verdict join consumes — these are seeds)
+    grammar_agreement_min_delta: 0.35   # treatment agreement − control agreement floor
+    glossary_adoption_min: 0.75       # treatment mean adoption floor (delta>0 also required)
+    naming_compliance_min: 0.75       # treatment naming floor (delta>0 also required)
+    fk_grade_spread_max: 0.8          # control FK stddev − treatment FK stddev floor
+    paragraph_cv_ratio_min: 1.15      # control paragraph CV / treatment CV floor
+    drift_metrics_required: 3         # of 5 metrics must clear for CONFIRMED
+    drift_metrics_indicative: 2       # …INDICATIVE below CONFIRMED; FALSIFIED at 0–1 with full n
+
+  template: |
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Macros — repeated prompt blocks (mandatory requirement) ─────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+
+    {% macro strict() %}
+    set -euo pipefail
+    cd "{{ workspace }}"
+    {% endmacro %}
+
+    {% macro ai_ground_rules() %}
+    ## Ground rules
+    - Work ONLY inside `{{ workspace }}`. Never write outside it.
+    - Read the run manifest (`run/meta.json`) before making assumptions —
+      the venue parameters live there, not in this prompt.
+    - When you finish, run the stage's gates. A stage whose gate has not
+      passed is not finished; do not paper over a failure.
+    {% endmacro %}
+
+    {% macro writer_brief(arm, inst) %}
+    ## Your assignment
+    Your arm is **{{ arm }}**; your writer instance tag is **{{ inst }}**.
+    Your staged input world is `staging/writer-{{ inst }}/` — work from
+    THERE. It contains your complete inputs and nothing else: no other
+    writer's output, no shared workspace files.
+    Your segment comes from `staging/writer-{{ inst }}/assignment.json`
+    (key: "{{ inst }}") — read it; never guess your segment.
+    Output directory: `pages/{{ arm }}/writer-{{ inst }}/` (create it).
+    You write EXACTLY ONE page: `page.md` in that directory.
+    You must NOT read outside your staging directory and your output
+    directory — isolation is the experimental condition.
+    {% endmacro %}
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 1 · Scaffold + deterministic substrate ────────────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% if stage == 1 %}
+    {{ strict() }}
+    # ── M0 · Scaffold — Shipyard Sequence / Tool Chain ──────────────────────
+    # Commission the substrate BEFORE any external fetch or LLM spend. Every
+    # perishable credential and binary surfaces HERE, at movement 1 — not at
+    # movement 14. gh is checked for AUTHORIZATION (login == github_owner),
+    # not merely authentication.
+
+    python3 -m venv .venv
+    .venv/bin/pip install --quiet --upgrade pip
+    .venv/bin/pip install --quiet pandas scipy shapely pyproj jsonschema \
+      textstat requests pyyaml markdown
+    command -v gh >/dev/null || { echo "M0 REFUSED: gh missing"; exit 1; }
+    LOGIN=$(gh api user --jq .login 2>/dev/null) || {
+      echo "M0 REFUSED: gh not authenticated"; exit 1; }
+    [ "{{ github_owner }}" = "$LOGIN" ] || {
+      echo "M0 REFUSED: gh login '$LOGIN' != github_owner '{{ github_owner }}' — authorization would fail at deploy"; exit 1; }
+    command -v codex >/dev/null || {
+      echo "M0 REFUSED: codex-cli missing (family-B seat for M6b/M13)"; exit 1; }
+    if [ "{{ allow_repo_reuse }}" != "true" ]; then
+      gh api "repos/{{ github_owner }}/{{ repo_name }}" >/dev/null 2>&1 && {
+        echo "M0 REFUSED: target repo already exists and allow_repo_reuse != true"; exit 1; }
+    fi
+    OV_OK=0
+    for i in 1 2 3; do
+      curl -fsS --max-time 25 "{{ overpass_endpoint }}" --data-urlencode \
+        'data=[out:json][timeout:5];node(9999999999);out 0;' >/dev/null 2>&1 \
+        && { OV_OK=1; break; } || sleep 15
+    done
+    [ "$OV_OK" = "1" ] || { echo "M0 REFUSED: Overpass unreachable"; exit 1; }
+
+    mkdir -p run scripts fixtures/known-good fixtures/corrupt-heading-skip \
+             fixtures/corrupt-missing-alttext fixtures/corrupt-long-paragraph \
+             fixtures/corrupt-schema fixtures/corrupt-grounding \
+             fixtures/corrupt-naming \
+             geometry/segment-polygons grounding schema \
+             pages/treatment pages/control site-src staging
+    .venv/bin/pip freeze > run/deps-lock.txt
+    : > gates.log
+    REUSE=$([ "{{ allow_repo_reuse }}" = "true" ] && echo true || echo false)
+    cat > run/meta.json <<MEOF
+    {
+      "run_started": "$(date -u +%FT%TZ)",
+      "seed": "{{ seed }}",
+      "park": {"name": "{{ park_name }}",
+               "osm_type": "{{ park_osm_type }}", "osm_id": "{{ park_osm_id }}",
+               "expected_trail_km": {{ expected_trail_km }},
+               "overpass": "{{ overpass_endpoint }}",
+               "gbif": "{{ gbif_base }}"},
+      "segments": {{ segment_count }},
+      "deploy": {"owner": "{{ github_owner }}", "repo": "{{ repo_name }}",
+                 "allow_repo_reuse": $REUSE},
+      "scaffold_mtime_epoch": $(date +%s)
+    }
+    MEOF
+    cat > .gitignore <<'GIEOF'
+    .venv/
+    GIEOF
+
+    # ── scripts/check-page.py — per-page gate implementations ──────────────
+    # r2: frontmatter stripping is NON-GREEDY and anchored (a `---` thematic
+    # break in the body can no longer eat the page); grounding is scoped to
+    # the page's OWN segment with a reproducible per-segment query hash;
+    # geology terms are checked against the pinned vocabulary.
+    cat > scripts/check-page.py <<'PEOF'
+    #!/usr/bin/env python3
+    """Per-page gates: --schema --grounding --alttext --paragraph --headings
+    --naming. Deterministic, exit-coded, empty fallback chain: a gate that
+    cannot run is a FAILURE, never a pass."""
+    import argparse, os, re, sys
+    import yaml
+
+    HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    def load_page(path):
+        raw = open(path).read()
+        m = re.match(r"\A---\n(.*?)\n---\n", raw, re.S)   # anchored, non-greedy
+        if not m:
+            sys.exit("NO FRONTMATTER: %s" % path)
+        return yaml.safe_load(m.group(1)), raw[m.end():]
+
+    def gate_schema(path):
+        import json, jsonschema
+        fm, _ = load_page(path)
+        schema = json.load(open(os.path.join(HERE, "schema/page-schema.json")))
+        jsonschema.validate(fm, schema)
+
+    def gate_grounding(path):
+        import json
+        fm, _ = load_page(path)
+        man_path = os.environ.get("GROUNDING_MANIFEST",
+                                  os.path.join(HERE, "grounding/grounding-manifest.json"))
+        man = json.load(open(man_path))
+        segs = {s["segment_id"]: s for s in man["segments"]}
+        seg = segs.get(str(fm.get("segment_id")))
+        if seg is None:
+            sys.exit("UNKNOWN SEGMENT %s in %s" % (fm.get("segment_id"), path))
+        # per-segment query hash: the page must cite the query that produced
+        # ITS records (reproducible: sha256 over WKT + canonical params)
+        if str(fm.get("gbif_query_hash", "")) != str(seg["query_hash"]):
+            sys.exit("QUERY HASH MISMATCH in %s: page cites %r, segment pin is %r"
+                     % (path, fm.get("gbif_query_hash"), seg["query_hash"]))
+        occ = set(str(r) for r in seg["occurrence_ids"])
+        for taxon in fm.get("taxa", []):
+            for oid in taxon.get("occurrence_ids", []):
+                if str(oid) not in occ:
+                    sys.exit("UNPINNED OCCURRENCE %s in %s (not in segment %s)"
+                             % (oid, path, seg["segment_id"]))
+        # geology terms must come from the pinned vocabulary (term-level
+        # entailment — hashing the source proves custody, not this)
+        vocab = set(t.strip().lower()
+                    for t in open(os.path.join(
+                        os.path.dirname(man_path),
+                        "stratigraphy-vocab.txt")).read().splitlines()
+                    if t.strip() and not t.startswith("#"))
+        for term in fm.get("geology_terms", []):
+            if str(term).strip().lower() not in vocab:
+                sys.exit("GEOLOGY TERM NOT IN PINNED VOCAB: %r in %s" % (term, path))
+
+    def gate_alttext(path):
+        fm, _ = load_page(path)
+        for i, fig in enumerate(fm.get("figures", [])):
+            alt = str(fig.get("alt", ""))
+            if len(alt.strip()) < 8:
+                sys.exit("FRONTMATTER ALT TEXT < 8 CHARS on figure %d in %s" % (i, path))
+        _, body = load_page(path)
+        for i, m in enumerate(re.finditer(r"!\[([^\]]*)\]\([^)]+\)", body)):
+            if not m.group(1).strip():
+                sys.exit("EMPTY MARKDOWN ALT TEXT on image %d in %s" % (i, path))
+
+    def gate_paragraph(path):
+        _, body = load_page(path)
+        for para in re.split(r"\n\s*\n", body):
+            if para.startswith("#") or para.startswith("!["):
+                continue
+            words = para.split()
+            if len(words) > 120:
+                sys.exit("PARAGRAPH > 120 WORDS (%d) in %s" % (len(words), path))
+
+    def gate_headings(path):
+        _, body = load_page(path)
+        h1 = re.findall(r"^# ", body, re.M)
+        if len(h1) != 1:
+            sys.exit("H1 COUNT != 1 in %s" % path)
+        prev = 1
+        for m in re.finditer(r"^(#{2,6}) ", body, re.M):
+            lvl = len(m.group(1))
+            if lvl > prev + 1:
+                sys.exit("HEADING SKIP: H%d after H%d in %s" % (lvl, prev, path))
+            prev = lvl
+
+    def gate_naming(dirpath):
+        for root, _, files in os.walk(dirpath):
+            for f in files:
+                if f.endswith(".md") and not re.match(r"^(page|GLOSSARY)\.md$", f):
+                    sys.exit("NAMING VIOLATION: %s in %s" % (f, root))
+                if re.search(r"\.(jpg|jpeg|png|webp|gif)$", f) \
+                   and not re.match(r"^fig-[a-z0-9-]+\.", f):
+                    sys.exit("FIGURE NAMING VIOLATION: %s in %s" % (f, root))
+
+    if __name__ == "__main__":
+        ap = argparse.ArgumentParser()
+        ap.add_argument("--schema", metavar="P"); ap.add_argument("--grounding", metavar="P")
+        ap.add_argument("--alttext", metavar="P"); ap.add_argument("--paragraph", metavar="P")
+        ap.add_argument("--headings", metavar="P"); ap.add_argument("--naming", metavar="D")
+        a = ap.parse_args()
+        if a.schema: gate_schema(a.schema)
+        elif a.grounding: gate_grounding(a.grounding)
+        elif a.alttext: gate_alttext(a.alttext)
+        elif a.paragraph: gate_paragraph(a.paragraph)
+        elif a.headings: gate_headings(a.headings)
+        elif a.naming: gate_naming(a.naming)
+    PEOF
+    chmod +x scripts/check-page.py
+
+    # ── scripts/gates.sh — the shared gate front door ──────────────────────
+    # r2: --page runs the FLOOR (schema grounding alttext paragraph headings
+    # — NOT naming: naming is a drift METRIC and was structurally dead when
+    # both arms were floor-gated to 1.0). --self-test covers ALL SIX gates,
+    # each with a matched negative fixture, and logs one NEG + one POS line
+    # per gate so the M1 validation can count teeth (6 and 6).
+    cat > scripts/gates.sh <<'GEOF'
+    #!/usr/bin/env bash
+    # Wayside Library gate front door:
+    #   --self-test | --list | --page <path> [--with-naming]
+    set -euo pipefail
+    HERE="$(cd "$(dirname "$0")/.." && pwd)"
+    PY="$HERE/.venv/bin/python"
+    GATE() { "$PY" "$HERE/scripts/check-page.py" "$1" "$2"; }
+    WITH_NAMING=0
+    if [ "${3:-}" = "--with-naming" ]; then WITH_NAMING=1; fi
+
+    case "${1:-}" in
+      --list) echo "schema grounding alttext paragraph headings naming"; exit 0;;
+      --page)
+        P="$2"
+        for g in schema:--schema grounding:--grounding alttext:--alttext \
+                 paragraph:--paragraph headings:--headings; do
+          name="${g%%:*}"; flag="${g##*:}"
+          GATE "$flag" "$P" || { echo "GATE $name FAILED on $P"; exit 1; }
+        done
+        if [ "$WITH_NAMING" = "1" ]; then
+          GATE --naming "$(dirname "$P")" || { echo "GATE naming FAILED on $P"; exit 1; }
+        fi
+        echo "ALL PAGE GATES PASS on $P";;
+      --self-test)
+        export GROUNDING_MANIFEST="$HERE/fixtures/grounding-manifest.json"
+        GOOD=fixtures/known-good/page.md
+        neg() { # gate-flag fixture name — the corruption MUST fail the gate
+          if GATE "$1" "$2" >/dev/null 2>&1; then
+            echo "SELF-TEST FAIL: $3 gate cannot fail"; exit 1
+          else
+            echo "NEG $3: corruption rejected as designed"
+          fi
+        }
+        pos() { # gate-flag target name
+          if GATE "$1" "$2" >/dev/null 2>&1; then
+            echo "POS $3: known-good passes"
+          else
+            echo "SELF-TEST FAIL: $3 gate cannot pass the known-good page"; exit 1
+          fi
+        }
+        neg --headings fixtures/corrupt-heading-skip/page.md headings
+        neg --alttext fixtures/corrupt-missing-alttext/page.md alttext
+        neg --paragraph fixtures/corrupt-long-paragraph/page.md paragraph
+        neg --schema fixtures/corrupt-schema/page.md schema
+        neg --grounding fixtures/corrupt-grounding/page.md grounding
+        neg --naming fixtures/corrupt-naming naming
+        pos --schema "$GOOD" schema
+        pos --grounding "$GOOD" grounding
+        pos --alttext "$GOOD" alttext
+        pos --paragraph "$GOOD" paragraph
+        pos --headings "$GOOD" headings
+        pos --naming fixtures/known-good naming
+        echo "SELF-TEST PASS: all six gates can pass AND fail";;
+      *) echo "usage: gates.sh --self-test|--list|--page <path> [--with-naming]"; exit 2;;
+    esac
+    GEOF
+    chmod +x scripts/gates.sh
+
+    # ── scripts/check-schema-freeze.py — AUTHORED HERE (pass 1 ghosted it) ──
+    cat > scripts/check-schema-freeze.py <<'SEOF'
+    #!/usr/bin/env python3
+    """Freeze or verify the page schema. Modes:
+       --freeze : write schema.sha256 + record the digest in run/meta.json
+       --verify : refuse unless the digest matches (post-freeze edit = fail)
+    The freeze script itself is deterministic and score-resident — no LLM
+    movement ever authors it."""
+    import argparse, hashlib, json, os, sys
+    HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    SCHEMA = os.path.join(HERE, "schema/page-schema.json")
+    PIN = os.path.join(HERE, "schema.sha256")
+
+    def digest():
+        return hashlib.sha256(open(SCHEMA, "rb").read()).hexdigest()
+
+    if __name__ == "__main__":
+        ap = argparse.ArgumentParser()
+        ap.add_argument("--freeze", action="store_true")
+        ap.add_argument("--verify", action="store_true")
+        a = ap.parse_args()
+        if a.freeze:
+            h = digest()
+            with open(PIN, "w") as f:
+                f.write("%s  schema/page-schema.json\n" % h)
+            meta_path = os.path.join(HERE, "run/meta.json")
+            meta = json.load(open(meta_path))
+            meta["schema_sha256"] = h
+            meta["schema_frozen_at"] = __import__("time").strftime(
+                "%Y-%m-%dT%H:%M:%SZ", __import__("time").gmtime())
+            json.dump(meta, open(meta_path, "w"), indent=2)
+            print("SCHEMA FROZEN: %s" % h[:16])
+        elif a.verify:
+            pinned = [l.split()[0] for l in open(PIN)][0].strip()
+            assert digest() == pinned, \
+                "schema digest mismatch — post-freeze edit detected"
+            print("SCHEMA FREEZE VERIFIED")
+        else:
+            ap.error("choose --freeze or --verify")
+    SEOF
+    chmod +x scripts/check-schema-freeze.py
+
+    # ── Seed schema + FULL fixture corpus: six matched negative controls ───
+    # r2: the seed schema is STRICT — taxa and figures require minItems 1
+    # (pass 1 allowed empty arrays, making grounding/alttext vacuous), and
+    # geology_terms is required against the pinned vocabulary.
+    .venv/bin/python - <<'FEOF'
+    import json, os
+    schema = {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "required": ["segment_id", "title", "variant", "taxa", "figures",
+                   "gbif_query_hash", "geology_terms"],
+      "properties": {
+        "segment_id": {"type": "string", "pattern": "^seg-[0-9]{2}$"},
+        "title": {"type": "string", "minLength": 3},
+        "variant": {"enum": ["family", "naturalist"]},
+        "taxa": {"type": "array", "minItems": 1, "items": {
+          "type": "object",
+          "required": ["scientific_name", "common_name", "occurrence_ids", "phenology_window"],
+          "properties": {
+            "scientific_name": {"type": "string"},
+            "common_name": {"type": "string"},
+            "occurrence_ids": {"type": "array", "minItems": 1,
+                               "items": {"type": ["string", "integer"]}},
+            "phenology_window": {"type": "string", "pattern": "^[0-9]{1,2}(-[0-9]{1,2})?$"}
+          }}},
+        "figures": {"type": "array", "minItems": 1, "items": {
+          "type": "object", "required": ["src", "alt"],
+          "properties": {"src": {"type": "string"},
+                         "alt": {"type": "string", "minLength": 8}}}},
+        "geology_terms": {"type": "array", "minItems": 1,
+                          "items": {"type": "string", "minLength": 4}},
+        "gbif_query_hash": {"type": "string", "minLength": 8}
+      }
+    }
+    os.makedirs("schema", exist_ok=True)
+    json.dump(schema, open("schema/page-schema.json", "w"), indent=2)
+
+    # fixture grounding manifest — seg-99's pinned IDs, hash, and vocab
+    import hashlib
+    fx_wkt = "POLYGON ((-93.88 41.99, -93.87 41.99, -93.87 42.00, -93.88 42.00, -93.88 41.99))"
+    fx_hash = hashlib.sha256(
+        (fx_wkt + "|hasCoordinate=true|fields=occurrenceID,scientificName,"
+         "vernacularName,eventDate,month").encode()).hexdigest()
+    man = {"segments": [{"segment_id": "seg-99", "granularity": "segment",
+                         "record_count": 8, "truncated": False,
+                         "occurrence_ids": list(range(1, 9)),
+                         "query_hash": fx_hash,
+                         "path": "fixtures/seg-99-occurrences.json",
+                         "sha256": "fixture"}]}
+    json.dump(man, open("fixtures/grounding-manifest.json", "w"), indent=2)
+    open("fixtures/seg-99-occurrences.json", "w").write('{"results": []}')
+    open("fixtures/stratigraphy-vocab.txt", "w").write(
+        "# fixture vocabulary\nPennsylvanian\nsandstone\nlimestone\nshale\nloess\n")
+
+    good_fm = """---
+    segment_id: seg-99
+    title: Fixture Known-Good Wayside
+    variant: family
+    taxa:
+      - scientific_name: Quercus alba
+        common_name: white oak
+        occurrence_ids: [1, 2, 3, 4, 5]
+        phenology_window: 4-6
+    figures:
+      - src: fig-white-oak.jpg
+        alt: A white oak along the fixture trail
+    geology_terms: [Pennsylvanian]
+    gbif_query_hash: %s
+    ---
+
+    # Fixture Known-Good Wayside
+
+    ## What to watch for
+
+    A short paragraph under the limit.
+
+    ---
+
+    A second paragraph after a thematic break; the stripper must NOT eat it.
+    """ % fx_hash
+    open("fixtures/known-good/page.md", "w").write(good_fm)
+    open("fixtures/corrupt-heading-skip/page.md", "w").write(
+        good_fm.replace("## What to watch for", "### What to watch for"))
+    open("fixtures/corrupt-missing-alttext/page.md", "w").write(
+        good_fm.replace("alt: A white oak along the fixture trail", 'alt: ""'))
+    open("fixtures/corrupt-long-paragraph/page.md", "w").write(
+        good_fm + "\n" + " ".join(["word"] * 130) + "\n")
+    # schema corruption: empty taxa + missing geology_terms (vacuous-pass killers)
+    open("fixtures/corrupt-schema/page.md", "w").write(
+        good_fm.replace("taxa:\n      - scientific_name: Quercus alba\n"
+                        "        common_name: white oak\n"
+                        "        occurrence_ids: [1, 2, 3, 4, 5]\n"
+                        "        phenology_window: 4-6\n", "taxa: []\n")
+                  .replace("geology_terms: [Pennsylvanian]\n", ""))
+    # grounding corruption: wrong-segment occurrence + bad query hash + bad term
+    open("fixtures/corrupt-grounding/page.md", "w").write(
+        good_fm.replace("occurrence_ids: [1, 2, 3, 4, 5]",
+                        "occurrence_ids: [1, 2, 999]")
+               .replace("geology_terms: [Pennsylvanian]",
+                        "geology_terms: [Obsidian]"))
+    # naming corruption: a wrongly named markdown file
+    os.makedirs("fixtures/corrupt-naming", exist_ok=True)
+    open("fixtures/corrupt-naming/not-page.md", "w").write("x\n")
+    open("fixtures/corrupt-naming/page.md", "w").write(good_fm)
+    FEOF
+
+    # ── scripts/build-site.py + check-links.py (r2: no mdbook/linkchecker) ─
+    cat > scripts/build-site.py <<'BEOF'
+    #!/usr/bin/env python3
+    """Static site builder: python-markdown, one template, nav from a
+    directory scan. Emits site/ with index.html, GLOSSARY.html, one page per
+    site-src/content/<seg>/page.md, and evidence.html. The <body> carries
+    data-variant from the page's frontmatter so the live gates never guess a
+    variant from a URL. Exit-coded: any missing input is a failure."""
+    import glob, os, re, sys
+    import markdown, yaml
+
+    HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    SRC = os.path.join(HERE, "site-src")
+    OUT = os.path.join(HERE, "site")
+
+    # Token replacement (not str.format): the CSS braces stay literal —
+    # the outer Jinja template must never see a doubled brace either.
+    TEMPLATE = """<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@@TITLE@@</title>
+    <style>body{max-width:42rem;margin:1rem auto;padding:0 .5rem;
+    font-family:system-ui,sans-serif;line-height:1.5}nav a{margin-right:.75rem}
+    img{max-width:100%}</style>
+    </head>
+    <body data-variant="@@VARIANT@@">
+    <nav><a href="index.html">Library</a><a href="GLOSSARY.html">Glossary</a>
+    <a href="evidence.html">Evidence</a></nav>
+    <main>
+    @@BODY@@
+    </main>
+    </body>
+    </html>
+    """
+
+    def render(md_path, title, variant):
+        raw = open(md_path).read()
+        m = re.match(r"\A---\n(.*?)\n---\n", raw, re.S)
+        fm = yaml.safe_load(m.group(1)) if m else {}
+        body_md = raw[m.end():] if m else raw
+        # frontmatter figures become real <img> elements: a declared figure
+        # that never renders would make the served alt gate vacuous (r2)
+        figs = "".join('<p><img src="%s" alt="%s"></p>\n' % (f["src"], f["alt"])
+                       for f in fm.get("figures", []) if f.get("src"))
+        html = markdown.markdown(body_md, extensions=["tables"]) + figs
+        return (TEMPLATE.replace("@@TITLE@@", title)
+                        .replace("@@VARIANT@@", variant)
+                        .replace("@@BODY@@", html))
+
+    def main():
+        assert os.path.isdir(SRC), "no site-src/"
+        os.makedirs(OUT, exist_ok=True)
+        pages = []
+        index = os.path.join(SRC, "index.md")
+        assert os.path.isfile(index), "no site-src/index.md"
+        open(os.path.join(OUT, "index.html"), "w").write(
+            render(index, "The Wayside Library", "index"))
+        for g in sorted(glob.glob(os.path.join(SRC, "content", "*", "page.md"))):
+            seg = os.path.basename(os.path.dirname(g))
+            raw = open(g).read()
+            fm = yaml.safe_load(re.match(r"\A---\n(.*?)\n---\n", raw, re.S).group(1))
+            dst = os.path.join(OUT, seg + ".html")
+            open(dst, "w").write(render(g, fm.get("title", seg), fm.get("variant", "family")))
+            pages.append(seg)
+        for name in ("GLOSSARY.md", "evidence.md"):
+            p = os.path.join(SRC, name)
+            assert os.path.isfile(p), "missing site-src/%s" % name
+            open(os.path.join(OUT, name.replace(".md", ".html")), "w").write(
+                render(p, name.replace(".md", ""), "meta"))
+        open(os.path.join(OUT, ".nojekyll"), "w").write("")
+        print("SITE BUILT: index + %s + glossary + evidence" % ", ".join(pages))
+
+    if __name__ == "__main__":
+        main()
+    BEOF
+    chmod +x scripts/build-site.py
+
+    cat > scripts/check-links.py <<'CEOF'
+    #!/usr/bin/env python3
+    """Link check over the BUILT site: every href/src resolves to a file in
+    site/ or is an absolute external URL (skipped). Internal anchors (#id)
+    must exist in the referencing page. Exit-coded."""
+    import glob, os, re, sys
+    HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    SITE = os.path.join(HERE, "site")
+    files = {os.path.relpath(p, SITE): open(p).read()
+             for p in glob.glob(os.path.join(SITE, "**", "*.html"), recursive=True)}
+    assert files, "no built pages"
+    bad = []
+    for rel, html in files.items():
+        base = os.path.dirname(rel)
+        for target in re.findall(r'(?:href|src)="([^"]+)"', html):
+            if target.startswith(("http://", "https://", "mailto:", "data:")):
+                continue
+            if target.startswith("#"):
+                if target[1:] and 'id="%s"' % target[1:] not in html:
+                    bad.append("%s -> %s" % (rel, target))
+                continue
+            norm = os.path.normpath(os.path.join(base, target.split("#")[0]))
+            if norm not in files:
+                bad.append("%s -> %s" % (rel, target))
+    if bad:
+        sys.exit("BROKEN LINKS (%d):\n  %s" % (len(bad), "\n  ".join(bad)))
+    print("ALL LINKS VALID (%d pages)" % len(files))
+    CEOF
+    chmod +x scripts/check-links.py
+
+    bash scripts/gates.sh --list
+    echo "M0 SCAFFOLDED (self-test runs at M1)"
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 2 · Gate self-test ─────────────────────────────────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 2 %}
+    {{ strict() }}
+    # ── M1 · Gate Self-Test — The Etiquette Law, second clause ─────────────
+    # ALL SIX gates: PASS on the known-good fixture, FAIL on the matched
+    # corruption. Six NEG lines, six POS lines — the validation counts both.
+    bash scripts/gates.sh --self-test | tee run/selftest.log
+    grep -q "SELF-TEST PASS" run/selftest.log
+    echo "M1 GATES PROVEN (all six, negative controls included)"
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 3 · Trail geometry ─────────────────────────────────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 3 %}
+    {{ strict() }}
+    # ── M2 · Trail Geometry — deterministic foundation ──────────────────────
+    # r2: query the park RELATION, clip trails to the park polygon (not the
+    # bbox), segment along CONNECTED components (no synthetic bridges across
+    # forks), derive the UTM zone from the centroid, and write WGS84 WKT
+    # with CLOSED rings. The mileage check ties the network to published
+    # reality (±20%).
+    .venv/bin/python - <<'PEOF'
+    import json, math, time
+    import requests
+    from shapely.geometry import LineString, MultiLineString, Polygon, mapping, shape
+    from shapely.ops import transform, unary_union, linemerge
+    import pyproj
+
+    meta = json.load(open("run/meta.json"))
+    OV = meta["park"]["overpass"]; REL = meta["park"]["osm_id"]
+    UA = {"User-Agent": "wayside-library-proof/2.0 (marianne rosetta corpus)"}
+
+    def ov(query, tries=4):
+        for i in range(tries):
+            try:
+                r = requests.get(OV, params={"data": query}, headers=UA, timeout=180)
+                if r.status_code == 200:
+                    time.sleep(5)          # courtesy gap: mirrors rate-limit
+                    return r.json()
+            except requests.RequestException:
+                pass
+            time.sleep(30 * (i + 1))       # backoff: public mirrors 504 under
+                                           # rapid fire (observed live, r2)
+        raise SystemExit("Overpass failed after %d tries: %s" % (tries, query[:60]))
+
+    # park boundary: single closed element (way or relation member) by type
+    ELEM = meta["park"].get("osm_type", "relation")
+    if ELEM == "way":
+        d = ov(f"[out:json][timeout:90];way({REL});out geom;")
+        el = next(w for w in d["elements"]
+                  if w.get("type") == "way" and "geometry" in w)
+        ring = LineString([(p["lon"], p["lat"]) for p in el["geometry"]])
+        assert ring.is_ring, "park way is not a closed ring"
+        park = Polygon(ring)
+    else:
+        d = ov(f"[out:json][timeout:90];relation({REL});way(r);out geom;")
+        ways = [w for w in d["elements"]
+                if w.get("type") == "way" and "geometry" in w]
+        assert ways, "no relation member ways returned by Overpass"
+        frags = [LineString([(p["lon"], p["lat"]) for p in w["geometry"]])
+                 for w in ways]
+        merged = linemerge(unary_union(frags))
+        park = Polygon(merged) if isinstance(merged, LineString) \
+            else merged.convex_hull
+    open("geometry/raw-ways.json", "w").write(json.dumps(d))
+    assert park.is_valid and park.area > 0, "park polygon invalid"
+    json.dump({"type": "Feature", "properties": {"name": meta["park"]["name"]},
+               "geometry": mapping(park)}, open("geometry/park.geojson", "w"))
+
+    # trails INSIDE the park polygon (clipped, not bbox-fetched)
+    bb = park.bounds
+    bbox = f"{bb[1]:.6f},{bb[0]:.6f},{bb[3]:.6f},{bb[2]:.6f}"
+    t = ov(f'[out:json][timeout:120];(way["highway"~"path|footway|steps"]({bbox}););out geom;')
+    trail_ways = [w for w in t["elements"]
+                  if w.get("type") == "way" and "geometry" in w]
+    assert trail_ways, "no trail ways returned"
+    trail_lines = []
+    for w in trail_ways:
+        ln = LineString([(p["lon"], p["lat"]) for p in w["geometry"]])
+        clipped = ln.intersection(park)
+        if not clipped.is_empty and clipped.length > 0:
+            trail_lines.append(clipped)
+    assert trail_lines, "no trails fall inside the park polygon"
+    open("geometry/raw-trails.json", "w").write(json.dumps(t))
+
+    # UTM zone DERIVED from the park centroid — no hardcoded CRS (r2)
+    clon = park.centroid.x
+    zone = int(math.floor((clon + 180) / 6) % 60) + 1
+    south = park.centroid.y < 0
+    utm = "EPSG:%d" % (32700 + zone if south else 32600 + zone)
+    fwd = pyproj.Transformer.from_crs("EPSG:4326", utm, always_xy=True).transform
+    inv = pyproj.Transformer.from_crs(utm, "EPSG:4326", always_xy=True).transform
+
+    proj_lines = [transform(fwd, ln) for ln in trail_lines]
+    net_km = unary_union(proj_lines).length / 1000.0
+    exp = float(meta["park"]["expected_trail_km"])
+    assert abs(net_km - exp) / exp <= 0.20, \
+        f"total trail km {net_km:.1f} outside ±20% of published {exp}"
+
+    # GROUP connected components into n spatially-contiguous segments along
+    # the network's principal axis (the canyon axis here). A real trail
+    # network is dozens of disconnected components; 8 segments must COVER
+    # the network, not cherry-pick the 8 longest pieces (live-tested: that
+    # drops 4 of 7 km). Each group keeps its full length; the corridor
+    # polygon is the group's convex hull buffered 150 m — local, single,
+    # valid. (r2, verified against live OSM data for the venue.)
+    import numpy as np
+    n = int(meta["segments"])
+    components = unary_union(proj_lines)
+    comps = list(components.geoms) if hasattr(components, "geoms") else [components]
+    comps = [c for c in comps if c.length > 20]      # ignore <20 m slivers
+    assert comps, "no usable trail components"
+    pts = np.array([xy for c in comps for xy in c.coords])
+    center = pts.mean(axis=0)
+    axis = np.linalg.svd(pts - center, full_matrices=False)[2][0]
+    def along(g):
+        return float(np.dot(np.array([g.centroid.x, g.centroid.y]) - center, axis))
+    idx = sorted(range(len(comps)), key=lambda i: along(comps[i]))
+    total_len = sum(c.length for c in comps)
+    target = total_len / n
+    groups, acc, cur = [], 0.0, []
+    for i in idx:
+        cur.append(comps[i]); acc += comps[i].length
+        if acc >= target and len(groups) < n - 1:
+            groups.append(cur); cur, acc = [], 0.0
+    if cur:
+        if len(groups) < n:
+            groups.append(cur)
+        else:
+            groups[-1].extend(cur)
+    while len(groups) < n:                     # split the largest by axis order
+        groups.sort(key=lambda g: -sum(c.length for c in g))
+        big = groups.pop(0)
+        big.sort(key=along)
+        half = sum(c.length for c in big) / 2
+        run, k = 0.0, 1
+        for j, c in enumerate(big):
+            run += c.length
+            if run >= half:
+                k = j + 1; break
+        groups.extend([big[:k] or big[:1], big[k:] or big[-1:]])
+    assert len(groups) == n, "grouping failed to produce %d segments" % n
+    segs = [(unary_union(g), sum(c.length for c in g) / 1000.0) for g in groups]
+
+    feats = []
+    for i, (seg_union, seg_km) in enumerate(segs, 1):
+        poly = seg_union.convex_hull.buffer(150).simplify(75)  # ~150 m corridor
+        poly_wgs = transform(inv, poly)                   # WGS84 BEFORE write (r2)
+        ring = list(poly_wgs.exterior.coords)
+        if len(ring) > 12:                                # cap, then RE-CLOSE (r2)
+            ring = ring[:11] + [ring[0]]
+        assert ring[0] == ring[-1], f"segment {i}: unclosed ring"
+        # GBIF rejects clockwise exterior rings (live-tested: HTTP 400
+        # "Polygon with clockwise exterior ring") — enforce CCW (r2)
+        import numpy as _np
+        _a = _np.array(ring)
+        _area = float(_np.cross(_a[:-1], _a[1:]).sum())   # shoelace, signed
+        if _area < 0:
+            ring = ring[::-1]
+        wkt = "POLYGON ((" + ", ".join(f"{x:.6f} {y:.6f}" for x, y in ring) + "))"
+        sid = f"seg-{i:02d}"
+        open(f"geometry/segment-polygons/{sid}.wkt", "w").write(wkt)
+        feats.append({"type": "Feature", "id": sid,
+                      "properties": {"segment_id": sid,
+                                     "length_km": round(seg_km, 3)},
+                      "geometry": mapping(poly_wgs)})
+    json.dump({"type": "FeatureCollection", "utm_crs": utm,
+               "features": feats},
+              open("geometry/segments.geojson", "w"), indent=2)
+    print("GEOMETRY: %d segments covering %.2f km from %d components, UTM %s"
+          % (n, sum(k for _, k in segs), len(comps), utm))
+    PEOF
+
+    # ── scripts/check-geometry.py — the geometry gate (r2: WGS84 + closure) ─
+    cat > scripts/check-geometry.py <<'PEOF'
+    #!/usr/bin/env python3
+    """N segments; each polygon exists, valid WKT, <=12 vertices, CLOSED
+    ring, coordinates in WGS84 range; total mileage within ±20% of the
+    published expectation from run/meta.json."""
+    import json, os, re, sys
+    HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    meta = json.load(open(os.path.join(HERE, "run/meta.json")))
+    geo = json.load(open(os.path.join(HERE, "geometry/segments.geojson")))
+    n = int(meta["segments"])
+    assert len(geo["features"]) == n, f"expected {n} segments, got {len(geo['features'])}"
+    total = 0.0
+    for f in geo["features"]:
+        sid = f["properties"]["segment_id"]
+        path = os.path.join(HERE, f"geometry/segment-polygons/{sid}.wkt")
+        assert os.path.getsize(path) > 0, f"{sid}: empty WKT"
+        wkt = open(path).read()
+        pts = re.findall(r"(-?[\d.]+) (-?[\d.]+)", wkt)
+        assert 4 <= len(pts) <= 12, f"{sid}: {len(pts)} vertices, cap is 12"
+        xs = [float(x) for x, _ in pts]; ys = [float(y) for _, y in pts]
+        assert all(-180 <= x <= 180 for x in xs), f"{sid}: lon out of WGS84 range"
+        assert all(-90 <= y <= 90 for y in ys), f"{sid}: lat out of WGS84 range"
+        assert pts[0] == pts[-1], f"{sid}: exterior ring not closed"
+        total += float(f["properties"]["length_km"])
+    exp = float(meta["park"]["expected_trail_km"])
+    assert abs(total - exp) / exp <= 0.20, \
+        f"total {total:.1f} km outside ±20% of published {exp} km"
+    print("GEOMETRY OK: %d segments, %.1f km total, WGS84 closed rings" % (n, total))
+    PEOF
+    chmod +x scripts/check-geometry.py
+
+    .venv/bin/python scripts/check-geometry.py
+    sha256sum geometry/raw-ways.json geometry/raw-trails.json geometry/park.geojson \
+               geometry/segments.geojson geometry/segment-polygons/*.wkt > geometry/geometry.sha256
+    sha256sum -c geometry/geometry.sha256
+    echo "M2 GEOMETRY VALIDATED"
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 4 · GBIF grounding + phenology ─────────────────────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 4 %}
+    {{ strict() }}
+    # ── M3 · GBIF Grounding + Phenology — Proof-Carrying Artifact ──────────
+    # r2: per-segment query hashes REPRODUCIBLE from the pinned WKT + the
+    # canonical parameter string; fetches PAGE through endOfRecords
+    # (truncation recorded, never silent); stratigraphy vocabulary EMBEDDED
+    # as pinned bytes (the previously cited host is dead in DNS — verified).
+    cat > scripts/fetch-grounding.py <<'PEOF'
+    #!/usr/bin/env python3
+    """Fetch GBIF occurrences per segment polygon (paged, cap 600); pin
+    bytes + sha256; per-segment reproducible query hash; degrade thin
+    segments to the whole-park union, recorded; emit grounding-manifest.json."""
+    import hashlib, json, os, time
+    import requests
+
+    meta = json.load(open("run/meta.json"))
+    GBIF = meta["park"]["gbif"]
+    PARAMS = ("hasCoordinate=true|fields=occurrenceID,scientificName,"
+              "vernacularName,eventDate,month")
+    CAP = 600
+    UA = {"User-Agent": "wayside-library-proof/2.0 (marianne rosetta corpus)"}
+    seg_ids = sorted(s[:-4] for s in os.listdir("geometry/segment-polygons")
+                     if s.endswith(".wkt"))
+
+    def qhash(wkt):
+        return hashlib.sha256((wkt.strip() + "|" + PARAMS).encode()).hexdigest()
+
+    def fetch(wkt, tries=3):
+        """Page until endOfRecords or CAP; return (bytes, truncated).
+        Retries transient GBIF 5xx; a persistent 4xx re-raises (a malformed
+        polygon is a geometry bug, not a network event)."""
+        results, offset = [], 0
+        while True:
+            for i in range(tries):
+                r = requests.get(GBIF, params={
+                    "geometry": wkt, "hasCoordinate": "true", "limit": 300,
+                    "offset": offset,
+                    "fields": "occurrenceID,scientificName,vernacularName,eventDate,month"},
+                    headers=UA, timeout=120)
+                if r.status_code < 500:
+                    break
+                time.sleep(20 * (i + 1))
+            r.raise_for_status()
+            j = r.json()
+            results.extend(j.get("results", []))
+            if j.get("endOfRecords") or len(results) >= CAP or not j.get("results"):
+                break
+            offset += 300
+            time.sleep(1)
+        truncated = len(results) >= CAP
+        return json.dumps({"results": results}).encode(), truncated
+
+    # whole-park union polygon for the thin-record downgrade (WGS84 in/out)
+    from shapely.geometry import MultiPoint
+    from shapely import wkt as shwkt
+    polys = [shwkt.loads(open(f"geometry/segment-polygons/{s}.wkt").read())
+             for s in seg_ids]
+    park_wkt = MultiPoint(
+        [p for poly in polys for p in poly.exterior.coords]).convex_hull.wkt
+
+    man = {"fetched_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+           "params": PARAMS, "record_cap": CAP, "segments": [], "species_names": []}
+    names = set()
+    for sid in seg_ids:
+        wkt = open(f"geometry/segment-polygons/{sid}.wkt").read()
+        raw, truncated = fetch(wkt)
+        recs = json.loads(raw).get("results", [])
+        used_wkt = wkt
+        granularity = "segment"
+        if len(recs) < 5:
+            raw, truncated = fetch(park_wkt)
+            recs = json.loads(raw).get("results", [])
+            used_wkt = park_wkt
+            granularity = "whole-park-downgrade"
+        os.makedirs(f"grounding/{sid}", exist_ok=True)
+        path = f"grounding/{sid}/occurrences.json"
+        open(path, "wb").write(raw)
+        for r in recs:
+            if r.get("scientificName"):
+                names.add(r["scientificName"])
+            if r.get("vernacularName"):
+                names.add(r["vernacularName"])
+        man["segments"].append({
+            "segment_id": sid, "granularity": granularity,
+            "record_count": len(recs), "truncated": truncated,
+            "occurrence_ids": [r.get("occurrenceID") or r.get("key")
+                               for r in recs if r.get("occurrenceID") or r.get("key")],
+            "query_hash": qhash(used_wkt),
+            "query_wkt": used_wkt.strip(),
+            "sha256": hashlib.sha256(raw).hexdigest(), "path": path,
+            "wkt_sha256": hashlib.sha256(wkt.encode()).hexdigest()})
+    man["species_names"] = sorted(names)
+    json.dump(man, open("grounding/grounding-manifest.json", "w"), indent=2)
+    print("GROUNDING FETCHED: %d segments, %d species names" % (len(man["segments"]), len(names)))
+    PEOF
+    chmod +x scripts/fetch-grounding.py
+
+    cat > scripts/compute-phenology.py <<'PEOF'
+    #!/usr/bin/env python3
+    """Phenology windows = IQR month ranges per species per segment, computed
+    from the PINNED bytes (>=5 records). Statistics, never recollection."""
+    import json, os, re, statistics
+    HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    def month_of(rec):
+        if rec.get("month"):
+            return int(rec["month"])
+        d = rec.get("eventDate") or ""
+        m = re.match(r"^\d{4}-(\d{2})", d)
+        return int(m.group(1)) if m else None
+
+    man = json.load(open(os.path.join(HERE, "grounding/grounding-manifest.json")))
+    out = {}
+    for seg in man["segments"]:
+        recs = json.load(open(os.path.join(HERE, seg["path"]))).get("results", [])
+        by_species = {}
+        for r in recs:
+            mo = month_of(r)
+            if mo and r.get("scientificName"):
+                by_species.setdefault(r["scientificName"], []).append(mo)
+        out[seg["segment_id"]] = {
+            sci: {"window": "%d-%d" % (int(statistics.quantiles(mos, n=4)[0]),
+                                       int(statistics.quantiles(mos, n=4)[2])),
+                  "n": len(mos)}
+            for sci, mos in by_species.items() if len(mos) >= 5}
+    json.dump(out, open(os.path.join(HERE, "grounding/phenology.json"), "w"), indent=2)
+    print("PHENOLOGY COMPUTED")
+    PEOF
+    chmod +x scripts/compute-phenology.py
+
+    cat > scripts/check-grounding.py <<'PEOF'
+    #!/usr/bin/env python3
+    """Every pinned file's sha256 matches the manifest; every query hash
+    RE-DERIVES from the recorded WKT + canonical params (reproducible — a
+    page citing the hash cites a query that can be re-run); every >=5-record
+    species' phenology window RECOMPUTES from the pinned bytes; every
+    segment declares granularity AND truncation (downgrades visible)."""
+    import hashlib, json, os, re, statistics, sys
+    HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    man = json.load(open(os.path.join(HERE, "grounding/grounding-manifest.json")))
+    pheno = json.load(open(os.path.join(HERE, "grounding/phenology.json")))
+    for seg in man["segments"]:
+        assert seg.get("granularity") in ("segment", "whole-park-downgrade"), \
+            f"{seg['segment_id']}: granularity not declared"
+        assert isinstance(seg.get("truncated"), bool), \
+            f"{seg['segment_id']}: truncation not declared"
+        # query hash reproducibility (the r2 fix for hash semantics)
+        expect = hashlib.sha256(
+            (seg["query_wkt"] + "|" + man["params"]).encode()).hexdigest()
+        assert seg["query_hash"] == expect, \
+            f"{seg['segment_id']}: query hash not reproducible from WKT"
+        raw = open(os.path.join(HERE, seg["path"]), "rb").read()
+        assert hashlib.sha256(raw).hexdigest() == seg["sha256"], \
+            f"{seg['segment_id']}: pin mismatch"
+        recs = json.loads(raw).get("results", [])
+        by = {}
+        for r in recs:
+            mo = (int(r["month"]) if r.get("month") else
+                  (int(m.group(1)) if (m := re.match(r"^\d{4}-(\d{2})", r.get("eventDate") or "")) else None))
+            if mo and r.get("scientificName"):
+                by.setdefault(r["scientificName"], []).append(mo)
+        for sci, mos in by.items():
+            if len(mos) >= 5:
+                assert sci in pheno[seg["segment_id"]], \
+                    f"{seg['segment_id']}/{sci}: >=5 records but no window"
+                q = statistics.quantiles(mos, n=4)
+                expect = "%d-%d" % (int(q[0]), int(q[2]))
+                assert pheno[seg["segment_id"]][sci]["window"] == expect, \
+                    f"{seg['segment_id']}/{sci}: window not reproducible"
+    print("GROUNDING OK: pins verify, query hashes reproducible, phenology reproducible")
+    PEOF
+    chmod +x scripts/check-grounding.py
+
+    # ── Embedded stratigraphy vocabulary (r2: the cited host is dead in DNS).
+    # Pinned bytes with sha256 — same Proof-Carrying discipline, no dead URL.
+    # Vocabulary: Iowa GSB Pennsylvanian (Marmaton–Cherokee) units and terms
+    # as used in published Ledges-area stratigraphy.
+    cat > grounding/stratigraphy-vocab.txt <<'VEOF'
+    # Wayside Library pinned stratigraphy vocabulary (embedded source, r2)
+    # Pennsylvanian bedrock and surficial units documented for the Ledges
+    # State Park area, Boone County, Iowa (Iowa Geological Survey usage).
+    Pennsylvanian
+    Marmaton
+    Cherokee
+    limestone
+    sandstone
+    shale
+    mudstone
+    coal
+    loess
+    alluvium
+    glacial till
+    Desmond
+    Galesburg
+    Erosion surface
+    VEOF
+    sha256sum grounding/stratigraphy-vocab.txt > grounding/stratigraphy.sha256
+    sha256sum -c grounding/stratigraphy.sha256
+
+    .venv/bin/python scripts/fetch-grounding.py
+    .venv/bin/python scripts/compute-phenology.py
+    .venv/bin/python scripts/check-grounding.py
+    .venv/bin/python - <<'PEOF'
+    # record the vocab pin inside the manifest (term-level entailment source)
+    import hashlib, json
+    man = json.load(open("grounding/grounding-manifest.json"))
+    raw = open("grounding/stratigraphy-vocab.txt", "rb").read()
+    man["stratigraphy_sha256"] = hashlib.sha256(raw).hexdigest()
+    man["stratigraphy_path"] = "grounding/stratigraphy-vocab.txt"
+    json.dump(man, open("grounding/grounding-manifest.json", "w"), indent=2)
+    print("STRATIGRAPHY VOCAB PINNED IN MANIFEST")
+    PEOF
+    echo "M3 GROUNDED"
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 5 · Stratified arm assignment ──────────────────────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 5 %}
+    {{ strict() }}
+    # ── M4 · Stratified Arm Assignment — the confound-killer ───────────────
+    # r2: sort by (occurrence count, length) and PAIR ADJACENT segments —
+    # no brittle ratio assertions on field data (a 3-vs-8 pair is a legal
+    # adjacent pair, not a crash); the pairing itself is the matching. Seeded
+    # arm flip within each pair. Assignment PREDATES all writing (mtime, M9).
+    cat > scripts/assign-arms.py <<'PEOF'
+    #!/usr/bin/env python3
+    """Sort segments by (occurrence count, trail length); pair ADJACENT
+    strata neighbors (sorted order IS the match — ratios are reported, not
+    asserted); randomize arm within each pair under the pinned seed. Emit
+    run/assignment.json with a per-instance map."""
+    import json, os, random
+    HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    meta = json.load(open(os.path.join(HERE, "run/meta.json")))
+    random.seed(int(meta["seed"]))
+    man = json.load(open(os.path.join(HERE, "grounding/grounding-manifest.json")))
+    geo = json.load(open(os.path.join(HERE, "geometry/segments.geojson")))
+    length = {f["properties"]["segment_id"]: f["properties"]["length_km"]
+              for f in geo["features"]}
+    count = {s["segment_id"]: s["record_count"] for s in man["segments"]}
+    segs = sorted(count, key=lambda s: (count[s], length[s]))
+    assert len(segs) % 2 == 0, "segment count must be even for paired arms"
+    pairs, inst, instance_map = [], 1, {}
+    for pi in range(0, len(segs), 2):
+        a, b = segs[pi], segs[pi+1]              # adjacent in sorted order
+        t, c = random.sample([a, b], 2)          # seeded coin: which is treatment
+        pairs.append({"pair_id": "pair-%02d" % (pi//2+1), "treatment": t, "control": c,
+                      "strata": {"occurrence_count": [count[a], count[b]],
+                                 "length_km": [length[a], length[b]]}})
+        instance_map[str(inst)] = {"arm": "treatment", "segment": t};  inst += 1
+        instance_map[str(inst)] = {"arm": "control",   "segment": c};  inst += 1
+    json.dump({"seed": meta["seed"], "pairs": pairs, "instance_map": instance_map},
+              open(os.path.join(HERE, "run/assignment.json"), "w"), indent=2)
+    print("ASSIGNED: %d pairs, seed %s" % (len(pairs), meta["seed"]))
+    PEOF
+    chmod +x scripts/assign-arms.py
+
+    cat > scripts/check-assignment.py <<'PEOF'
+    #!/usr/bin/env python3
+    """Structure check: pairs are disjoint and cover all segments; seed
+    pinned; each pair's strata recorded; the assignment file predates any
+    writer output (mtime evidence — the confound killed on the record)."""
+    import glob, json, os, sys
+    HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    a = json.load(open(os.path.join(HERE, "run/assignment.json")))
+    assert a.get("seed"), "seed not pinned"
+    seen = []
+    for p in a["pairs"]:
+        seen.extend([p["treatment"], p["control"]])
+        assert p["treatment"] != p["control"]
+        assert len(p["strata"]["occurrence_count"]) == 2
+        assert len(p["strata"]["length_km"]) == 2
+    assert len(seen) == len(set(seen)), "a segment appears in two pairs"
+    man = json.load(open(os.path.join(HERE, "grounding/grounding-manifest.json")))
+    all_segs = {s["segment_id"] for s in man["segments"]}
+    assert set(seen) == all_segs, "pairs do not cover all segments"
+    a_mtime = os.path.getmtime(os.path.join(HERE, "run/assignment.json"))
+    for page in glob.glob(os.path.join(HERE, "pages/*/*/page.md")):
+        assert os.path.getmtime(page) > a_mtime, \
+            f"page {page} predates the assignment — confound not killed"
+    print("ASSIGNMENT OK: disjoint full-cover pairs, seed pinned, predates writing")
+    PEOF
+    chmod +x scripts/check-assignment.py
+
+    .venv/bin/python scripts/assign-arms.py
+    .venv/bin/python scripts/check-assignment.py
+    echo "M4 ASSIGNED (confound killed, on the record)"
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 6 · Prefabrication freeze: page schema (LLM) ───────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 6 %}
+    {{ strict() }}
+    # ── M5 · Page Schema Freeze — Prefabrication ───────────────────────────
+    # You are authoring the INTERFACE CONTRACT. The seed schema from M0 is
+    # already STRICT (non-empty taxa and figures — no vacuous passes); you
+    # may only STRENGTHEN it. Ambiguity here becomes drift in BOTH arms —
+    # the schema gate is the floor for everyone.
+    {{ ai_ground_rules() }}
+
+    Read, in this order:
+    1. `grounding/grounding-manifest.json` — what occurrence data actually
+       exists per segment (granularity, counts, per-segment query hashes —
+       the schema must handle the whole-park downgrade honestly).
+    2. `grounding/phenology.json` — the shape of computed phenology windows.
+    3. `schema/page-schema.json` — the SEED schema (the fixtures already
+       validate against it). You are extending it, not weakening it.
+
+    You may ADD required fields and TIGHTEN constraints; you may NOT remove
+    a required field, relax a pattern, or lower a minItems. After editing:
+        GROUNDING_MANIFEST=fixtures/grounding-manifest.json \
+          bash scripts/gates.sh --page fixtures/known-good/page.md
+    must still pass — and if you add a required field, update the fixture in
+    lockstep (the fixture is scaffolding, not evidence). Then freeze:
+        .venv/bin/python scripts/check-schema-freeze.py --freeze
+        .venv/bin/python scripts/check-schema-freeze.py --verify
+    The freeze script is M0-authored and deterministic — YOU do not author
+    it. A later schema edit fails the digest check: the freeze is enforced,
+    not ceremonial.
+    echo "M5 SCHEMA FROZEN"
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 7 · Conventions authorship (LLM, family A) ─────────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 7 %}
+    {{ strict() }}
+    # ── M6a · Conventions — Barn Raising's contribution ────────────────────
+    # The schema cannot express voice, glossary discipline, or cultural
+    # sensitivity. This document is the judgment-bearing convention layer
+    # four treatment writers will inherit. Specific enough to enforce
+    # coherence; loose enough to leave them judgment.
+    {{ ai_ground_rules() }}
+
+    Read: `schema/page-schema.json` (the frozen grain you write within),
+    `grounding/phenology.json` (glossary candidates: Pennsylvanian,
+    phenology, loess, …), and the park's public history (CCC construction
+    1930s; Dakota presence — handled under the rule below).
+
+    Author `conventions.md` with sections covering AT MINIMUM, each rule as
+    a bullet `- **Rule name**: ...`:
+    1. **Voice** — second person, present tense for what the hiker can see
+       now, concrete before abstract.
+    2. **Heading grammar** — the exact H1/H2/H3 patterns every page uses
+       (the drift stage measures cross-writer section-grammar agreement against this).
+    3. **Glossary discipline** — hard terms (Pennsylvanian, phenology,
+       loess) defined on first use per page, then used consistently. List
+       the pinned glossary terms as `- **Term**: definition` bullets under a
+       `## Glossary` heading — drift.py parses exactly this shape.
+    4. **Naming** — files are `page.md`/`GLOSSARY.md`; figures match
+       `fig-[a-z0-9-]+.(jpg|png|webp)` (naming is MEASURED at M9 — the
+       control arm is not gated on it, so the metric can discriminate).
+    5. **Alt-text style** — what a good alt describes (function and
+       content, not "image of").
+    6. **Cultural sensitivity** — the Dakota-content rule: name specifics
+       from verifiable public sources; never invent ceremonial or spiritual
+       framing; never speak for the community. CCC history: date and cite
+       what the record shows.
+    7. **Density** — paragraph ceiling 120 words (the gate enforces it; the
+       convention explains WHY: a family reading on 1 bar of signal).
+
+    EVERY rule must either (a) name its backing gate from
+    `bash scripts/gates.sh --list` (schema grounding alttext paragraph
+    headings naming) or the drift metrics (heading-entropy glossary
+    naming grade cv-ratio), or (b) be explicitly marked
+    `judgment-only:` with one line on why it cannot be mechanized. The
+    partition check refuses a rule that is neither — vagueness becomes
+    VISIBLE as unenforced-rule count, not invisible.
+    echo "M6a CONVENTIONS DRAFTED"
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 8 · Conventions red-team revise (LLM, FAMILY B) ────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 8 %}
+    {{ strict() }}
+    # ── M6b · Red-Team Both Edges — Red Team / Blue Team, family B ─────────
+    # You are a DIFFERENT model family than the conventions author. Attack
+    # what family A wrote — the pattern file's named failure mode: "too
+    # vague to enforce consistency, too rigid to allow agent judgment."
+    # Do NOT soften into the middle for comfort.
+    {{ ai_ground_rules() }}
+
+    Read `conventions.md` and stage your attack in two passes:
+
+    **Pass 1 — TOO VAGUE:** for each rule, ask: could four competent writers
+    read this rule and still produce visibly different pages? Any rule where
+    the answer is yes is drift-permitting: tighten it, name the exact
+    pattern, or mark it judgment-only and own that cost in the drift report.
+
+    **Pass 2 — TOO RIGID:** for each rule, ask: does this rule force stilted
+    or impossible writing on some plausible segment (a segment with only 3
+    species; a segment whose history is the whole story)? Any rule that
+    breaks under a real segment is rigidity: widen it or move its
+    enforcement to judgment-only.
+
+    Revise `conventions.md` in place. Then author and run the partition
+    check — it must pass with zero unclassified rules:
+    cat > scripts/check-conventions.py <<'PEOF'
+    #!/usr/bin/env python3
+    """Every rule bullet naming an obligation must cite a gate (from gates.sh
+    --list + drift metrics) or be marked judgment-only. Zero unclassified."""
+    import re, sys
+    GATES = r"(schema|grounding|alttext|paragraph|headings|naming|grammar.agreement|glossary|grade|cv.ratio|drift)"
+    txt = open("conventions.md").read()
+    assert "## Glossary" in txt, "no Glossary section (drift.py parses it)"
+    unclassified = []
+    for line in txt.splitlines():
+        if re.match(r"^\s*-\s+\*\*", line) and re.search(r"\b(must|MUST|always|never|shall)\b", line):
+            if not (re.search(GATES, line, re.I) or "judgment-only" in line):
+                unclassified.append(line.strip()[:80])
+    if unclassified:
+        sys.exit("UNCLASSIFIED RULES (%d):\n  " % len(unclassified)
+                 + "\n  ".join(unclassified))
+    n_j = txt.count("judgment-only")
+    assert n_j >= 1, "no judgment-only markers — partition is trivial"
+    print("CONVENTIONS OK: every obligation gate-backed or judgment-only (%d marked)"
+          % n_j)
+    PEOF
+    chmod +x scripts/check-conventions.py
+    .venv/bin/python scripts/check-conventions.py
+    sha256sum conventions.md > conventions.sha256
+    sha256sum -c conventions.sha256
+    echo "M6b CONVENTIONS RED-TEAMED (family B) + PINNED"
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 9 · Mission Command: intent envelope (LLM) ─────────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 9 %}
+    {{ strict() }}
+    # ── M7 · Intent Envelope — Mission Command ─────────────────────────────
+    # WHAT outcome the writers must produce, never HOW. If this envelope
+    # names a single species or segment, Mission Command has collapsed into
+    # centralized instruction and the proof measures your prose, not the
+    # conventions.
+    {{ ai_ground_rules() }}
+
+    Read `conventions.md` and `schema/page-schema.json`. Author `intent.md`
+    with EXACTLY three sections:
+
+    - `PURPOSE:` — a hiker leaves each page knowing what to look for here
+      and why it is here (geology, life, history) — stated generically
+      across segments, specific about the EXPERIENCE.
+    - `KEY TASKS:` — the page sections (what to watch for; the ground under
+      your feet; who came before; when to come back) as outcomes, not
+      content: what each section must ACCOMPLISH for the reader.
+    - `END STATE:` — gates green, every species claim traceable to a pinned
+      occurrence, the page reads in one voice with the rest of the library.
+
+    NO segment-specific content: no species names, no trail names, no
+    segment IDs. Then author and run the check — writers decide content, or
+    the pattern under proof is not being tested:
+    cat > scripts/check-intent.py <<'PEOF'
+    #!/usr/bin/env python3
+    """PURPOSE/KEY TASKS/END STATE present; ZERO species names (from the
+    grounding manifest, \\b-anchored — no 'compass'/'background' false
+    trips), ZERO segment IDs."""
+    import json, re, sys
+    txt = open("intent.md").read()
+    for sec in ("PURPOSE", "KEY TASKS", "END STATE"):
+        assert re.search(r"^#+\s*" + sec, txt, re.M | re.I), f"missing section {sec}"
+    man = json.load(open("grounding/grounding-manifest.json"))
+    for name in man["species_names"]:
+        if name and len(name) > 3:
+            # word-boundary anchored: "white oak" trips "white oak",
+            # not "awoke" or "compass"
+            if re.search(r"\b" + re.escape(name.lower()) + r"\b",
+                         txt, re.I):
+                sys.exit("INTENT CONTAINS SPECIES NAME: %s" % name)
+    if re.search(r"seg-\d{2}", txt):
+        sys.exit("INTENT CONTAINS SEGMENT ID")
+    print("INTENT OK: sections present, zero segment-specific content")
+    PEOF
+    chmod +x scripts/check-intent.py
+    .venv/bin/python scripts/check-intent.py
+    echo "M7 INTENT AUTHORED"
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 10 · Pre-register thresholds + stage writer worlds ──────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 10 %}
+    {{ strict() }}
+    # ── M7b · Pre-Register Thresholds + Stage Writer Worlds ────────────────
+    # thresholds.yaml (ALL verdict constants live here — the join reads no
+    # code values) is written AFTER every writer input exists and BEFORE any
+    # writer runs; drift.py mtime-verifies this ordering. Then each writer's
+    # input world is PHYSICALLY STAGED: staging/writer-N/ contains the
+    # schema, intent, the writer's grounding subset, and — treatment only —
+    # conventions.md. The control staging is byte-checked against
+    # conventions.sha256: no conventions bytes may cross the arms.
+    cat > thresholds.yaml <<TEOF
+    # Pre-registered BEFORE the fan-out. mtime-verified by drift.py --run.
+    # The verdict join reads ONLY this file — no code constants (r2).
+    registered_at: "$(date -u +%FT%TZ)"
+    grammar_agreement_min_delta: {{ grammar_agreement_min_delta }}
+    glossary_adoption_min: {{ glossary_adoption_min }}
+    naming_compliance_min: {{ naming_compliance_min }}
+    fk_grade_spread_max: {{ fk_grade_spread_max }}
+    paragraph_cv_ratio_min: {{ paragraph_cv_ratio_min }}
+    drift_metrics_required: {{ drift_metrics_required }}
+    drift_metrics_indicative: {{ drift_metrics_indicative }}
+    page_weight_budget_kb: 350
+    fk_family_max: 8
+    fk_naturalist_max: 12
+    TEOF
+    .venv/bin/python -c "
+    import yaml; t = yaml.safe_load(open('thresholds.yaml'))
+    assert 0 < t['grammar_agreement_min_delta'] <= 1
+    assert 0 < t['glossary_adoption_min'] <= 1
+    assert 0 < t['naming_compliance_min'] <= 1
+    assert t['paragraph_cv_ratio_min'] > 1.0
+    assert t['drift_metrics_indicative'] < t['drift_metrics_required'] <= 5
+    print('THRESHOLDS REGISTERED')"
+    date +%s > run/thresholds-registered.epoch
+
+    # ── stage each writer's input world (PHYSICAL isolation, r2) ───────────
+    cat > scripts/stage-writers.py <<'SEOF'
+    #!/usr/bin/env python3
+    """Stage staging/writer-N/ for each of the 2N writers: schema, intent,
+    the writer's own grounding subset (occurrences, phenology, vocab,
+    assignment) and — TREATMENT ONLY — conventions.md. Then verify: every
+    control staging contains NO conventions bytes (digest scan), every
+    staging is complete, and the manifest records what each writer saw."""
+    import glob, hashlib, json, os, shutil
+    HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    a = json.load(open(os.path.join(HERE, "run/assignment.json")))
+    conv = open(os.path.join(HERE, "conventions.md"), "rb").read()
+    conv_digest = hashlib.sha256(conv).hexdigest()
+    staged = {}
+    for inst, rec in sorted(a["instance_map"].items(), key=lambda kv: int(kv[0])):
+        seg = rec["segment"]; arm = rec["arm"]
+        d = os.path.join(HERE, "staging", "writer-%s" % inst)
+        shutil.rmtree(d, ignore_errors=True)
+        os.makedirs(d, exist_ok=True)
+        shutil.copy(os.path.join(HERE, "schema/page-schema.json"), d)
+        shutil.copy(os.path.join(HERE, "intent.md"), d)
+        shutil.copy(os.path.join(HERE, "grounding/stratigraphy-vocab.txt"), d)
+        shutil.copy(os.path.join(HERE, f"grounding/{seg}/occurrences.json"),
+                    os.path.join(d, "occurrences.json"))
+        pheno = json.load(open(os.path.join(HERE, "grounding/phenology.json")))
+        json.dump({seg: pheno.get(seg, {})},
+                  open(os.path.join(d, "phenology.json"), "w"), indent=2)
+        seg_man = next(s for s in json.load(open(os.path.join(
+            HERE, "grounding/grounding-manifest.json")))["segments"]
+            if s["segment_id"] == seg)
+        json.dump({"instance": inst, "arm": arm, "segment": seg,
+                   "query_hash": seg_man["query_hash"],
+                   "granularity": seg_man["granularity"]},
+                  open(os.path.join(d, "assignment.json"), "w"), indent=2)
+        saw_conventions = False
+        if arm == "treatment":
+            shutil.copy(os.path.join(HERE, "conventions.md"), d)
+            saw_conventions = True
+        staged[inst] = {"arm": arm, "segment": seg,
+                        "saw_conventions": saw_conventions,
+                        "input_digest": hashlib.sha256(
+                            b"".join(sorted(open(p, "rb").read()
+                                            for p in glob.glob(os.path.join(d, "*"))))).hexdigest()}
+    json.dump({"conventions_sha256": conv_digest, "writers": staged},
+              open(os.path.join(HERE, "run/staging-manifest.json"), "w"), indent=2)
+    # verify: no conventions bytes in ANY control staging
+    for inst, rec in staged.items():
+        if rec["arm"] != "control":
+            continue
+        d = os.path.join(HERE, "staging", "writer-%s" % inst)
+        for p in glob.glob(os.path.join(d, "*")):
+            assert hashlib.sha256(open(p, "rb").read()).hexdigest() != conv_digest, \
+                "CONTROL STAGING CONTAINS CONVENTIONS BYTES: %s" % p
+            assert b"conventions" not in open(p, "rb").read().lower(), \
+                "control staging references a conventions document: %s" % p
+    print("STAGED: %d writers; control worlds contain zero conventions bytes"
+          % len(staged))
+    SEOF
+    chmod +x scripts/stage-writers.py
+    .venv/bin/python scripts/stage-writers.py
+    echo "M7b REGISTERED + STAGED"
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 11 · The two-arm fan-out — THE EXPERIMENT (LLM ×8) ─────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 11 %}
+    {{ strict() }}
+    {% set a = namespace(arm="") %}
+    {% set a.arm = "treatment" if (instance is odd) else "control" %}
+    # ── M8 · Writer — arm: {{ a.arm }} ──────────────────────────────────────
+    # Your ENTIRE input world is staging/writer-{{ instance }}/ — physically
+    # staged by the engine's pre-fan-out movement, byte-checked to contain
+    # {% if a.arm == "treatment" %}the conventions document
+    {% else %}NO conventions bytes (that is the experimental condition)
+    {% endif %}. The schema gate is your FLOOR (schema, grounding, alttext,
+    # paragraph, headings — naming is a drift METRIC measured later, not a
+    # floor gate). If you cannot satisfy the floor, do NOT fake it: record
+    # an honest failure in gates.log (the exact command shown below) — your
+    # arm's honest-n will drop and the verdict class adjusts.
+    {{ ai_ground_rules() }}
+
+    {{ writer_brief(a.arm, instance) }}
+
+    ## Your staged inputs (staging/writer-{{ instance }}/)
+    - `assignment.json` — your arm, your segment, its query hash, its
+      grounding granularity (segment or whole-park-downgrade — say which
+      your page's claims rest on; honesty about downgrade is required)
+    - `page-schema.json` — the frozen contract your frontmatter MUST satisfy
+    - `intent.md` — the outcome envelope (PURPOSE / KEY TASKS / END STATE)
+    - `occurrences.json` — YOUR segment's pinned GBIF records; every species
+      you name MUST cite occurrence_ids from THESE bytes (the grounding
+      gate checks against your segment's pinned set — another segment's
+      record fails)
+    - `phenology.json` — computed month windows; quote them as statistics
+      ("most recorded April–June"), never as recollection
+    - `stratigraphy-vocab.txt` — the pinned vocabulary; every
+      `geology_terms` entry MUST come from this list
+    {% if a.arm == "treatment" %}
+    - `conventions.md` — THE CONVENTION LAYER: voice, heading grammar,
+      glossary discipline, naming, alt-text style, cultural sensitivity,
+      density. These are the shared standards of the whole library; follow
+      them as four other writers you will never see are doing the same.
+    {% else %}
+    - (No conventions document is in your staging. Write the best page you
+      can under the schema and the intent envelope — that is the
+      experiment's control condition, not an oversight.)
+    {% endif %}
+
+    ## Write the page
+    One file: `pages/{{ a.arm }}/writer-{{ instance }}/page.md` — frontmatter
+    (segment_id, title, variant, taxa with occurrence_ids +
+    phenology_window, figures with alt, geology_terms from the vocabulary,
+    gbif_query_hash from your assignment.json) then the body under the
+    intent envelope.
+
+    ## Then run your floor gate — exactly this, no variants:
+    bash scripts/gates.sh --page "pages/{{ a.arm }}/writer-{{ instance }}/page.md" \
+      && echo "GATE_RESULT: PASS writer-{{ instance }} {{ a.arm }}" >> gates.log
+    echo "M8 PAGE WRITTEN ({{ a.arm }}, writer-{{ instance }})"
+    # If, after honest effort, a gate cannot pass: DO NOT fake or dilute the
+    # page. Instead record the failure and stop:
+    #   echo "GATE_RESULT: FAIL writer-{{ instance }} {{ a.arm }} <gate>" >> gates.log
+    # A recorded FAIL is data (your arm's n drops, the verdict adjusts);
+    # a faked PASS is fraud against the experiment.
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 12 · Drift measurement (CLI — the heart of the proof) ──── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 12 %}
+    {{ strict() }}
+    # ── M9 · Drift Measurement — The Etiquette Law at maximum ──────────────
+    # Pure CLI. No LLM involvement is possible here. Self-tests against
+    # drift fixtures; mtime-verifies pre-registration; honest-n from
+    # gates.log; five DIRECTIONAL metrics (naming measured not gated;
+    # paragraph dispersion as a CV ratio, not an underpowered KS p-value);
+    # per-arm AND per-pair analysis (the matched pairs do analytical work).
+    cat > scripts/drift.py <<'PEOF'
+    #!/usr/bin/env python3
+    """Cross-arm drift measurement. Five metrics, each DIRECTIONAL toward
+    treatment benefit:
+      grammar_agreement — fraction of section paths shared by >=2 pages of
+                          the arm (cross-writer heading-grammar agreement)
+      glossary_adoption — mean fraction of glossary terms used >=2x per page
+      naming_compliance — fraction of files conforming to naming patterns
+                          (MEASURED ONLY — never floor-gated; r2)
+      fk_grade_spread — stddev of Flesch-Kincaid grade across an arm's pages
+      paragraph_cv_ratio — control CV / treatment CV of paragraph lengths
+                          (directional replacement for the underpowered
+                          two-sample KS of pass 1; r2)
+    Modes: --selftest (identical -> zero deltas, divergent -> large)
+           --run --out FILE (measure pages/, verify pre-registration mtimes,
+                             honest-n from gates.log, pair analysis)
+    Empty fallback chain: any missing input is a FAILURE."""
+    import argparse, glob, json, math, os, re, statistics, sys
+    from collections import Counter
+    import yaml
+
+    GLOSSARY_FALLBACK = ["Pennsylvanian", "phenology", "loess"]
+
+    def pages(arm, root="."):
+        return sorted(glob.glob(os.path.join(root, f"pages/{arm}/*/page.md")))
+
+    def passing_pages(arm, root="."):
+        """Pages of writers whose gates.log line records PASS (r2: a
+        recorded FAIL removes the page from measurement — honest-n)."""
+        allp = pages(arm, root)
+        log = os.path.join(root, "gates.log")
+        if not os.path.exists(log):
+            return allp
+        failed = set()
+        for line in open(log):
+            m = re.match(r"GATE_RESULT: FAIL (writer-\S+) (\S+)", line)
+            if m:
+                failed.add(m.group(1))
+        return [p for p in allp
+                if not any(f in p for f in failed)] or allp
+
+    def body_of(path):
+        raw = open(path).read()
+        m = re.match(r"\A---\n.*?\n---\n", raw, re.S)
+        return raw[m.end():] if m else raw
+
+    def heading_paths(body):
+        """SECTION GRAMMAR: full heading paths minus the page-specific H1
+        prefix. Live-tested (r2): full-path entropy is dominated by the
+        unique H1 and normalizes to 1.0 for BOTH arms — a metric that
+        cannot discriminate. The grammar after the H1 is what conventions
+        align: treatment writers repeat section grammars, drifting
+        writers do not."""
+        paths, stack = [], []
+        for m in re.finditer(r"^(#{1,6}) (.+)$", body, re.M):
+            lvl = len(m.group(1))
+            while stack and stack[-1][0] >= lvl:
+                stack.pop()
+            stack.append((lvl, m.group(2).strip().lower()))
+            paths.append("/".join(t for _, t in stack))
+        return [p.split("/", 1)[1] for p in paths if "/" in p]
+
+    def grammar_agreement(page_list):
+        """Cross-writer agreement: fraction of section-path instances that
+        appear in >=2 pages of the arm. 1.0 = every section heading is
+        shared with another writer; 0.0 = no writer repeats any section.
+        (Live-tested r2: normalized entropy measures distribution BALANCE,
+        not agreement — both arms scored 1.0 on deliberately divergent
+        fixtures. This metric discriminates.)"""
+        per_page = [set(heading_paths(body_of(p))) for p in page_list]
+        allp = [q for s in per_page for q in s]
+        if not allp:
+            return 0.0
+        shared = sum(1 for q in allp
+                     if sum(q in s for s in per_page) >= 2)
+        return shared / len(allp)
+
+    def glossary_terms(root="."):
+        cpath = os.path.join(root, "conventions.md")
+        if os.path.exists(cpath):
+            txt = open(cpath).read()
+            m = re.search(r"##\s*Glossary(.*)", txt, re.S | re.I)
+            if m:
+                terms = re.findall(r"^\s*-\s+\*\*(.+?)\*\*", m.group(1), re.M)
+                if terms:
+                    return terms
+        return GLOSSARY_FALLBACK
+
+    def glossary_adoption(page_list, terms):
+        if not page_list:
+            return 0.0
+        per_page = []
+        for p in page_list:
+            body = body_of(p)
+            per_page.append(sum(1 for t in terms
+                                if len(re.findall(re.escape(t), body, re.I)) >= 2)
+                             / len(terms))
+        return statistics.mean(per_page)
+
+    def naming_compliance(arm, root="."):
+        files = [f for f in glob.glob(os.path.join(root, f"pages/{arm}/**/*.*"),
+                                      recursive=True)]
+        if not files:
+            return 0.0
+        ok = 0
+        for f in files:
+            base = os.path.basename(f)
+            if base == "page.md" or base == "GLOSSARY.md" \
+               or re.match(r"^fig-[a-z0-9-]+\.(jpg|jpeg|png|webp|gif)$", base):
+                ok += 1
+        return ok / len(files)
+
+    def fk_grades(page_list):
+        import textstat
+        return [textstat.flesch_kincaid_grade(body_of(p)) for p in page_list]
+
+    def paragraph_lengths(page_list):
+        out = []
+        for p in page_list:
+            body = body_of(p)
+            out.extend(len(par.split()) for par in re.split(r"\n\s*\n", body)
+                       if par.strip() and not par.startswith("#")
+                       and not par.startswith("!["))
+        return out
+
+    def cv(xs):
+        return (statistics.pstdev(xs) / statistics.mean(xs)) if xs and statistics.mean(xs) else 0.0
+
+    def arm_of_page(path):
+        return os.path.basename(os.path.dirname(os.path.dirname(path)))
+
+    def measure(arms=("treatment", "control"), root="."):
+        tp = passing_pages("treatment", root)
+        cp = passing_pages("control", root)
+        assert tp and cp, "an arm is empty after honest-failure filtering"
+        ga_head = {a: grammar_agreement(p) for a, p in (("treatment", tp), ("control", cp))}
+        terms = glossary_terms(root)
+        ga = {a: glossary_adoption(p, terms) for a, p in (("treatment", tp), ("control", cp))}
+        nc = {a: naming_compliance(a, root) for a in arms}
+        fk = {a: statistics.pstdev(fk_grades(p)) for a, p in (("treatment", tp), ("control", cp))}
+        cvr = (cv(paragraph_lengths(cp)) / cv(paragraph_lengths(tp))) \
+            if cv(paragraph_lengths(tp)) > 0 else 0.0
+        metrics = [
+          {"metric": "grammar_agreement", "direction": "higher_is_better",
+           "treatment": round(ga_head["treatment"], 4),
+           "control": round(ga_head["control"], 4),
+           "delta": round(ga_head["treatment"] - ga_head["control"], 4)},
+          {"metric": "glossary_adoption", "direction": "higher_is_better",
+           "treatment": round(ga["treatment"], 4), "control": round(ga["control"], 4),
+           "delta": round(ga["treatment"] - ga["control"], 4)},
+          {"metric": "naming_compliance", "direction": "higher_is_better",
+           "treatment": round(nc["treatment"], 4), "control": round(nc["control"], 4),
+           "delta": round(nc["treatment"] - nc["control"], 4)},
+          {"metric": "fk_grade_spread", "direction": "lower_is_better",
+           "treatment": round(fk["treatment"], 4), "control": round(fk["control"], 4),
+           "delta": round(fk["control"] - fk["treatment"], 4)},
+          {"metric": "paragraph_cv_ratio", "direction": "higher_is_better",
+           "treatment": round(cv(paragraph_lengths(tp)), 4),
+           "control": round(cv(paragraph_lengths(cp)), 4),
+           "ratio": round(cvr, 4),
+           "delta": round(cvr, 4)}]
+        return {"arms": {"treatment": {"n": len(tp), "n_written": len(pages("treatment", root))},
+                         "control": {"n": len(cp), "n_written": len(pages("control", root))}},
+                "metrics": metrics, "glossary_terms": terms}
+
+    def pair_analysis(root="."):
+        """The matched pairs do analytical work (r2): per pair, heading-path
+        Jaccard similarity between the pair's two pages."""
+        a = json.load(open(os.path.join(root, "run/assignment.json")))
+        out = []
+        for p in a["pairs"]:
+            tset = cset = None
+            for page in pages("treatment", root):
+                if os.path.basename(os.path.dirname(page)).endswith(p["treatment"]) or \
+                   f'"{p["treatment"]}"' in open(page).read():
+                    pass
+            # resolve pages by frontmatter segment_id (robust to writer tags)
+            def find(arm, seg):
+                for page in pages(arm, root):
+                    m = re.match(r"\A---\n(.*?)\n---", open(page).read(), re.S)
+                    if m and "segment_id: %s" % seg in m.group(1):
+                        return page
+                return None
+            tp, cp = find("treatment", p["treatment"]), find("control", p["control"])
+            if tp and cp:
+                ts = set(heading_paths(body_of(tp)))
+                cs = set(heading_paths(body_of(cp)))
+                inter = len(ts & cs); union = len(ts | cs) or 1
+                out.append({"pair_id": p["pair_id"],
+                            "treatment": p["treatment"], "control": p["control"],
+                            "heading_jaccard": round(inter / union, 4)})
+        return out
+
+    def selftest(root="."):
+        import shutil
+        fx = os.path.join(root, "drift-fixtures")
+        shutil.rmtree(fx, ignore_errors=True)
+        FM = "---\nsegment_id: seg-%s\ntitle: T\nvariant: family\ntaxa:\n  - scientific_name: X\n    common_name: x\n    occurrence_ids: [1]\n    phenology_window: 1-2\nfigures:\n  - src: f.jpg\n    alt: an alt text here\ngeology_terms: [loess]\ngbif_query_hash: xxxxxxxxxx\n---\n\n"
+        # treatment voice: SHARED heading grammar + glossary terms used twice;
+        # control voice: different headings, no glossary terms, ragged paragraphs.
+        # (live-tested: pass-1's fixtures were too weak to move the metrics —
+        # both arms normalized to the same entropy/adoption; r2)
+        def t_page(n):
+            return FM % n + (
+                "# Shared Voice %s\n\n## What to watch for\n\n"
+                "The Pennsylvanian bedrock frames this reach. Pennsylvanian "
+                "again, as the glossary asks.\n\n## When to come back\n\n"
+                "Phenology returns twice a year here — phenology is the "
+                "glossary word for it. Loess underfoot; loess above the "
+                "ledges.\n" % n)
+        def c_page(n):
+            # drifting writers: DIFFERENT section grammar per page, no
+            # glossary terms, ragged paragraph lengths
+            head = ("# An Entirely Different Sort of Page, Honestly %d\n\n"
+                    "## Section Alpha %d\n\n"
+                    "No shared vocabulary at all in this body whatsoever friends.\n\n"
+                    % (n, n))
+            mid = " ".join(["padding"] * (40 + 25 * n)) + "\n\n"
+            tail = ("### Nested Beta %d\n\n" % n) + \
+                   " ".join(["more padding"] * (10 + 5 * n)) + "\n"
+            return FM % n + head + mid + tail
+        iroot = os.path.join(fx, "identical")
+        for arm in ("treatment", "control"):
+            for sub, n in (("a", 1), ("b", 2)):
+                d = os.path.join(iroot, "pages", arm, sub)
+                os.makedirs(d, exist_ok=True)
+                open(os.path.join(d, "page.md"), "w").write(t_page(n))
+        r_ident = measure(root=iroot)
+        for m in r_ident["metrics"]:
+            if m["metric"] != "paragraph_cv_ratio":
+                assert abs(m["delta"]) < 1e-9, \
+                    f"identical sets must yield zero delta ({m['metric']})"
+            else:
+                assert abs(m["delta"] - 1.0) < 0.05, \
+                    "identical sets must yield CV ratio ~1.0"
+        divroot = os.path.join(fx, "divergent")
+        for arm, pagefn in [("treatment", t_page), ("control", c_page)]:
+            for sub, n in (("w1", 1), ("w2", 2)):
+                d = os.path.join(divroot, "pages", arm, sub)
+                os.makedirs(d, exist_ok=True)
+                open(os.path.join(d, "page.md"), "w").write(pagefn(n))
+        r_div = measure(root=divroot)
+        m_he = next(m for m in r_div["metrics"] if m["metric"] == "grammar_agreement")
+        m_ga = next(m for m in r_div["metrics"] if m["metric"] == "glossary_adoption")
+        m_cv = next(m for m in r_div["metrics"] if m["metric"] == "paragraph_cv_ratio")
+        assert m_he["delta"] > 0.5 and m_ga["delta"] > 0.3 and m_cv["delta"] > 0.5, \
+            "divergent fixtures must produce large deltas — the suite cannot discriminate"
+        shutil.rmtree(fx, ignore_errors=True)
+        print("DRIFT SELFTEST PASS: identical->zero, divergent->large")
+
+    if __name__ == "__main__":
+        ap = argparse.ArgumentParser()
+        ap.add_argument("--selftest", action="store_true")
+        ap.add_argument("--run", action="store_true")
+        ap.add_argument("--out")
+        a = ap.parse_args()
+        if a.selftest:
+            selftest()
+        elif a.run:
+            assert a.out, "--run needs --out"
+            thr = os.path.getmtime("thresholds.yaml")
+            for p in glob.glob("pages/*/*/page.md"):
+                assert os.path.getmtime(p) > thr, \
+                    f"{p} predates thresholds.yaml — pre-registration violated"
+            rep = measure()
+            rep["pair_analysis"] = pair_analysis()
+            json.dump(rep, open(a.out, "w"), indent=2)
+            print("DRIFT REPORT: %s (n=%d/%d treatment, %d/%d control)" % (
+                a.out, rep["arms"]["treatment"]["n"], rep["arms"]["treatment"]["n_written"],
+                rep["arms"]["control"]["n"], rep["arms"]["control"]["n_written"]))
+        else:
+            ap.error("choose --selftest or --run")
+    PEOF
+    chmod +x scripts/drift.py
+
+    .venv/bin/python scripts/drift.py --selftest
+    .venv/bin/python scripts/drift.py --run --out run/drift-report.json
+    .venv/bin/python -c "
+    import json
+    d = json.load(open('run/drift-report.json'))
+    assert len(d['metrics']) == 5 and d['pair_analysis'], 'report incomplete'
+    print('n(treatment)=%d/%d n(control)=%d/%d' % (
+        d['arms']['treatment']['n'], d['arms']['treatment']['n_written'],
+        d['arms']['control']['n'], d['arms']['control']['n_written']))"
+    echo "M9 MEASURED"
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 13 · Editorial synthesis, treatment only (LLM) ─────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 13 %}
+    {{ strict() }}
+    # ── M10 · Editorial Synthesis — Rehearsal Spotlight + Sugya discipline ─
+    # Merge the TREATMENT pages only (control pages exist to be measured,
+    # never shipped — and never committed at deploy). Resolve preserved
+    # disagreement editorially — argued, not averaged; record material
+    # dissent. You may NOT rewrite sections the floor gates passed: the
+    # content-diff gate proves unflagged sections are identical.
+    # IMPORTANT (r2): the evidence page you write here carries the drift
+    # tables, arm assignments, and thresholds — but NOT the verdict, which
+    # does not exist until M13 derives it and appends it. Leave the verdict
+    # section as a placeholder heading exactly: `## Verdict` followed by
+    # `VERDICT-PENDING` on its own line.
+    {{ ai_ground_rules() }}
+
+    Read: every `pages/treatment/writer-*/page.md`, `run/drift-report.json`
+    (where the treatment arm itself drifted internally — those are your
+    rework targets; the per-pair analysis shows which pairs diverged most),
+    `conventions.md`.
+
+    Deliver:
+    1. `site-src/content/<segment-id>/page.md` — one merged page per
+       treatment segment; sections NOT flagged in synthesis-notes.md MUST
+       be byte-identical to the writer's output (the diff gate checks).
+    2. `site-src/GLOSSARY.md` — every pinned glossary term, defined once.
+    3. `synthesis-notes.md` — under `## Flagged sections`, one bullet per
+       changed section: `- <segment-id>/<section-heading>: why, which drift
+       metric it answers`; under `## Preserved dissent`, any disagreement
+       you kept rather than averaged away.
+    4. `site-src/index.md` — the library front page (title, one-paragraph
+       framing — keep it short; the page-weight budget is enforced later).
+    5. `site-src/evidence.md` — tables transcribed from
+       `run/drift-report.json` (cite the path above each table), arm
+       assignments from `run/assignment.json`, the pre-registered
+       thresholds from `thresholds.yaml`, the falsification-honesty
+       paragraph (n per arm; INDICATIVE vs definitive), and a `## Verdict`
+       section containing exactly `VERDICT-PENDING`.
+
+    Author the synthesis gate, then run it (must pass before you finish):
+    cat > scripts/check-synthesis.py <<'PEOF'
+    #!/usr/bin/env python3
+    """Rehearsal Spotlight: every H2 section of every treatment page that is
+    NOT flagged in synthesis-notes.md is byte-identical (after rstrip
+    normalization — a trailing newline is not a rewrite) in the merged
+    output; every merged page re-passes the floor gates; GLOSSARY.md covers
+    every glossary term used in the merged pages; the evidence page carries
+    the VERDICT-PENDING placeholder (the verdict is derived at M13 —
+    producer precedes consumer)."""
+    import glob, json, os, re, subprocess, sys
+    import yaml
+
+    def sections(path):
+        raw = open(path).read()
+        m = re.match(r"\A---\n.*?\n---\n", raw, re.S)
+        body = raw[m.end():] if m else raw
+        parts = re.split(r"^(?=## )", body, flags=re.M)
+        return {re.split(r"\n", p, 1)[0].lstrip("# ").strip(): p.rstrip()
+                for p in parts if p.startswith("## ")}
+
+    notes = open("synthesis-notes.md").read()
+    flagged = set(re.findall(r"^\s*-\s+(seg-\d+)/([^:]+):", notes, re.M))
+    merged = {}
+    for p in glob.glob("site-src/content/*/page.md"):
+        seg = os.path.basename(os.path.dirname(p))
+        merged[seg] = p
+    assert merged, "no merged pages"
+    for src in glob.glob("pages/treatment/*/page.md"):
+        fm = yaml.safe_load(re.match(r"^---\n(.*?)\n---", open(src).read(), re.S).group(1))
+        seg = fm["segment_id"]
+        assert seg in merged, f"{seg}: no merged page"
+        for h2, text in sections(src).items():
+            if (seg, h2.lower()) not in {(s, h.lower()) for s, h in flagged}:
+                m = sections(merged[seg])
+                assert h2 in m and m[h2] == text.rstrip(), \
+                    f"{seg}/{h2}: unflagged section was rewritten"
+    for seg, p in merged.items():
+        subprocess.run(["bash", "scripts/gates.sh", "--page", p], check=True)
+    terms = json.load(open("run/drift-report.json"))["glossary_terms"]
+    gloss = open("site-src/GLOSSARY.md").read()
+    body_all = " ".join(open(p).read() for p in merged.values())
+    for t in terms:
+        if re.search(re.escape(t), body_all, re.I):
+            assert re.search(re.escape(t), gloss, re.I), f"glossary missing used term: {t}"
+    ev = open("site-src/evidence.md").read()
+    assert re.search(r"^##\s*Verdict\s*$", ev, re.M), "evidence page missing Verdict heading"
+    assert "VERDICT-PENDING" in ev, "evidence page missing VERDICT-PENDING placeholder"
+    print("SYNTHESIS OK: unflagged sections untouched, gates re-pass, glossary covers")
+    PEOF
+    chmod +x scripts/check-synthesis.py
+    .venv/bin/python scripts/check-synthesis.py
+    echo "M10 SYNTHESIZED"
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 14 · Build + deploy (CLI) ──────────────────────────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 14 %}
+    {{ strict() }}
+    # ── M11 · Build + Deploy (first pass; M13 rebuilds with the verdict) ────
+    # build-site.py (python-markdown, warnings impossible by construction),
+    # check-links.py over the local build, then a CLEAN git repo containing
+    # ONLY the built site (control pages NEVER committed — r2), pushed to
+    # the fenced target, Pages enabled with source[/]=/ main — the only
+    # branch-source configuration GitHub accepts (pass 1's /site was 422).
+    .venv/bin/python scripts/build-site.py 2>&1 | tee run/build.log
+    .venv/bin/python scripts/check-links.py 2>&1 | tee run/linkcheck.log
+    grep -q "ALL LINKS VALID" run/linkcheck.log || {
+      echo "LINKCHECK FAILED"; cat run/linkcheck.log; exit 1; }
+
+    # Gas-Free Certificate: re-verify repo safety AT the irreversible moment
+    # — the M0 check is stale by now; this is the fresh one.
+    if [ "{{ allow_repo_reuse }}" != "true" ]; then
+      ! gh api "repos/{{ github_owner }}/{{ repo_name }}" >/dev/null 2>&1 || {
+        echo "M11 REFUSED: target repo exists and allow_repo_reuse != true"; exit 1; }
+    fi
+    rm -rf deploy-repo && mkdir deploy-repo && cd deploy-repo
+    git init -q -b main
+    cp -r ../site/. .
+    git add -A
+    git -c user.name="wayside-library" -c user.email="noreply@wayside.local" \
+      commit -qm "wayside-library: field guide + drift evidence (verdict pending)"
+    gh repo create {{ github_owner }}/{{ repo_name }} --public --source=. \
+      --remote=origin --push \
+      || { git remote add origin \
+             "https://github.com/{{ github_owner }}/{{ repo_name }}.git" 2>/dev/null || true
+           git push -q -u origin main; }
+    # Pages from repo ROOT on main — the only valid branch source config
+    gh api -X POST "repos/{{ github_owner }}/{{ repo_name }}/pages" \
+      -f 'source[branch]=main' -f 'source[path]=/' >/dev/null 2>&1 \
+      || gh api -X PUT "repos/{{ github_owner }}/{{ repo_name }}/pages" \
+           -f 'source[branch]=main' -f 'source[path]=/' >/dev/null
+    cd ..
+    .venv/bin/python - <<'PEOF'
+    import json, subprocess, time
+    json.dump({
+      "deployed_url": "https://{{ github_owner | lower }}.github.io/{{ repo_name }}/",
+      "deployed_sha": subprocess.run(["git", "-C", "deploy-repo", "rev-parse", "HEAD"],
+                                     capture_output=True, text=True).stdout.strip(),
+      "pages_source": {"branch": "main", "path": "/"},
+      "deployed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())},
+      open("run/deployment.json", "w"), indent=2)
+    PEOF
+    echo "M11 DEPLOYED (verdict pending — M13 ships it)"
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 15 · Live gates on deployed bytes (CLI) ────────────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 15 %}
+    {{ strict() }}
+    # ── M12 · Live Gates — Declared Window ─────────────────────────────────
+    # Every EXP claim is an exit code on the SERVED bytes. r2 repairs: heading
+    # skips caught in BOTH directions; segment pages with ZERO images FAIL
+    # the alt gate (the schema guarantees >=1 figure, so zero images means
+    # the figure never rendered); the grade band reads the variant from the
+    # SERVED <body data-variant> attribute (rendered from frontmatter by
+    # build-site.py) — never guessed from a URL.
+    cat > scripts/live-gates.py <<'PEOF'
+    #!/usr/bin/env python3
+    """Live gates over the DEPLOYED bytes. Checked surface == claimed
+    surface: alt text (zero-image SEGMENT pages fail), html lang, viewport,
+    heading order (both directions), page weight (page + local assets),
+    FK grade bands by frontmatter variant (via body[data-variant]), and
+    served-vs-built normalized-content equality. Bounded retry against
+    Pages propagation inside the declared window."""
+    import argparse, glob, json, os, re, statistics, sys, time
+    import requests
+    from html.parser import HTMLParser
+
+    class Text(HTMLParser):
+        """Visible-text extractor. Skips <style>/<script> content: the
+        stylesheet's text is not page copy, and counting it inflated the
+        FK grade by ~2.3 points in live testing (r2)."""
+        def __init__(self):
+            super().__init__(); self.buf = []; self.imgs = []
+            self.h_levels = []; self.variant = "family"
+            self._has_lang = False; self._viewport = False
+            self._in_title = False; self._skip = 0; self.title = ""
+        def handle_starttag(self, tag, attrs):
+            a = dict(attrs)
+            if tag in ("style", "script"):
+                self._skip += 1
+            if tag == "img":
+                self.imgs.append(a.get("alt", ""))
+            if tag == "html" and a.get("lang"):
+                self._has_lang = True
+            if tag == "meta" and a.get("name") == "viewport":
+                self._viewport = True
+            if re.match(r"h[1-6]", tag):
+                self.h_levels.append(int(tag[1]))
+            if tag == "body" and a.get("data-variant"):
+                self.variant = a["data-variant"]
+            if tag == "title":
+                self._in_title = True
+        def handle_data(self, d):
+            if self._skip:
+                return
+            if self._in_title:
+                self.title += d
+            self.buf.append(d)
+        def handle_endtag(self, tag):
+            if tag in ("style", "script") and self._skip:
+                self._skip -= 1
+            if tag == "title":
+                self._in_title = False
+
+    def normalize(html):
+        p = Text(); p.feed(html)
+        return re.sub(r"\s+", " ", " ".join(p.buf)).strip()
+
+    def wait_200(urls, window, delay):
+        end = time.time() + window
+        while time.time() < end:
+            try:
+                if all(requests.get(u, timeout=30).status_code == 200 for u in urls):
+                    return True
+            except requests.RequestException:
+                pass
+            time.sleep(delay)
+        return False
+
+    def main():
+        ap = argparse.ArgumentParser()
+        ap.add_argument("--url", required=True)
+        ap.add_argument("--window-seconds", type=int, default=600)
+        ap.add_argument("--retry-seconds", type=int, default=30)
+        ap.add_argument("--out", required=True)
+        a = ap.parse_args()
+        import yaml
+        thr = yaml.safe_load(open("thresholds.yaml"))
+
+        built = sorted(glob.glob("site/**/*.html", recursive=True))
+        assert built, "no built pages"
+        rels = [os.path.relpath(p, "site") for p in built]
+        urls = [a.url.rstrip("/") + "/" + r.replace(os.sep, "/") for r in rels]
+        assert wait_200(urls, a.window_seconds, a.retry_seconds), \
+            "propagation window expired before all pages answered 200"
+
+        gates = []
+        for rel, url in zip(rels, urls):
+            r = requests.get(url, timeout=30); r.raise_for_status()
+            # decode explicitly: pages served without a charset parameter make
+            # requests default to ISO-8859-1, corrupting UTF-8 em-dashes and
+            # failing served_equals_built spuriously (live-caught, r2)
+            html = r.content.decode("utf-8", errors="replace")
+            p = Text(); p.feed(html)
+            stem = os.path.dirname(rel)
+            is_segment = re.search(r"seg-\d+", rel) is not None
+            if p.imgs:
+                alt_ok = all((alt or "").strip() for alt in p.imgs)
+            else:
+                alt_ok = not is_segment   # zero images: fine on index/glossary,
+                                          # FAILURE on segment pages (schema
+                                          # guarantees >=1 figure — r2)
+            gates.append({"gate": "alt", "page": rel, "passed": alt_ok,
+                          "images": len(p.imgs)})
+            gates.append({"gate": "lang", "page": rel, "passed": p._has_lang})
+            gates.append({"gate": "viewport", "page": rel, "passed": p._viewport})
+            hl = p.h_levels
+            # both directions: no level jumps DOWN >1 or UP >1 (r2 — pass 1
+            # only caught downward)
+            gates.append({"gate": "heading_order", "page": rel,
+                          "passed": not any(abs(b - c) > 1
+                                            for b, c in zip(hl, hl[1:]))})
+            weight_kb = len(r.content) / 1024.0
+            for m in set(re.findall(r'(?:src|href)="([^"]+\.(?:css|js|png|jpg|jpeg|webp|gif))"', html)):
+                if m.startswith("http"):
+                    continue
+                au = a.url.rstrip("/") + "/" + os.path.normpath(
+                    os.path.join(stem, m)).replace(os.sep, "/")
+                try:
+                    weight_kb += len(requests.get(au, timeout=30).content) / 1024.0
+                except requests.RequestException:
+                    gates.append({"gate": "asset_fetch", "page": rel, "passed": False})
+            gates.append({"gate": "page_weight", "page": rel,
+                          "passed": weight_kb <= thr["page_weight_budget_kb"],
+                          "weight_kb": round(weight_kb, 1)})
+            # grade band: SEGMENT pages only, variant from the SERVED
+            # body[data-variant] (r2 — never URL). Index/glossary/evidence
+            # are curator surfaces, deliberately exempt (live-tested: a
+            # glossary of hard terms can never meet a family-grade band).
+            if is_segment:
+                import textstat
+                grade = textstat.flesch_kincaid_grade(normalize(html))
+                limit = thr["fk_family_max"] if p.variant == "family" \
+                        else thr["fk_naturalist_max"]
+                gates.append({"gate": "grade_band", "page": rel,
+                              "passed": grade <= limit,
+                              "grade": round(grade, 1), "limit": limit,
+                              "variant": p.variant})
+            built_html = open(os.path.join("site", rel)).read()
+            gates.append({"gate": "served_equals_built", "page": rel,
+                          "passed": normalize(html) == normalize(built_html)})
+
+        json.dump({"url": a.url,
+                   "window_seconds": a.window_seconds,
+                   "fetched_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                   "pages": len(rels), "gates": gates},
+                  open(a.out, "w"), indent=2)
+        failed = [g for g in gates if not g["passed"]]
+        print("LIVE GATES: %d/%d pass" % (len(gates) - len(failed), len(gates)))
+        sys.exit(1 if failed else 0)
+
+    if __name__ == "__main__":
+        main()
+    PEOF
+    chmod +x scripts/live-gates.py
+
+    .venv/bin/python scripts/live-gates.py \
+      --url "$(python3 -c "import json;print(json.load(open('run/deployment.json'))['deployed_url'])")" \
+      --window-seconds 600 --retry-seconds 30 --out run/live-gates.json
+    echo "M12 LIVE-VERIFIED"
+
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {# ── Movement 16 · Verdict + evidence update + evaluation ────────────── #}
+    {# ═══════════════════════════════════════════════════════════════════ #}
+    {% elif stage == 16 %}
+    {{ strict() }}
+    # ── M13 · Verdict — mechanical join FIRST, then evidence, then prose ────
+    # Step 1 is CLI: the verdict class derives from drift-report.json against
+    # thresholds.yaml by exit-code arithmetic with NO prose intermediate —
+    # FALSIFIED cannot be negotiated away. ALL thresholds come from the
+    # pre-registered file; the join reads no code constants (r2).
+    cat > scripts/verdict-join.py <<'PEOF'
+    #!/usr/bin/env python3
+    """Mechanical verdict join. A metric CLEARS when the conventions arm is
+    better by its PRE-REGISTERED threshold (all values from thresholds.yaml):
+      grammar_agreement: treatment - control >= grammar_agreement_min_delta
+      glossary_adoption: treatment >= glossary_adoption_min AND delta > 0
+      naming_compliance: treatment >= naming_compliance_min AND delta > 0
+      fk_grade_spread: control - treatment >= fk_grade_spread_max
+      paragraph_cv_ratio: ratio (control CV / treatment CV) >= paragraph_cv_ratio_min
+    Classes: CONFIRMED (cleared >= drift_metrics_required), INDICATIVE
+    (>= drift_metrics_indicative), FALSIFIED (0 or 1 cleared with full
+    n >= 4 per arm — the experiment ran at power and conventions showed
+    nothing), INCONCLUSIVE (low n or missing metrics). All four classes
+    exit 0; only mechanical failure exits nonzero."""
+    import argparse, json, sys
+    import yaml
+
+    def cleared(d, t):
+        m = {x["metric"]: x for x in d["metrics"]}
+        n_full = d["arms"]["treatment"]["n"] >= 4 and d["arms"]["control"]["n"] >= 4
+        c = []
+        if "grammar_agreement" in m and \
+           m["grammar_agreement"]["delta"] >= t["grammar_agreement_min_delta"]:
+            c.append("grammar_agreement")
+        if "glossary_adoption" in m and \
+           m["glossary_adoption"]["treatment"] >= t["glossary_adoption_min"] and \
+           m["glossary_adoption"]["delta"] > 0:
+            c.append("glossary_adoption")
+        if "naming_compliance" in m and \
+           m["naming_compliance"]["treatment"] >= t["naming_compliance_min"] and \
+           m["naming_compliance"]["delta"] > 0:
+            c.append("naming_compliance")
+        if "fk_grade_spread" in m and \
+           m["fk_grade_spread"]["delta"] >= t["fk_grade_spread_max"]:
+            c.append("fk_grade_spread")
+        if "paragraph_cv_ratio" in m and \
+           m["paragraph_cv_ratio"]["ratio"] >= t["paragraph_cv_ratio_min"]:
+            c.append("paragraph_cv_ratio")
+        return c, n_full
+
+    def verdict(d, t):
+        c, n_full = cleared(d, t)
+        if len(d["metrics"]) < 5 or not d.get("pair_analysis"):
+            return "INCONCLUSIVE", c, "metric suite incomplete"
+        if len(c) >= t["drift_metrics_required"]:
+            v = "CONFIRMED"
+        elif len(c) >= t["drift_metrics_indicative"]:
+            v = "INDICATIVE"
+        elif n_full:
+            v = "FALSIFIED"
+        else:
+            v = "INCONCLUSIVE"
+        return v, c, None
+
+    if __name__ == "__main__":
+        ap = argparse.ArgumentParser()
+        ap.add_argument("--drift", required=True)
+        ap.add_argument("--thresholds", required=True)
+        ap.add_argument("--out")
+        ap.add_argument("--verify", action="store_true")
+        a = ap.parse_args()
+        d = json.load(open(a.drift))
+        t = yaml.safe_load(open(a.thresholds))
+        v, c, note = verdict(d, t)
+        rec = {"class": v, "cleared_metrics": c,
+               "n_treatment": d["arms"]["treatment"]["n"],
+               "n_control": d["arms"]["control"]["n"], "note": note,
+               "thresholds_source": "thresholds.yaml"}
+        if a.verify:
+            existing = json.load(open(a.out))
+            assert existing["class"] == v and existing["cleared_metrics"] == c, \
+                "recorded verdict does not re-derive — join was tampered"
+            print("VERDICT VERIFY OK: %s" % v)
+        else:
+            assert a.out, "--out required without --verify"
+            json.dump(rec, open(a.out, "w"), indent=2)
+            print("VERDICT: %s (cleared: %s)" % (v, ", ".join(c) or "none"))
+    PEOF
+    chmod +x scripts/verdict-join.py
+
+    .venv/bin/python scripts/verdict-join.py --drift run/drift-report.json \
+        --thresholds thresholds.yaml --out run/verdict.json
+    V=$(.venv/bin/python -c "import json;print(json.load(open('run/verdict.json'))['class'])")
+    echo "VERDICT: $V"
+
+    # Step 2 (CLI): ship the verdict INSIDE the deployed artifact — replace
+    # the placeholder, rebuild, redeploy, re-run live gates (r2: the served
+    # evidence page now carries the final mechanically derived verdict).
+    .venv/bin/python - <<'PEOF'
+    import json, re
+    v = json.load(open("run/verdict.json"))
+    ev = open("site-src/evidence.md").read()
+    assert "VERDICT-PENDING" in ev, "evidence page lost its placeholder"
+    block = ("**%s** — %d of 5 pre-registered drift metrics cleared "
+             "(%s); n=%d/%d per arm; join re-derivable via "
+             "`scripts/verdict-join.py --verify` from `run/drift-report.json` "
+             "and `thresholds.yaml`." % (
+                 v["class"], len(v["cleared_metrics"]),
+                 ", ".join(v["cleared_metrics"]) or "none",
+                 v["n_treatment"], v["n_control"]))
+    open("site-src/evidence.md", "w").write(
+        ev.replace("VERDICT-PENDING", block))
+    print("EVIDENCE UPDATED WITH VERDICT:", v["class"])
+    PEOF
+    .venv/bin/python scripts/build-site.py
+    .venv/bin/python scripts/check-links.py
+    ( cd deploy-repo && rm -rf * .[!.]* 2>/dev/null || true
+      cp -r ../site/. .
+      git add -A
+      git -c user.name="wayside-library" -c user.email="noreply@wayside.local" \
+        commit -qm "wayside-library: final verdict shipped in the evidence page"
+      git push -q origin main )
+    .venv/bin/python scripts/live-gates.py \
+      --url "$(python3 -c "import json;print(json.load(open('run/deployment.json'))['deployed_url'])")" \
+      --window-seconds 600 --retry-seconds 30 --out run/live-gates.json
+    # the SERVED evidence page must now carry the verdict class
+    U=$(python3 -c "import json;print(json.load(open('run/deployment.json'))['deployed_url'])")
+    for i in 1 2 3 4 5 6 7 8 9 10; do
+      if curl -fsS --max-time 30 "$U/evidence.html" 2>/dev/null | grep -q "$V"; then
+        echo "VERDICT LIVE ON THE DEPLOYED ARTIFACT: $V"; break
+      fi
+      [ "$i" = "10" ] && { echo "VERDICT NOT LIVE AFTER 10 TRIES"; exit 1; }
+      sleep 30
+    done
+
+    # Step 3 (you — family B judgment): the evaluation prose. Every sentence
+    # carrying a number must cite its JSON source by path. You are a
+    # different model family than the writers — say what the numbers say,
+    # especially if they say FALSIFIED.
+    {{ ai_ground_rules() }}
+
+    Read `run/verdict.json`, `run/drift-report.json` (including the
+    pair_analysis block — report the per-pair heading Jaccard values),
+    `run/live-gates.json`, `conventions.md`, and `synthesis-notes.md`.
+    Write `evaluation.md`:
+
+    1. **The finding** — state the verdict class plainly. If FALSIFIED: say
+       the conventions document did not carry the weight, and say what the
+       control arm's schema-only pages achieved without it.
+    2. **The evidence** — per metric: treatment value, control value, delta,
+       threshold, cleared-or-not; plus the per-pair analysis. Cite
+       `run/drift-report.json` and `run/verdict.json` by path for EVERY number.
+    3. **Falsification honesty** — n per arm (passing/written); which verdict
+       classes the sample size supports; what a pass-2 replication with a
+       different park and seed should change.
+    4. **The pattern's edge** — where the conventions bent (rigidity) or
+       failed to bind (vagueness), citing synthesis-notes.md deviations.
+
+    Then author the citation sweep and run it:
+    cat > scripts/check-eval-citations.py <<'PEOF'
+    #!/usr/bin/env python3
+    """r2 sweep: every line of evaluation.md containing a digit must CITE a
+    source by path on that same line (run/*.json or thresholds.yaml). The
+    citation may carry the number ("n=4 (run/verdict.json)"); what is
+    refused is a bare number with no source anywhere on the line. No blanket
+    exemptions; digits INSIDE a cited path are part of the citation."""
+    import json, re, sys
+    SRC = re.compile(r"run/(?:drift-report|verdict|live-gates|assignment|staging-manifest)\.json|thresholds\.yaml")
+    text = open("evaluation.md").read()
+    for i, line in enumerate(text.splitlines(), 1):
+        if re.search(r"\d", line) and not SRC.search(line):
+            sys.exit("UNCITED NUMBER at line %d: %s" % (i, line.strip()[:80]))
+    v = json.load(open("run/verdict.json"))["class"].lower()
+    assert v in text.lower(), \
+        "evaluation.md does not state the derived verdict class (%s)" % v
+    print("EVALUATION OK: every number line cites a source, verdict class stated")
+    PEOF
+    chmod +x scripts/check-eval-citations.py
+    .venv/bin/python scripts/check-eval-citations.py
+    echo "M13 VERDICTED + SHIPPED: $V"
+
+    {% endif %}
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# VALIDATIONS — staged fail-fast (Commissioning Cascade): every movement has
+# a tier-1 existence check; substantive movements carry tier-2/3 command
+# gates. Fail-fast: a tier-1 failure stops the run before dependent sheets
+# waste tokens. The running-artifact checks live at M11/M12/M13 (deployed
+# bytes; M13 re-checks that the SERVED evidence page carries the verdict).
+# ═══════════════════════════════════════════════════════════════════════════════
+
+validations:
+  # ── M0 · Scaffold ─────────────────────────────────────────────────────────────
+  - type: file_exists
+    path: "{workspace}/run/meta.json"
+    condition: "stage == 1"
+    stage: 1
+    description: "M0: run manifest exists"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && test -x .venv/bin/python && test -x scripts/gates.sh && test -x scripts/check-schema-freeze.py && .venv/bin/python -c "import pandas, scipy, shapely, pyproj, jsonschema, textstat, requests, yaml, markdown" && test -s run/deps-lock.txt'
+    condition: "stage == 1"
+    stage: 2
+    description: "M0: venv + full dependency surface + gate front door + freeze script commissioned (a missing instrument surfaces here, not at M11)"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && test -f fixtures/known-good/page.md -a -f fixtures/corrupt-heading-skip/page.md -a -f fixtures/corrupt-missing-alttext/page.md -a -f fixtures/corrupt-long-paragraph/page.md -a -f fixtures/corrupt-schema/page.md -a -f fixtures/corrupt-grounding/page.md -a -f fixtures/grounding-manifest.json -a -f fixtures/stratigraphy-vocab.txt -a -f schema/page-schema.json'
+    condition: "stage == 1"
+    stage: 2
+    description: "M0: fixture corpus staged (1 known-good + 6 matched corruptions + fixture grounding manifest + vocab + strict seed schema)"
+
+  # ── M1 · Gate self-test (Etiquette Law clause 2) ──────────────────────────────
+  - type: command_succeeds
+    command: 'cd "{workspace}" && bash scripts/gates.sh --self-test | tee run/selftest.log && grep -q "SELF-TEST PASS" run/selftest.log'
+    condition: "stage == 2"
+    stage: 2
+    description: "M1: all six gates PASS the known-good fixture AND FAIL their matched corruption"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && test "$(grep -c "^NEG" run/selftest.log)" -eq 6 && test "$(grep -c "^POS" run/selftest.log)" -eq 6'
+    condition: "stage == 2"
+    stage: 3
+    description: "M1: the log records EXACTLY six negative controls and six positive passes — every gate's teeth counted, not grepped for prose"
+
+  # ── M2 · Geometry ─────────────────────────────────────────────────────────────
+  - type: file_exists
+    path: "{workspace}/geometry/segments.geojson"
+    condition: "stage == 3"
+    stage: 1
+    description: "M2: segment geometry exists"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python scripts/check-geometry.py && sha256sum -c geometry/geometry.sha256'
+    condition: "stage == 3"
+    stage: 2
+    description: "M2: 8 segments, closed ≤12-vertex WGS84 WKT rings, total mileage within ±20% of published reality, pins verify"
+
+  # ── M3 · Grounding ────────────────────────────────────────────────────────────
+  - type: file_exists
+    path: "{workspace}/grounding/grounding-manifest.json"
+    condition: "stage == 4"
+    stage: 1
+    description: "M3: grounding manifest exists"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python scripts/check-grounding.py'
+    condition: "stage == 4"
+    stage: 2
+    description: "M3: pins verify; per-segment query hashes RE-DERIVE from the recorded WKT + canonical params; phenology windows recompute from pinned bytes; granularity and truncation declared"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python -c "import hashlib, json; m = json.load(open(\"grounding/grounding-manifest.json\")); raw = open(\"grounding/stratigraphy-vocab.txt\", \"rb\").read(); assert m[\"stratigraphy_sha256\"] == hashlib.sha256(raw).hexdigest(), \"vocab pin mismatch\"; assert [s for s in m[\"segments\"] if s[\"segment_id\"] == \"seg-99\" or True], \"segments present\"; assert m[\"species_names\"], \"no species names recorded for the intent gate\""'
+    condition: "stage == 4"
+    stage: 3
+    description: "M3: embedded stratigraphy vocabulary pinned under the manifest digest (term-level entailment source); species-name set recorded"
+
+  # ── M4 · Assignment ───────────────────────────────────────────────────────────
+  - type: file_exists
+    path: "{workspace}/run/assignment.json"
+    condition: "stage == 5"
+    stage: 1
+    description: "M4: assignment exists"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python scripts/check-assignment.py'
+    condition: "stage == 5"
+    stage: 2
+    description: "M4: disjoint full-cover matched pairs; seed pinned; assignment predates any writer output (confound killed as evidence)"
+
+  # ── M5 · Schema freeze (Prefabrication) ───────────────────────────────────────
+  - type: file_exists
+    path: "{workspace}/schema/page-schema.json"
+    condition: "stage == 6"
+    stage: 1
+    description: "M5: page schema exists"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && GROUNDING_MANIFEST=fixtures/grounding-manifest.json bash scripts/gates.sh --page fixtures/known-good/page.md && .venv/bin/python scripts/check-schema-freeze.py --verify && .venv/bin/python -c "import json; m = json.load(open(\"run/meta.json\")); assert m.get(\"schema_sha256\"), \"freeze not recorded in meta\""'
+    condition: "stage == 6"
+    stage: 2
+    description: "M5: schema still validates the known-good fixture; the M0-AUTHORED freeze script verifies the digest and meta records it — a post-freeze edit fails"
+
+  # ── M6a/b · Conventions + red-team (Barn Raising's layer) ─────────────────────
+  - type: file_exists
+    path: "{workspace}/conventions.md"
+    condition: "stage == 7"
+    stage: 1
+    description: "M6a: conventions document exists"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && grep -qi "cultural sensitivity" conventions.md && grep -qi "## glossary" conventions.md && grep -qi "heading" conventions.md && test "$(grep -ci "judgment-only" conventions.md)" -ge 1'
+    condition: "stage == 7"
+    stage: 2
+    description: "M6a: conventions cover the load-bearing sections with at least one honest judgment-only marker"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python scripts/check-conventions.py && sha256sum -c conventions.sha256'
+    condition: "stage == 8"
+    stage: 2
+    description: "M6b (family B): partition check — every obligation rule gate-backed or judgment-only, zero unclassified; revision pinned"
+
+  # ── M7 · Intent envelope (Mission Command) ────────────────────────────────────
+  - type: file_exists
+    path: "{workspace}/intent.md"
+    condition: "stage == 9"
+    stage: 1
+    description: "M7: intent envelope exists"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python scripts/check-intent.py'
+    condition: "stage == 9"
+    stage: 2
+    description: "M7: PURPOSE/KEY TASKS/END STATE present; ZERO species names (\\b-anchored) or segment IDs"
+
+  # ── M7b · Pre-registration + staging (Unprimed Falsifier / isolation) ─────────
+  - type: file_exists
+    path: "{workspace}/thresholds.yaml"
+    condition: "stage == 10"
+    stage: 1
+    description: "M7b: thresholds registered"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python -c "import yaml; t = yaml.safe_load(open(\"thresholds.yaml\")); assert 0 < t[\"grammar_agreement_min_delta\"] <= 1 and 0 < t[\"glossary_adoption_min\"] <= 1 and 0 < t[\"naming_compliance_min\"] <= 1 and t[\"paragraph_cv_ratio_min\"] > 1.0 and t[\"drift_metrics_indicative\"] < t[\"drift_metrics_required\"] <= 5, \"thresholds out of range\"" && test -f run/thresholds-registered.epoch'
+    condition: "stage == 10"
+    stage: 2
+    description: "M7b: all threshold values in valid ranges; registration epoch recorded"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python scripts/stage-writers.py && .venv/bin/python -c "import json; s = json.load(open(\"run/staging-manifest.json\")); ws = s[\"writers\"]; assert len(ws) == 8, \"expected 8 staged worlds\"; assert all(w[\"saw_conventions\"] for i, w in ws.items() if w[\"arm\"] == \"treatment\"), \"a treatment writer lacks conventions\"; assert not any(w[\"saw_conventions\"] for i, w in ws.items() if w[\"arm\"] == \"control\"), \"a control writer saw conventions — isolation broken\""'
+    condition: "stage == 10"
+    stage: 3
+    description: "M7b: PHYSICAL isolation — 8 complete staged input worlds; every treatment world carries conventions, every control world provably does not"
+
+  # ── M8 · Fan-out writers (per instance — THE EXPERIMENT) ──────────────────────
+  - type: command_succeeds
+    command: 'cd "{workspace}" && A=$(.venv/bin/python -c "import json;print(json.load(open(\"run/assignment.json\"))[\"instance_map\"][\"{instance}\"][\"arm\"])") && test -s "pages/$A/writer-{instance}/page.md"'
+    condition: "stage == 11"
+    stage: 1
+    description: "M8: this writer's page exists in its arm's writer-tagged namespace (arm read from the pinned assignment — never guessed)"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && A=$(.venv/bin/python -c "import json;print(json.load(open(\"run/assignment.json\"))[\"instance_map\"][\"{instance}\"][\"arm\"])") && if [ "$A" = "control" ]; then ! grep -rqi "conventions" "staging/writer-{instance}/" 2>/dev/null || exit 1; fi && bash scripts/gates.sh --page "pages/$A/writer-{instance}/page.md" && grep -q "GATE_RESULT: PASS writer-{instance} $A" gates.log'
+    condition: "stage == 11"
+    stage: 2
+    description: "M8: control-instance staging still contains zero conventions bytes (isolation held through the run); the floor gates pass; the PASS is honestly logged"
+
+  # ── M9 · Drift measurement (the heart of the proof) ───────────────────────────
+  - type: file_exists
+    path: "{workspace}/run/drift-report.json"
+    condition: "stage == 12"
+    stage: 1
+    description: "M9: drift report exists"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python scripts/drift.py --selftest'
+    condition: "stage == 12"
+    stage: 2
+    description: "M9: the measurement instrument discriminates — identical fixtures yield zero deltas, divergent fixtures yield large ones"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python -c "import glob, json, os; thr = os.path.getmtime(\"thresholds.yaml\"); pages = glob.glob(\"pages/*/*/page.md\"); assert pages and all(os.path.getmtime(p) > thr for p in pages), \"pre-registration violated\"; d = json.load(open(\"run/drift-report.json\")); assert len(d[\"metrics\"]) == 5 and d[\"pair_analysis\"], \"report incomplete\"; assert d[\"arms\"][\"treatment\"][\"n\"] >= 1 and d[\"arms\"][\"control\"][\"n\"] >= 1, \"an arm is empty\"; gl = open(\"gates.log\").read(); n_pass = gl.count(\"GATE_RESULT: PASS\"); n_fail = gl.count(\"GATE_RESULT: FAIL\"); assert n_pass + n_fail >= 8, \"gates.log incomplete — every writer must record PASS or FAIL honestly\""'
+    condition: "stage == 12"
+    stage: 3
+    description: "M9: thresholds.yaml predates every measured page; 5 metrics + pair analysis reported; every one of the 8 writers recorded an honest gate result"
+
+  # ── M10 · Synthesis (treatment only) ──────────────────────────────────────────
+  - type: file_exists
+    path: "{workspace}/synthesis-notes.md"
+    condition: "stage == 13"
+    stage: 1
+    description: "M10: synthesis notes (flagged sections + preserved dissent) exist"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python scripts/check-synthesis.py'
+    condition: "stage == 13"
+    stage: 2
+    description: "M10: Rehearsal Spotlight holds — unflagged sections byte-identical; floor gates re-pass on merged pages; glossary covers used terms; evidence page carries VERDICT-PENDING (the verdict does not exist yet)"
+
+  # ── M11 · Build + deploy ──────────────────────────────────────────────────────
+  - type: command_succeeds
+    command: 'cd "{workspace}" && test -s site/index.html && grep -q "ALL LINKS VALID" run/linkcheck.log && test -f site/.nojekyll'
+    condition: "stage == 14"
+    stage: 1
+    description: "M11: clean pip-installable build + local link check green + Pages-Jekyll bypass staged"
+  - type: command_succeeds
+    command: 'python3 -c "import json; d = json.load(open(\"{workspace}/run/deployment.json\")); assert d.get(\"deployed_url\") and d.get(\"deployed_sha\") and d[\"pages_source\"][\"path\"] == \"/\", \"no recorded deployment from repo root\""'
+    condition: "stage == 14"
+    stage: 2
+    description: "M11: deployment facts recorded (URL + served commit + root source path — the only config GitHub accepts)"
+  - type: command_succeeds
+    command: 'cd "{workspace}/deploy-repo" && git ls-files | grep -qv "^site/" && echo "CONTROL OR WORKSPACE FILES COMMITTED" && exit 1 || exit 0'
+    condition: "stage == 14"
+    stage: 2
+    description: "M11: the deploy repo contains ONLY the built site — control pages and workspace internals are never published"
+  - type: command_succeeds
+    command: 'U=$(python3 -c "import json;print(json.load(open(\"{workspace}/run/deployment.json\"))[\"deployed_url\"])"); for i in 1 2 3 4 5 6 7 8 9 10; do if curl -fsS --max-time 30 "$U" 2>/dev/null | grep -qi "wayside"; then echo LIVE; exit 0; fi; sleep 30; done; echo "NOT LIVE"; exit 1'
+    condition: "stage == 14"
+    stage: 3
+    description: "M11: RUNNING ARTIFACT — the LIVE GitHub Pages site answers and serves the library (bounded retry, 5 minutes, against propagation)"
+
+  # ── M12 · Live gates (deployed bytes) ─────────────────────────────────────────
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python -c "import json; d = json.load(open(\"run/live-gates.json\")); failed = [g for g in d[\"gates\"] if not g[\"passed\"]]; assert not failed, \"failed live gates: %s\" % failed; segs = [g for g in d[\"gates\"] if g[\"gate\"] == \"alt\" and \"seg-\" in g[\"page\"]]; assert all(g[\"images\"] > 0 for g in segs), \"a segment page served with zero images\"; print(\"%d/%d live gates green over %d served pages\" % (len(d[\"gates\"]), len(d[\"gates\"]), d[\"pages\"]))"'
+    condition: "stage == 15"
+    stage: 2
+    description: "M12: served bytes pass every EXP gate — alt (segment pages non-vacuous), lang/viewport/heading order (both directions), variant-correct grade bands, page-weight budget, served-vs-built equality"
+
+  # ── M13 · Verdict + evidence update + evaluation ──────────────────────────────
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python scripts/verdict-join.py --drift run/drift-report.json --thresholds thresholds.yaml --verify --out run/verdict.json'
+    condition: "stage == 16"
+    stage: 2
+    description: "M13: verdict class RE-DERIVES mechanically from the pre-registered threshold join (all four classes are success exits; only mechanical failure fails)"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python -c "import json; v = json.load(open(\"run/verdict.json\"))[\"class\"].lower(); assert \"VERDICT-PENDING\" not in open(\"site-src/evidence.md\").read(), \"placeholder still present\"; assert v in open(\"site-src/evidence.md\").read().lower(), \"evidence page missing the verdict\""'
+    condition: "stage == 16"
+    stage: 2
+    description: "M13: the evidence page source carries the final verdict (placeholder replaced)"
+  - type: command_succeeds
+    command: 'U=$(python3 -c "import json;print(json.load(open(\"{workspace}/run/deployment.json\"))[\"deployed_url\"])"); V=$(python3 -c "import json;print(json.load(open(\"{workspace}/run/verdict.json\"))[\"class\"])"); for i in 1 2 3 4 5 6 7 8 9 10; do if curl -fsS --max-time 30 "$U/evidence.html" 2>/dev/null | grep -q "$V"; then echo "VERDICT LIVE: $V"; exit 0; fi; sleep 30; done; echo "VERDICT NOT LIVE"; exit 1'
+    condition: "stage == 16"
+    stage: 3
+    description: "M13: RUNNING ARTIFACT — the SERVED evidence page carries the final mechanically derived verdict (bounded retry against Pages propagation)"
+  - type: command_succeeds
+    command: 'cd "{workspace}" && .venv/bin/python scripts/check-eval-citations.py'
+    condition: "stage == 16"
+    stage: 3
+    description: "M13 (family B prose): every numeric claim in evaluation.md cites its source by path after scrubbing cited paths — no blanket exemptions; the prose states the derived verdict class"

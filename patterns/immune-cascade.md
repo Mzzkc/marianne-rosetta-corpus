@@ -98,3 +98,19 @@ The learning stage is useless if it doesn't write persistent, structured output.
 ### Composes With
 
 Triage Gate (handoff IS triage), After-Action Review (coda), Relay Zone (relay between tiers)
+
+### Discover Pass 1, Cycle 7 — The Priced Variant (Graded Net Fold)
+
+This pass folded the draft's **Graded Net** into this pattern as its priced variant (Review 3: the draft's claimed invariant — "each artifact passes through tiers in strict cost order, and each tier's only job is to decide whether the artifact is worth the next tier's price" — is Immune Cascade's header word for word; "the honest differentiators are real — but they are strengthenings of Immune Cascade, and the draft neither names it nor composes with it"). The fold adds:
+
+**1. The committed price table.** `tiers.yaml` — validator, instrument, per-artifact cost per tier — digest-pinned at authorship, with authored first-run values (Review 3: the table must have an author and first-run numbers, not vibes). Each tier's only job is to decide whether the artifact is worth the next tier's price; no tier verifies "quality" in the abstract.
+
+**2. The collapse rule.** Live when the tier cost ratio is ≥10×; otherwise collapse to two tiers. A free top tier means everything gets it and nothing gets *deep* review — the rigger who inspects everything inspects nothing.
+
+**3. Promotion by declared risk, not habit.** Tier 3 (adversarial red/blue over contested artifacts only) admits by declared evidence of risk from tier-2 verdicts, and uses two different instrument *families* — correlated error is the enemy at the top (compose Condorcet's Premise).
+
+**4. Tier isolation of prose.** Each tier writes `verdicts/t{n}/{artifact}.json`; the next tier receives only paths — a tier never sees the tier below's prose, so reviewers cannot be anchored.
+
+**5. The Pre-Load face** (rigging economics, DOE-STD-1090): the same curve at destructive-work scale — sling check (all units) → probe lift (sample) → critical pick (few): a *shrinking fan-out, the cost curve made visible*.
+
+**Proof debt carried:** `immune-cascade.yaml` is one of the six historical proof files that fail `mzt validate` (folded-command checks). Repair before extending; the priced variant's first proof extends this file rather than adding a new domain showcase. Negative control for the variant: one seeded artifact known to fail tier 1, asserted *absent* from the tier-2 manifest — if the seed survives, the net has a hole and the validation fails. Overlap note: Echelon Repair tiers the *response to failure that already happened*; this variant prices *what you buy, and in what order, once you're spending*.

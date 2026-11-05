@@ -100,3 +100,27 @@ Three adversarial reviews attacked `04-draft-corpus.md` (25 core entries): The P
 **Narrowed (2):** Typed Force (Review 1's umbrella-cut answered by delegation to Precedent Bench / Dropped Axiom / Proof-Carrying Artifact; Review 2's syntax/authority split executed as the `assigned_by` provenance field), Fan-out + Synthesis (returned to uncounted foundational primitive — Reviews 1, 2, restoring the v5.1 ruling the draft had reversed).
 
 **Strengthened (all survivors):** every score structure rewritten in the real dialect, re-verified against engine source (`job.py`, `execution.py`, `workspace.py`, `orchestration.py`, `engine.py`) — the draft's systematic violations (movement-level `fan_out`, expanded `total_items`, top-level `cadenzas`/`instrument_map`, `spec_tags` under `spec:`, digest-free `file_sha256`, `max_wall_seconds` as a movement curfew, invalid duplicate-sheet `instrument_map`) are all fixed. Two fabrications the reviews did not name were found by the integration's own source pass and corrected: `lookback_sheets: 0` means ALL completed sheets (not zero context), and `on_success: {action: self}` is not an accepted shape — self-chaining is `concert` + `on_success: [{type: run_job, job_path: …}]`. One v5.1 Real Dialect error also corrected: `skip_when` keys on the EXPANDED sheet number (adapter.py:2947), not the movement number. Bookkeeping corrected to disk: 13 proof YAMLs (not 14); 7 pass `mzt validate`, 6 fail (both reviews ran it independently and agree). Proof queue honestly reported as zero-of-six executed — a blocking requirement for v7. Script Library debt named at its true size (≈50 named scripts in the draft; the final core reduces to 24 with interface contracts). Core: 17 counted + 1 primitive; the corpus denominator (117 pattern files + 5 laws across core/archive/awaiting) is stated in the document header — Review 2's hidden-denominator finding.
+
+### Cycle 7, Discover Pass 2 Review Integration (2026-10-26)
+
+Draft: 24 patterns from six expeditions. Reviews: The Practitioner (NEEDS REVISION), The Skeptic (FLAWED), The Newcomer (NEEDS REVISION). Final: 21 patterns. Full integration log in `discover-pass-2/06-the-corpus.md` § Review Integration; the decisions that touched permanent files:
+
+**Cut / evicted / folded / split (7):**
+- **Firing the Pass** — evicted as a new discovery; a proof score has existed since 2026-09-04 (`proof-scores/firing-the-pass.yaml`). Recorded as a confirmation. New finding: the existing proof never touched `stagger_delay_ms` — the clock half remains unproven (prove-queue item).
+- **Staggered Quorum Spend** — cut (staggering cannot cancel launches; zero spend saved). Benched as The Phased Quorum Wave (sequential k-then-N−k waves).
+- **The Recovery Arc** — benched (checkpoint persistence unwired). Now names The Checkpoint Re-Anchor for joint re-derivation.
+- **The Shared Pulse ⊕ The Datum Grid** — folded into **The Shared Reference** (two profiles), dissolving the draft's merge/quarantine contradiction.
+- **Hotwash Dispatch & Spent Lesson Checkout** — split into two independently provable patterns; both now name After-Action Review as the capture-side neighbor.
+- **Keystone-First Sequencing** — kept over the Skeptic's fold objection (Practitioner ranked it top-six; 2 reviews to 1); differentiation vs Cathedral Construction / Prefabrication stated in-entry.
+
+**Structural rewrites (5):**
+- **The Watchman's Gate** — `skip_when` polarity inversion fixed: `skip_when` skips on success, so the draft's permission predicate would have skipped authorized execution. Refusal-predicate doctrine now corpus-wide (Composition Doctrine #1 in the pass-2 corpus).
+- **The Contamination Wire** — rewritten off `failure_history` (sheet-local retry state, not cross-sheet broadcast; and a failing gate blocks dependents) onto typed verdict artifacts written by a succeeding gate.
+- **The Dispatch Catalogue (MEL)** — `mel.yaml` is an authoring-time static asset; no runtime LLM generation of the authority governing the run. Compensation is a pre-declared roster.
+- **The Midseason Pivot Ledger** — concert-level; a running score cannot splice its own DAG. Canon facts are enforceable predicates; names Continuity Ledger.
+- **The Cue Light** — recorded as confirmation + extension of **Standby–GO** (back-pointer added to `patterns/standby-go.md`); per-worker ack files replace the shared-array race; regex/enum mismatch fixed.
+
+**Permanent-corpus corrections:**
+- **Admission by First Cycle** — DEMOTED (V3 refutation: `fleet.depends_on` waits on full completion); INDEX entry marked; successor is The Inspection and Redline Stakes.
+- **Rostered Watch** (pass-1 bench candidate) — stagger-as-watch-bill claim corrected (V4: stagger is per-instrument spacing); corrected doctrine carried by The Continuous Pour Schedule.
+- **Proof-status vocabulary** — "native-proven" retired; split into primitives-proven / approximation / aspirational.
