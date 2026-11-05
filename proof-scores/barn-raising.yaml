@@ -905,8 +905,13 @@ prompt:
         body_md = raw[m.end():] if m else raw
         # frontmatter figures become real <img> elements: a declared figure
         # that never renders would make the served alt gate vacuous (r2)
-        figs = "".join('<p><img src="%s" alt="%s"></p>\n' % (f["src"], f["alt"])
-                       for f in fm.get("figures", []) if f.get("src"))
+        # src/alt are musician-written frontmatter, so they are escaped and
+        # src is held to the fig-<slug>.<ext> naming the M9 gate measures.
+        from html import escape
+        figs = "".join('<p><img src="%s" alt="%s"></p>\n'
+                       % (escape(str(f["src"]), quote=True), escape(str(f.get("alt", "")), quote=True))
+                       for f in fm.get("figures", [])
+                       if re.match(r"^fig-[a-z0-9-]+\.(jpg|png|webp)$", str(f.get("src", ""))))
         html = markdown.markdown(body_md, extensions=["tables"]) + figs
         return (TEMPLATE.replace("@@TITLE@@", title)
                         .replace("@@VARIANT@@", variant)
