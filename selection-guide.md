@@ -353,7 +353,7 @@ These rows cover every newly curated split pattern, plus the renamed foundationa
 
 1. **Start with your problem, not a pattern name.** Find the problem type that matches your situation.
 2. **Read the signals.** Do they describe what you're experiencing?
-3. **Try the first composition.** The compositions are ordered by frequency of use — start with the first one.
+3. **Weigh every composition, not the first.** They are listed in the order they were discovered, which is also the order composers reach for them; the first is the most familiar, not the best fit. Read the signals of each before choosing, and prefer the one whose signals match most closely. `tools/unproven.py` lists which patterns no proof score has ever exercised; a familiar pattern is not evidence that it fits (GH #354, #355).
 4. **Read the individual pattern files.** This guide tells you WHEN and WHICH; the pattern files tell you HOW.
 5. **Compose incrementally.** You don't need to use all patterns in a composition at once. Start with one, add the next when needed.
 
@@ -411,4 +411,4 @@ When analyzing a user's goal description, match against these semantic categorie
 - **"converge"** OR **"reach consensus"** → Converge Diverse Opinions patterns
 - **"adapt"** OR **"conditions change"** → Adapt Plans Mid-Execution patterns
 
-The first composition in each problem type is the most commonly used. Always recommend reading the individual pattern files before implementation.
+The compositions under each problem type are not ranked; the first is only the earliest discovered. Match on signals, read the individual pattern files before implementing, and reach for patterns the proof ledger (`tools/unproven.py`) shows unexercised when their signals fit.

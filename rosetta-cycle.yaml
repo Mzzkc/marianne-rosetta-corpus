@@ -1171,10 +1171,25 @@ prompt:
     DIFFERENT primary pattern and a different problem category.
     {% endif %}
 
-    ## Read Existing Proof Scores
+    ## Read the Proof Ledger First
 
-    Scan `{{ proof_scores_dir }}/` for .yaml files. Read their header comments.
-    These patterns are ALREADY PROVEN — do not re-prove them:
+    Run the ledger and read all three sections before choosing anything:
+    ```bash
+    python3 -I {{ score_dir }}/tools/unproven.py {{ score_dir }}
+    ```
+    It names every pattern already proven as PRIMARY (forbidden), every
+    pattern composed into a proof but never primary, and every pattern NO
+    proof has ever named. Composers converge on the same seven patterns run
+    after run (GH #354: 13 of 148 proven, 94 never named); the point of this
+    pass is to reach where no proof has reached. Your PRIMARY pattern MUST
+    come from the "never named" section unless you write, in the selection,
+    why none of those fits any problem worth proving (one paragraph, naming
+    at least three you considered). The validation runs
+    `unproven.py --check "<your primary>"` and fails the sheet if it is
+    already a primary.
+
+    Then scan `{{ proof_scores_dir }}/` for .yaml files and read their header
+    comments, so you know what shape the proven ones took:
     - What pattern does each prove?
     - What problem domain does it target?
     - What instruments does it use?
@@ -1237,7 +1252,8 @@ prompt:
     ## Output
 
     Write `{{ pass_dir }}/01-selection.md` containing:
-    - PRIMARY pattern (name + file path from index)
+    - A line `PRIMARY: <exact pattern name as the ledger prints it>` (the
+      gate reads this line), then the pattern's file path from the index
     - COMPOSING patterns (names + why they compose naturally)
     - Problem category and specific problem
     - One-paragraph thesis: WHY this pattern+problem pairing demonstrates
@@ -1605,10 +1621,17 @@ validations:
     description: "Selection is substantive"
   - type: content_regex
     path: "{workspace}/prove-pass-{prove_pass}/01-selection.md"
-    pattern: "(?i)PRIMARY.*pattern"
+    pattern: "(?im)^\\s*\\*{0,2}PRIMARY\\*{0,2}:\\s*\\S"
     condition: "stage == 7"
     stage: 2
-    description: "Selection names a primary pattern"
+    description: "Selection has a PRIMARY: line the ledger gate can read"
+  - type: command_succeeds
+    command: |
+      name=$(grep -m1 -iE "^\s*\**PRIMARY\**:" "{workspace}/prove-pass-{prove_pass}/01-selection.md" | sed -E 's/^\s*\**PRIMARY\**:\s*//; s/\s*[(\[].*$//; s/[* `]+$//; s/^[* `]+//')
+      test -n "$name" && python3 -I "{score_dir}/tools/unproven.py" "{score_dir}" --check "$name"
+    condition: "stage == 7"
+    stage: 2
+    description: "The primary pattern is not already proven as a primary (GH #354)"
   - type: content_regex
     path: "{workspace}/prove-pass-{prove_pass}/01-selection.md"
     pattern: "(?mi)^.*\\bSCI\\b"
