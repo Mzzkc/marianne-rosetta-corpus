@@ -3,7 +3,7 @@ name: "Immune Cascade"
 scale: instrument-strategy
 type: orchestration-pattern
 status: working
-proof_score: "rosetta-proof-immune-cascade.yaml"
+proof_score: "immune-cascade.yaml"
 forces:
   - "Finite Resources"
   - "Exponential Defect Cost"

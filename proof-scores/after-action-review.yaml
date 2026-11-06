@@ -1,0 +1,121 @@
+# PRIMARY PATTERN : After-Action Review — A measured first-run normalization failure becomes persisted learning consumed by the second run.
+# Standalone offline demonstration. Run: mzt run <this-file>.yaml
+# Uses shipped fixtures and role-specific capability classes; no network or publication.
+# Source/structure gates are not a semantic-quality oracle or a paid execution receipt.
+# Supporting gate: ../tools/long_tail_proof.py (stdlib only).
+# First task execution is deterministic strip-only code in setup, not a fabricated success report.
+
+name: proof-after-action-review
+description: A measured first-run normalization failure becomes persisted learning consumed by the second
+  run.
+instrument: strong
+instrument_config:
+  timeout_seconds: 600
+  interactive: false
+instrument_fallbacks: []
+workspace_lifecycle:
+  archive_on_fresh: true
+movements:
+  1:
+    name: Offline fixture setup
+    instrument: cli
+    instrument_fallbacks: []
+  2:
+    name: Review the observed run
+    instrument: strong
+    instrument_fallbacks: []
+  3:
+    name: Persist learning for the next run
+    instrument: cli
+    instrument_fallbacks: []
+  4:
+    name: Run again using the saved lesson
+    instrument: workhorse
+    instrument_fallbacks: []
+  5:
+    name: Measure the learning effect
+    instrument: cli
+    instrument_fallbacks: []
+sheet:
+  size: 1
+  total_items: 5
+  per_sheet_fallbacks:
+    1: []
+    3: []
+    5: []
+  dependencies:
+    2:
+    - 1
+    3:
+    - 2
+    4:
+    - 3
+    5:
+    - 4
+cross_sheet:
+  auto_capture_stdout: false
+  lookback_sheets: 0
+retry:
+  max_retries: 1
+  base_delay_seconds: 1
+prompt:
+  template: |
+    {% if stage == 1 %}
+    set -eu
+    python3 -I "{{ score_dir }}/../tools/long_tail_proof.py" init "{{ workspace }}"
+    {% elif stage == 2 %}
+    Work only in {{ workspace }}. Read the named inputs from disk. Write only the named outputs; keep supplied inputs and proof_checks.py unchanged.
+    The gate checks source joins and structure, not the quality of your reasoning.
+    Read cases.json and run-1.json. The intended operation is strip edge whitespace then casefold each label.
+    The first run actually used strip only. Compare intended and actual outputs case by case.
+    Write aar.json: intended, actual (list of failing case ids), cause, sustain, improve,
+    rule (the concrete reusable rule identifier strip-casefold), and evidence (the failing case ids).
+    Each prose field must explain the concrete run in at least 12 characters. Avoid generic lessons.
+    Sustain what worked and explain what the second run must do differently.
+    {% elif stage == 3 %}
+    set -eu
+    python3 -I "{{ workspace }}/proof_checks.py" aar-memory "{{ workspace }}"
+    {% elif stage == 4 %}
+    Work only in {{ workspace }}. Read the named inputs from disk. Write only the named outputs; keep supplied inputs and proof_checks.py unchanged.
+    The gate checks source joins and structure, not the quality of your reasoning.
+    Read memory.json and cases.json. Apply the persisted rule to every label.
+    Write run-2.json: {"memory_sha256":"SHA256 of memory.json exact bytes","results":{"a":"...","b":"...","c":"..."}}.
+    Use the actual saved memory, not an invented recollection. Do not edit the first run, review or memory.
+    This is a second task execution; success requires eliminating the first run's measured failures.
+    {% elif stage == 5 %}
+    set -eu
+    python3 -I "{{ workspace }}/proof_checks.py" aar-run "{{ workspace }}"
+    printf 'Second run consumed persisted learning and corrected both measured failures.\n' > "{{ workspace }}/learning.txt"
+    {% endif %}
+validations:
+- type: file_exists
+  path: '{workspace}/proof_checks.py'
+  condition: stage == 1
+- type: file_exists
+  path: '{workspace}/source.json'
+  condition: stage == 1
+- type: file_exists
+  path: '{workspace}/aar.json'
+  condition: stage == 2
+- type: file_exists
+  path: '{workspace}/memory.json'
+  condition: stage == 3
+- type: file_exists
+  path: '{workspace}/run-2.json'
+  condition: stage == 4
+- type: file_exists
+  path: '{workspace}/learning.txt'
+  condition: stage == 5
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py aar-review {workspace}
+  condition: stage == 2
+  timeout_seconds: 30
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py aar-run {workspace}
+  condition: stage == 4
+  timeout_seconds: 30
+# Re-validate the previous stage's artifacts after the next writer has run.
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py aar-run {workspace}
+  condition: stage == 5
+  timeout_seconds: 30

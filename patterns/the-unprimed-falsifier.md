@@ -3,6 +3,7 @@ name: "The Unprimed Falsifier"
 scale: iteration
 type: orchestration-pattern
 status: working
+proof_score: "the-unprimed-falsifier.yaml"
 forces:
   - "Structured Disagreement"
   - "Convergence Imperative"

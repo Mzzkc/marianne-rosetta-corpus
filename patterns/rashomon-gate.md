@@ -3,6 +3,7 @@ name: "Rashomon Gate"
 scale: score-level
 type: orchestration-pattern
 status: working
+proof_score: "rashomon-gate.yaml"
 forces:
   - "Structured Disagreement"
 generators:

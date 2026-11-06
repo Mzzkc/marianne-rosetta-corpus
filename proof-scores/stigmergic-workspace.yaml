@@ -1,0 +1,131 @@
+# PRIMARY PATTERN : Stigmergic Workspace — Two concurrent writers discover peer findings through namespaced files and consume them in a second wave.
+# Standalone offline demonstration. Run: mzt run <this-file>.yaml
+# Uses shipped fixtures and role-specific capability classes; no network or publication.
+# Source/structure gates are not a semantic-quality oracle or a paid execution receipt.
+# Supporting gate: ../tools/long_tail_proof.py (stdlib only).
+# Contract: two namespaced producer waves; no overlapping writers and no out-of-band messaging.
+
+name: proof-stigmergic-workspace
+description: Two concurrent writers discover peer findings through namespaced files and consume them in
+  a second wave.
+instrument: strong
+instrument_config:
+  timeout_seconds: 600
+  interactive: false
+instrument_fallbacks: []
+workspace_lifecycle:
+  archive_on_fresh: true
+movements:
+  1:
+    name: Offline fixture setup
+    instrument: cli
+    instrument_fallbacks: []
+  2:
+    name: Leave workspace signals
+    instrument: workhorse
+    instrument_fallbacks: []
+  3:
+    name: Wait for both workspace signals
+    instrument: cli
+    instrument_fallbacks: []
+  4:
+    name: React to the other writer
+    instrument: workhorse
+    instrument_fallbacks: []
+  5:
+    name: Join the peer receipts
+    instrument: cli
+    instrument_fallbacks: []
+sheet:
+  size: 1
+  total_items: 5
+  # Concrete sheet numbers after expansion: setup, barrier, final join.
+  per_sheet_fallbacks:
+    1: []
+    4: []
+    7: []
+  dependencies:
+    2:
+    - 1
+    3:
+    - 2
+    4:
+    - 3
+    5:
+    - 4
+  fan_out_messaging: none
+  fan_out:
+    2: 2
+    4: 2
+cross_sheet:
+  auto_capture_stdout: false
+  lookback_sheets: 0
+retry:
+  max_retries: 1
+  base_delay_seconds: 1
+parallel:
+  enabled: true
+  max_concurrent: 2
+prompt:
+  template: |
+    {% if stage == 1 %}
+    set -eu
+    python3 -I "{{ score_dir }}/../tools/long_tail_proof.py" init "{{ workspace }}"
+    {% elif stage == 2 %}
+    Work only in {{ workspace }}. Read the named inputs from disk. Write only the named outputs; keep supplied inputs and proof_checks.py unchanged.
+    The gate checks source joins and structure, not the quality of your reasoning.
+    You are voice {{ instance }} of two concurrent writers. Read task-{{ instance }}.json.
+    Write only signal-{{ instance }}.json: {"owner":{{ instance }},"fact":"exact task finding"}.
+    Coordination contract: each voice owns its numbered signal and result files, never the other voice's files.
+    Publish by writing a temporary file in this workspace and atomically renaming it to the final signal path.
+    Do not send messages or use direct agent calls. The next wave starts only after BOTH signals pass their gates.
+    {% elif stage == 3 %}
+    set -eu
+    python3 -I "{{ workspace }}/proof_checks.py" signal "{{ workspace }}" 1
+    python3 -I "{{ workspace }}/proof_checks.py" signal "{{ workspace }}" 2
+    printf 'Both signals available.\n' > "{{ workspace }}/signals-ready.txt"
+    {% elif stage == 4 %}
+    Work only in {{ workspace }}. Read the named inputs from disk. Write only the named outputs; keep supplied inputs and proof_checks.py unchanged.
+    The gate checks source joins and structure, not the quality of your reasoning.
+    You are voice {{ instance }}. Read your own task and signal and the OTHER voice's signal from disk.
+    Write only result-{{ instance }}.json with owner (your number), peer (the other number),
+    signal_sha256 (SHA256 of the other signal file's exact bytes), adopted_fact (the other signal's exact fact),
+    and proposal (a substantive revised guide section incorporating both findings).
+    The file is your only coordination channel; cite the peer signal's current bytes, not an assumed constant.
+    Use an atomic same-directory rename to publish your result. Do not modify any input or peer-owned file.
+    {% elif stage == 5 %}
+    set -eu
+    python3 -I "{{ workspace }}/proof_checks.py" workspace "{{ workspace }}"
+    printf 'Both peer signals consumed with exact byte receipts.\n' > "{{ workspace }}/coordination.txt"
+    {% endif %}
+validations:
+- type: file_exists
+  path: '{workspace}/proof_checks.py'
+  condition: stage == 1
+- type: file_exists
+  path: '{workspace}/source.json'
+  condition: stage == 1
+- type: file_exists
+  path: '{workspace}/signal-{instance}.json'
+  condition: stage == 2
+- type: file_exists
+  path: '{workspace}/result-{instance}.json'
+  condition: stage == 4
+- type: file_exists
+  path: '{workspace}/coordination.txt'
+  condition: stage == 5
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py signal {workspace} {instance}
+  condition: stage == 2
+  timeout_seconds: 30
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py result {workspace} {instance}
+  condition: stage == 4
+  timeout_seconds: 30
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py workspace {workspace}
+  condition: stage == 5
+  timeout_seconds: 30
+- type: file_exists
+  path: '{workspace}/signals-ready.txt'
+  condition: stage == 3

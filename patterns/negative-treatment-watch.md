@@ -2,6 +2,7 @@
 name: Negative-Treatment Watch
 scale: concert-level
 status: working
+proof_score: "negative-treatment-watch.yaml"
 forces:
 - Accumulated Signal
 - Progressive Commitment

@@ -1,0 +1,104 @@
+# PRIMARY PATTERN : Forward Observer — A fast observer compresses a noisy incident log before a stronger operator sees the brief.
+# Standalone offline demonstration. Run: mzt run <this-file>.yaml
+# Uses shipped fixtures and role-specific capability classes; no network or publication.
+# Source/structure gates are not a semantic-quality oracle or a paid execution receipt.
+# Supporting gate: ../tools/long_tail_proof.py (stdlib only).
+# Economics: validates >5x byte reduction at the strong-stage input, not measured token billing.
+
+name: proof-forward-observer
+description: A fast observer compresses a noisy incident log before a stronger operator sees the brief.
+instrument: strong
+instrument_config:
+  timeout_seconds: 600
+  interactive: false
+instrument_fallbacks: []
+workspace_lifecycle:
+  archive_on_fresh: true
+movements:
+  1:
+    name: Offline fixture setup
+    instrument: cli
+    instrument_fallbacks: []
+  2:
+    name: Observe the full log
+    instrument: fast
+    instrument_fallbacks: []
+  3:
+    name: Operate on the brief
+    instrument: strong
+    instrument_fallbacks: []
+  4:
+    name: Measure the handoff
+    instrument: cli
+    instrument_fallbacks: []
+sheet:
+  size: 1
+  total_items: 4
+  per_sheet_fallbacks:
+    1: []
+    4: []
+  dependencies:
+    2:
+    - 1
+    3:
+    - 2
+    4:
+    - 3
+cross_sheet:
+  auto_capture_stdout: false
+  lookback_sheets: 0
+retry:
+  max_retries: 1
+  base_delay_seconds: 1
+prompt:
+  template: |
+    {% if stage == 1 %}
+    set -eu
+    python3 -I "{{ score_dir }}/../tools/long_tail_proof.py" init "{{ workspace }}"
+    {% elif stage == 2 %}
+    Work only in {{ workspace }}. Read the named inputs from disk. Write only the named outputs; keep supplied inputs and proof_checks.py unchanged.
+    The gate checks source joins and structure, not the quality of your reasoning.
+    Read raw-log.jsonl (200 records). Write brief.json, a JSON array containing only critical incidents.
+    Each row is {"id":"original id","quote":"exact full original text"}. Keep every critical incident exactly once.
+    Do not include routine health probes. The brief must be less than one fifth of the input's byte size.
+    Do not solve the incidents; identify the evidence the operator needs.
+    {% elif stage == 3 %}
+    Work only in {{ workspace }}. Read the named inputs from disk. Write only the named outputs; keep supplied inputs and proof_checks.py unchanged.
+    The gate checks source joins and structure, not the quality of your reasoning.
+    Read ONLY brief.json as task evidence; do not read raw-log.jsonl or bootstrap output.
+    Write actions.json, an array with one {"id":"brief incident id","action":"specific mitigation"} per brief entry.
+    Actions must cover every brief incident exactly once, with concrete substantive recommendations.
+    Your smaller input is the economic seam; no raw input is injected through cross-sheet capture.
+    {% elif stage == 4 %}
+    set -eu
+    python3 -I "{{ workspace }}/proof_checks.py" operator "{{ workspace }}"
+    {% endif %}
+validations:
+- type: file_exists
+  path: '{workspace}/proof_checks.py'
+  condition: stage == 1
+- type: file_exists
+  path: '{workspace}/source.json'
+  condition: stage == 1
+- type: file_exists
+  path: '{workspace}/brief.json'
+  condition: stage == 2
+- type: file_exists
+  path: '{workspace}/actions.json'
+  condition: stage == 3
+- type: file_exists
+  path: '{workspace}/economy.json'
+  condition: stage == 4
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py observer {workspace}
+  condition: stage == 2
+  timeout_seconds: 30
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py operator {workspace}
+  condition: stage == 3
+  timeout_seconds: 30
+# Re-validate the previous stage's artifacts after the next writer has run.
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py operator {workspace}
+  condition: stage == 4
+  timeout_seconds: 30

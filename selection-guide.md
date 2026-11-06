@@ -353,7 +353,7 @@ These rows cover every newly curated split pattern, plus the renamed foundationa
 
 1. **Start with your problem, not a pattern name.** Find the problem type that matches your situation.
 2. **Read the signals.** Do they describe what you're experiencing?
-3. **Weigh every composition, not the first.** They are listed in the order they were discovered, which is also the order composers reach for them; the first is the most familiar, not the best fit. Read the signals of each before choosing, and prefer the one whose signals match most closely. `tools/unproven.py` lists which patterns no proof score has ever exercised; a familiar pattern is not evidence that it fits (GH #354, #355).
+3. **Weigh every composition, not the first.** They are listed in the order they were discovered, which is also the order composers reach for them; the first is the most familiar, not the best fit. Read the signals of each before choosing, and prefer the one whose signals match most closely. `tools/unproven.py` lists which patterns no proof score has ever exercised, and its `--usage` mode counts how often each pattern is cited in produced score YAML; a familiar pattern is not evidence that it fits (GH #354, #355).
 4. **Read the individual pattern files.** This guide tells you WHEN and WHICH; the pattern files tell you HOW.
 5. **Compose incrementally.** You don't need to use all patterns in a composition at once. Start with one, add the next when needed.
 

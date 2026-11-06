@@ -3,6 +3,7 @@ name: "Condorcet's Premise"
 scale: communication
 type: orchestration-pattern
 status: working
+proof_score: "condorcet-s-premise.yaml"
 forces:
   - "Structured Disagreement"
 generators:

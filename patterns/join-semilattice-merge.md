@@ -2,6 +2,7 @@
 name: Join-Semilattice Merge
 scale: score-level
 status: working
+proof_score: "join-semilattice-merge.yaml"
 forces:
 - Structured Disagreement
 - Finite Resources

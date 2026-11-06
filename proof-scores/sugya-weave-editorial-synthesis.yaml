@@ -1,0 +1,97 @@
+# PRIMARY PATTERN : Sugya Weave (Editorial Synthesis) — An editor takes an argued position on a pilot and preserves a named opposing voice.
+# Standalone offline demonstration. Run: mzt run <this-file>.yaml
+# Uses shipped fixtures and role-specific capability classes; no network or publication.
+# Source/structure gates are not a semantic-quality oracle or a paid execution receipt.
+# Supporting gate: ../tools/long_tail_proof.py (stdlib only).
+
+name: proof-sugya-weave-editorial-synthesis
+description: An editor takes an argued position on a pilot and preserves a named opposing voice.
+instrument: strong
+instrument_config:
+  timeout_seconds: 600
+  interactive: false
+instrument_fallbacks: []
+workspace_lifecycle:
+  archive_on_fresh: true
+movements:
+  1:
+    name: Offline fixture setup
+    instrument: cli
+    instrument_fallbacks: []
+  2:
+    name: Editorial judgment
+    instrument: strong
+    instrument_fallbacks: []
+  3:
+    name: Render the editorial
+    instrument: cli
+    instrument_fallbacks: []
+sheet:
+  size: 1
+  total_items: 3
+  per_sheet_fallbacks:
+    1: []
+    3: []
+  dependencies:
+    2:
+    - 1
+    3:
+    - 2
+cross_sheet:
+  auto_capture_stdout: false
+  lookback_sheets: 0
+retry:
+  max_retries: 1
+  base_delay_seconds: 1
+prompt:
+  template: |
+    {% if stage == 1 %}
+    set -eu
+    python3 -I "{{ score_dir }}/../tools/long_tail_proof.py" init "{{ workspace }}"
+    {% elif stage == 2 %}
+    Work only in {{ workspace }}. Read the named inputs from disk. Write only the named outputs; keep supplied inputs and proof_checks.py unchanged.
+    The gate checks source joins and structure, not the quality of your reasoning.
+    Read positions.json: Ava and Chen favor adoption, Bo favors deferral.
+    Write editorial.json containing position (adopt or defer), argument, support, dissent and conclusion.
+    Take a position; argue why it follows from the supplied evidence instead of concatenating the inputs.
+    support is a nonempty list of {"source":"ava|bo|chen","quote":"verbatim source excerpt"} backing your position.
+    dissent is {"source":"...","author":"actual name","quote":"verbatim opposing excerpt","response":"..."}.
+    Name and address the actual opposing author without erasing the disagreement.
+    argument, dissent.response and conclusion must each be substantive prose (at least 12 characters).
+    Quotes must be nonempty substrings of the named source's text. Do not invent evidence.
+    {% elif stage == 3 %}
+    set -eu
+    python3 -I "{{ workspace }}/proof_checks.py" weave "{{ workspace }}"
+    python3 - "{{ workspace }}" <<'EDITORIAL'
+    import json, pathlib, sys
+    root = pathlib.Path(sys.argv[1])
+    d = json.loads((root / 'editorial.json').read_text())
+    parts = ['# POSITION: ' + d['position'], d['argument'], '## SUPPORTING EVIDENCE']
+    parts += [r['source'] + ': ' + r['quote'] for r in d['support']]
+    parts += ['## NAMED DISSENT', d['dissent']['author'] + ': ' + d['dissent']['quote'],
+              d['dissent']['response'], '## CONCLUSION', d['conclusion']]
+    (root / 'editorial.md').write_text('\n\n'.join(parts) + '\n')
+    EDITORIAL
+    {% endif %}
+validations:
+- type: file_exists
+  path: '{workspace}/proof_checks.py'
+  condition: stage == 1
+- type: file_exists
+  path: '{workspace}/source.json'
+  condition: stage == 1
+- type: file_exists
+  path: '{workspace}/editorial.json'
+  condition: stage == 2
+- type: file_exists
+  path: '{workspace}/editorial.md'
+  condition: stage == 3
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py weave {workspace}
+  condition: stage == 2
+  timeout_seconds: 30
+# Re-validate the previous stage's artifacts after the next writer has run.
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py weave {workspace}
+  condition: stage == 3
+  timeout_seconds: 30

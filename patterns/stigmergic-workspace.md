@@ -3,6 +3,7 @@ name: "Stigmergic Workspace"
 scale: communication
 type: orchestration-pattern
 status: working
+proof_score: "stigmergic-workspace.yaml"
 forces:
   - "Information Asymmetry"
   - "Finite Resources"

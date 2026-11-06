@@ -3,6 +3,7 @@ name: "Sugya Weave (Editorial Synthesis)"
 scale: within-stage
 type: orchestration-pattern
 status: working
+proof_score: "sugya-weave-editorial-synthesis.yaml"
 forces:
   - "Information Asymmetry"
   - "Convergence Imperative"

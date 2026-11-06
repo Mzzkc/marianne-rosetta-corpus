@@ -3,6 +3,7 @@ name: "The Economic Injury Line"
 scale: adaptation
 type: orchestration-pattern
 status: working
+proof_score: "the-economic-injury-line.yaml"
 forces:
   - "Finite Resources"
   - "Accumulated Signal"

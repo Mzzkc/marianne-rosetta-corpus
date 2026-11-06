@@ -2,15 +2,23 @@
 """List the corpus patterns no proof score names, so the prove loop can
 reach past the familiar seven (GH #354).
 
-Usage: unproven.py [CORPUS_DIR] [--json] [--check PATTERN_NAME]
+Usage: unproven.py [CORPUS_DIR] [--json] [--check PATTERN_NAME] [--usage [DIR]]
 
 A pattern counts as proven when a file under proof-scores/ names it as
 PRIMARY PATTERN in its header. It counts as composed-in when any proof
 header names it at all. --check exits 1 when PATTERN_NAME is already a
 primary of some proof (the selection gate), 0 otherwise.
+
+--usage counts YAML compositions citing each canonical pattern name, once per
+file (case-insensitive literal matching). By default it scans the repository's
+scores/ tree except this corpus's proof-scores/. An explicit DIR scans all YAML
+there, including proofs if requested. Counts measure citations, not execution
+or successful adoption; an uncited pattern may still have been used.
 """
+
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import sys
@@ -55,16 +63,54 @@ def classify(corpus: Path) -> dict[str, dict[str, list[str]]]:
     }
 
 
+def usage_counts(corpus: Path, root: Path, *, exclude_proofs: bool) -> dict[str, int]:
+    """Count citing files, keeping proof evidence separate from ordinary usage."""
+    names = pattern_names(corpus)
+    counts = dict.fromkeys(names, 0)
+    matchers = [(slug, re.compile(re.escape(name), re.I)) for slug, name in names.items()]
+    proofs = (corpus / "proof-scores").resolve()
+    for path in sorted(root.rglob("*.yaml")):
+        if exclude_proofs and path.resolve().is_relative_to(proofs):
+            continue
+        text = path.read_text(errors="replace")
+        for slug, matcher in matchers:
+            if matcher.search(text):
+                counts[slug] += 1
+    return counts
+
+
 def main() -> int:
-    args = sys.argv[1:]
-    as_json = "--json" in args
-    check = None
-    if "--check" in args:
-        i = args.index("--check")
-        check = args[i + 1].strip().lower()
-        del args[i:i + 2]
-    args = [a for a in args if a != "--json"]
-    corpus = Path(args[0]) if args else Path(__file__).resolve().parents[1]
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("corpus", nargs="?", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--json", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--check")
+    mode.add_argument("--usage", nargs="?", const="", metavar="DIR")
+    args = parser.parse_args()
+    corpus = args.corpus
+    if not (corpus / "patterns").is_dir():
+        parser.error(f"corpus patterns directory does not exist: {corpus / 'patterns'}")
+    if args.usage is not None:
+        root = Path(args.usage) if args.usage else corpus.resolve().parent
+        if not root.is_dir():
+            parser.error(f"usage directory does not exist: {root}")
+        names = pattern_names(corpus)
+        counts = usage_counts(corpus, root, exclude_proofs=not args.usage)
+        if args.json:
+            json.dump(counts, sys.stdout, indent=1, sort_keys=True)
+            print()
+        else:
+            print("# Usage citations (compositions naming a pattern, not proven executions)")
+            print("\n## Most-cited\n")
+            for slug in sorted(counts, key=lambda slug: (-counts[slug], slug)):
+                if counts[slug]:
+                    print(f"- {names[slug]}: {counts[slug]}")
+            print("\n## Never-cited in usage\n")
+            for slug, count in counts.items():
+                if not count:
+                    print(f"- {names[slug]} (patterns/{slug}.md)")
+        return 0
+    check = args.check.strip().lower() if args.check else None
     result = classify(corpus)
     if check is not None:
         for slug, proofs in result["primary"].items():
@@ -74,7 +120,7 @@ def main() -> int:
                 return 1
         print("not yet a primary of any proof")
         return 0
-    if as_json:
+    if args.json:
         json.dump(result, sys.stdout, indent=1, sort_keys=True)
         print()
         return 0

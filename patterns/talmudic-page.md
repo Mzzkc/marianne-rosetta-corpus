@@ -3,6 +3,7 @@ name: "Talmudic Page"
 scale: score-level
 type: orchestration-pattern
 status: working
+proof_score: "talmudic-page.yaml"
 forces:
   - "Information Asymmetry"
 generators:

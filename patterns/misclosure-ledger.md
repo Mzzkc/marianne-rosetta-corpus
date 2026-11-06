@@ -3,6 +3,7 @@ name: "The Misclosure Ledger"
 scale: within-stage
 type: orchestration-pattern
 status: working
+proof_score: "the-misclosure-ledger.yaml"
 iteration_added: "discover pass 1, cycle 7"
 forces:
   - "Structured Disagreement"

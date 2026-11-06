@@ -3,6 +3,7 @@ name: "After-Action Review"
 scale: iteration
 type: orchestration-pattern
 status: working
+proof_score: "after-action-review.yaml"
 forces:
   - "Information Asymmetry"
   - "Partial Failure"

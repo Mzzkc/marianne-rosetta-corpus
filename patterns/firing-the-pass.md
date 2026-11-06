@@ -3,6 +3,7 @@ name: Firing the Pass
 scale: score-level
 type: orchestration-pattern
 status: working
+proof_score: "firing-the-pass.yaml"
 forces:
 - Finite Resources
 - Progressive Commitment

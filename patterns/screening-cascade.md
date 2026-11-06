@@ -3,6 +3,7 @@ name: "Screening Cascade"
 scale: instrument-strategy
 type: orchestration-pattern
 status: working
+proof_score: "screening-cascade.yaml"
 forces:
   - "Instrument-Task Fit"
   - "Finite Resources"

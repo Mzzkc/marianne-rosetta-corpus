@@ -3,6 +3,7 @@ name: "Barn Raising"
 scale: score-level
 type: orchestration-pattern
 status: working
+proof_score: "barn-raising.yaml"
 forces:
   - "Producer-Consumer Mismatch"
   - "Finite Resources"

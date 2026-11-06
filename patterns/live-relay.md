@@ -3,6 +3,7 @@ name: "Live Relay"
 scale: score-level
 type: orchestration-pattern
 status: working
+proof_score: "live-relay.yaml"
 forces:
   - "Information Asymmetry"
   - "Producer-Consumer Mismatch"

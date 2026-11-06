@@ -1,0 +1,109 @@
+# PRIMARY PATTERN : Talmudic Page — A central retry contract, a technical commentary and a responding operational layer form one linked page.
+# Standalone offline demonstration. Run: mzt run <this-file>.yaml
+# Uses shipped fixtures and role-specific capability classes; no network or publication.
+# Source/structure gates are not a semantic-quality oracle or a paid execution receipt.
+# Supporting gate: ../tools/long_tail_proof.py (stdlib only).
+
+name: proof-talmudic-page
+description: A central retry contract, a technical commentary and a responding operational layer form
+  one linked page.
+instrument: strong
+instrument_config:
+  timeout_seconds: 600
+  interactive: false
+instrument_fallbacks: []
+workspace_lifecycle:
+  archive_on_fresh: true
+movements:
+  1:
+    name: Offline fixture setup
+    instrument: cli
+    instrument_fallbacks: []
+  2:
+    name: Technical commentary
+    instrument: workhorse
+    instrument_fallbacks: []
+  3:
+    name: Operational replies
+    instrument: strong
+    instrument_fallbacks: []
+  4:
+    name: Publish the linked page
+    instrument: workhorse
+    instrument_fallbacks: []
+sheet:
+  size: 1
+  total_items: 4
+  per_sheet_fallbacks:
+    1: []
+  dependencies:
+    2:
+    - 1
+    3:
+    - 2
+    4:
+    - 3
+cross_sheet:
+  auto_capture_stdout: false
+  lookback_sheets: 0
+retry:
+  max_retries: 1
+  base_delay_seconds: 1
+prompt:
+  template: |
+    {% if stage == 1 %}
+    set -eu
+    python3 -I "{{ score_dir }}/../tools/long_tail_proof.py" init "{{ workspace }}"
+    {% elif stage == 2 %}
+    Work only in {{ workspace }}. Read the named inputs from disk. Write only the named outputs; keep supplied inputs and proof_checks.py unchanged.
+    The gate checks source joins and structure, not the quality of your reasoning.
+    Read source.json, whose text maps s1 and s2 to central contract sentences.
+    Write commentary-1.json as an array of two substantive comments:
+    {"id":"c1","source":"s1","text":"..."} and {"id":"c2","source":"s2","text":"..."}.
+    Explain implementation consequences, keeping the central text intact.
+    {% elif stage == 3 %}
+    Work only in {{ workspace }}. Read the named inputs from disk. Write only the named outputs; keep supplied inputs and proof_checks.py unchanged.
+    The gate checks source joins and structure, not the quality of your reasoning.
+    Read source.json AND commentary-1.json. Write commentary-2.json as an array:
+    {"id":"r1","source":"s1","reply_to":"c1","text":"..."} and
+    {"id":"r2","source":"s2","reply_to":"c2","text":"..."}.
+    Respond to each actual technical comment from an operator's perspective; retain its source anchor.
+    A second independent summary is insufficient: explain where the earlier comment changes operations.
+    {% elif stage == 4 %}
+    Work only in {{ workspace }}. Read the named inputs from disk. Write only the named outputs; keep supplied inputs and proof_checks.py unchanged.
+    The gate checks source joins and structure, not the quality of your reasoning.
+    Read source.json and BOTH commentary JSON files. Write page.md as the final readable artifact.
+    Render every central sentence and every commentary text verbatim, grouped by layer.
+    Use exactly six explicit HTML anchors <a id="s1"></a>, s2, c1, c2, r1, r2.
+    Each commentary section links its source with [central text](#s1) or (#s2).
+    Each operational section ALSO links the actual technical comment with [reply](#c1) or (#c2).
+    Put each anchor before its own section. The gate resolves all links and checks every layer is visible.
+    {% endif %}
+validations:
+- type: file_exists
+  path: '{workspace}/proof_checks.py'
+  condition: stage == 1
+- type: file_exists
+  path: '{workspace}/source.json'
+  condition: stage == 1
+- type: file_exists
+  path: '{workspace}/commentary-1.json'
+  condition: stage == 2
+- type: file_exists
+  path: '{workspace}/commentary-2.json'
+  condition: stage == 3
+- type: file_exists
+  path: '{workspace}/page.md'
+  condition: stage == 4
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py page-first {workspace}
+  condition: stage == 2
+  timeout_seconds: 30
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py page-second {workspace}
+  condition: stage == 3
+  timeout_seconds: 30
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py page {workspace}
+  condition: stage == 4
+  timeout_seconds: 30

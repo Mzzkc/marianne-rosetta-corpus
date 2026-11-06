@@ -1,0 +1,125 @@
+# PRIMARY PATTERN : Screening Cascade — Routing emerges as each screen discovers missing evidence while processing initially unclassified items.
+# Standalone offline demonstration. Run: mzt run <this-file>.yaml
+# Uses shipped fixtures and role-specific capability classes; no network or publication.
+# Source/structure gates are not a semantic-quality oracle or a paid execution receipt.
+# Supporting gate: ../tools/long_tail_proof.py (stdlib only).
+# Unlike Echelon Repair, intake does not classify difficulty upfront: missing evidence is discovered during attempts.
+
+name: proof-screening-cascade
+description: Routing emerges as each screen discovers missing evidence while processing initially unclassified
+  items.
+instrument: strong
+instrument_config:
+  timeout_seconds: 600
+  interactive: false
+instrument_fallbacks: []
+workspace_lifecycle:
+  archive_on_fresh: true
+movements:
+  1:
+    name: Offline fixture setup
+    instrument: cli
+    instrument_fallbacks: []
+  2:
+    name: First screen
+    instrument: fast
+    instrument_fallbacks: []
+  3:
+    name: Second screen
+    instrument: workhorse
+    instrument_fallbacks: []
+  4:
+    name: Final screen
+    instrument: strong
+    instrument_fallbacks: []
+  5:
+    name: Audit the routing
+    instrument: cli
+    instrument_fallbacks: []
+sheet:
+  size: 1
+  total_items: 5
+  per_sheet_fallbacks:
+    1: []
+    5: []
+  dependencies:
+    2:
+    - 1
+    3:
+    - 2
+    4:
+    - 3
+    5:
+    - 4
+cross_sheet:
+  auto_capture_stdout: false
+  lookback_sheets: 0
+retry:
+  max_retries: 1
+  base_delay_seconds: 1
+prompt:
+  template: |
+    {% if stage == 1 %}
+    set -eu
+    python3 -I "{{ score_dir }}/../tools/long_tail_proof.py" init "{{ workspace }}"
+    {% elif stage == 2 %}
+    Work only in {{ workspace }}. Read the named inputs from disk. Write only the named outputs; keep supplied inputs and proof_checks.py unchanged.
+    The gate checks source joins and structure, not the quality of your reasoning.
+    Read ONLY questions.json for task evidence. Attempt all four questions using the evidence given there.
+    Write screen-1.json, an array of rows with id and status (solved or escalate).
+    Solved rows carry an integer answer. Escalated rows carry a substantive reason identifying the missing evidence.
+    Solve the routine arithmetic here; c and d explicitly require additional documents not yet in this screen's evidence.
+    Do not guess unavailable facts. There are no preassigned complexity or severity labels.
+    {% elif stage == 3 %}
+    Work only in {{ workspace }}. Read the named inputs from disk. Write only the named outputs; keep supplied inputs and proof_checks.py unchanged.
+    The gate checks source joins and structure, not the quality of your reasoning.
+    Read screen-1.json and process ONLY rows marked escalate. Read packet-c.json and policy-d.json.
+    Write screen-2.json using the same schema. Compute free capacity after subtracting used and held crates.
+    The delivery policy needs the signed-exception evidence, which is not available to this screen yet.
+    Solve what this evidence permits and escalate only remaining uncertainty; never reprocess already solved items.
+    {% elif stage == 4 %}
+    Work only in {{ workspace }}. Read the named inputs from disk. Write only the named outputs; keep supplied inputs and proof_checks.py unchanged.
+    The gate checks source joins and structure, not the quality of your reasoning.
+    Read screen-2.json and process ONLY its escalated rows. Read policy-d.json and exception-d.json.
+    Write screen-3.json using the same schema: integer answer with status solved, or a reason if still unresolved.
+    Decide from the actual signed-exception evidence whether delivery can proceed (1=yes, 0=no).
+    Do not touch items resolved by cheaper screens. All four original items must finish exactly once.
+    {% elif stage == 5 %}
+    set -eu
+    python3 -I "{{ workspace }}/proof_checks.py" cascade "{{ workspace }}"
+    {% endif %}
+validations:
+- type: file_exists
+  path: '{workspace}/proof_checks.py'
+  condition: stage == 1
+- type: file_exists
+  path: '{workspace}/source.json'
+  condition: stage == 1
+- type: file_exists
+  path: '{workspace}/screen-1.json'
+  condition: stage == 2
+- type: file_exists
+  path: '{workspace}/screen-2.json'
+  condition: stage == 3
+- type: file_exists
+  path: '{workspace}/screen-3.json'
+  condition: stage == 4
+- type: file_exists
+  path: '{workspace}/routing.json'
+  condition: stage == 5
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py screen {workspace} 1
+  condition: stage == 2
+  timeout_seconds: 30
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py screen {workspace} 2
+  condition: stage == 3
+  timeout_seconds: 30
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py screen {workspace} 3
+  condition: stage == 4
+  timeout_seconds: 30
+- type: command_succeeds
+  command: python3 -I {workspace}/proof_checks.py cascade {workspace}
+  condition: stage == 5
+  timeout_seconds: 30

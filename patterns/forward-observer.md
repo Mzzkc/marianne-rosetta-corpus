@@ -3,6 +3,7 @@ name: "Forward Observer"
 scale: instrument-strategy
 type: orchestration-pattern
 status: working
+proof_score: "forward-observer.yaml"
 forces:
   - "Finite Resources"
   - "Information Asymmetry"

@@ -2,6 +2,7 @@
 name: The Attested Merge Gate
 scale: score-level
 status: working
+proof_score: "the-attested-merge-gate.yaml"
 forces:
 - Producer-Consumer Mismatch
 - Exponential Defect Cost

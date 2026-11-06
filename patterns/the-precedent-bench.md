@@ -3,6 +3,7 @@ name: "The Precedent Bench"
 scale: concert-level
 type: orchestration-pattern
 status: working
+proof_score: "the-precedent-bench.yaml"
 forces:
   - "Information Asymmetry"
   - "Convergence Imperative"

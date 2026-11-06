@@ -3,6 +3,7 @@ name: "Cathedral Construction"
 scale: iteration
 type: orchestration-pattern
 status: working
+proof_score: "cathedral-construction.yaml"
 forces:
   - "Convergence Imperative"
   - "Finite Resources"
